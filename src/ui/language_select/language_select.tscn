@@ -1,6 +1,7 @@
 [gd_scene format=3]
 
 [ext_resource type="Script" path="res://src/ui/language_select/language_select.gd" id="1_lang"]
+[ext_resource type="Texture2D" path="res://assets/sprites/board/background.png" id="2_background"]
 
 [node name="LanguageSelect" type="Control"]
 layout_mode = 3
@@ -11,6 +12,17 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_lang")
 
+[node name="Background" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("2_background")
+stretch_mode = 0
+
 [node name="Center" type="CenterContainer" parent="."]
 layout_mode = 1
 anchors_preset = 15
@@ -19,23 +31,27 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Layout" type="VBoxContainer" parent="Center"]
+[node name="Panel" type="PanelContainer" parent="Center"]
+layout_mode = 2
+theme_type_variation = &"HudPanel"
+
+[node name="Layout" type="VBoxContainer" parent="Center/Panel"]
 layout_mode = 2
 theme_override_constants/separation = 24
 
-[node name="Title" type="Label" parent="Center/Layout"]
+[node name="Title" type="Label" parent="Center/Panel/Layout"]
 layout_mode = 2
 theme_type_variation = &"TitleLabel"
 text = "GAME_TITLE"
 horizontal_alignment = 1
 
-[node name="Prompt" type="Label" parent="Center/Layout"]
+[node name="Prompt" type="Label" parent="Center/Panel/Layout"]
 layout_mode = 2
 theme_type_variation = &"MutedLabel"
 text = "UI_LANGUAGE_PROMPT"
 horizontal_alignment = 1
 
-[node name="Options" type="VBoxContainer" parent="Center/Layout"]
+[node name="Options" type="VBoxContainer" parent="Center/Panel/Layout"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 4

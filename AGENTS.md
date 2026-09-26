@@ -25,7 +25,7 @@ Never hardcode player-facing strings in scripts or scenes: use translation keys 
   Done: **M1** prototype loop (wood/fruit/water, phase generator, contextual cursor, hunger/thirst,
   upgrade list, programmer art), **M2** balance simulator, **M2.5** drawn upgrade tree, **M3**
   tiers 1–2 (stone, fish, meat) and **M3.5** tiers 3–4 (ores, crystals, final node; full game
-  ≈ 3h30 for the average player). Next: **M4** final art (Pixellab).
+  ≈ 3h30 for the average player) and **M4** final art + pixel-art UI. Next: **M5** save.
 
 ### Directories
 
@@ -113,9 +113,8 @@ Main (Node)                          src/main/main.tscn — swaps screens
 │
 └── Game (Node2D)                    src/game/game.tscn — run state: inventory, progression, needs
     ├── Board (Node2D) %             src/board/board.tscn
-    │   ├── GridView (Node2D) %      — placeholder drawing (_draw) → future TileMapLayer
-    │   ├── Items (Node2D, y_sort) % — SourceCard instances
-    │   └── Cursor (Node2D) %        — hovered cell highlight
+    │   ├── GridView (Node2D) %      — frame + cells drawn with PixelStyleBox (_draw)
+    │   └── Items (Node2D, y_sort) % — SourceCard instances (no hovered-cell highlight)
     ├── Effects (Node2D) %           — FloatingText popups
     ├── PhaseTimer (Timer) %
     ├── StateMachine (Node) %
@@ -124,7 +123,7 @@ Main (Node)                          src/main/main.tscn — swaps screens
     │   ├── Phase          — timer, clicks, needs, collection → PhaseSummary
     │   ├── PhaseSummary   — results overlay → Upgrade
     │   └── Upgrade        — drawn upgrade tree (GDD §7.1) → PhaseBuild
-    ├── Hud (CanvasLayer) %          src/ui/hud/ — timer, needs bars, inventory
+    ├── Hud (CanvasLayer) %          src/ui/hud/ — ClockTimer (round clock) + seconds, needs bars, inventory
     ├── Overlays (CanvasLayer 10)
     │   ├── PhaseSummary (Control) %
     │   └── UpgradeTreeScreen (Control) % — UpgradeTreeView (grid, lines, gates)
@@ -167,7 +166,12 @@ yields, phase duration, drains, rarity weights) from upgrade levels → `PhaseGe
    (fireflies, glow), `PointLight2D` + `CanvasModulate` (bioluminescent lighting),
    `AudioStreamPlayer` (audio), `Timer`, `Marker2D`. `Autoload` only when truly global.
 8. **No magic layout numbers in scenes/code**: they come from `BoardConfig`/exports.
-9. **UI styling comes from the project theme** (`src/ui/theme/main_theme.tres`, set as
+9. **Boxes are pixel art:** every rectangle (panels, buttons, board cells, tree nodes, bars) uses
+   `PixelStyleBox` (`src/ui/pixel_style_box.gd`): flat fill, 2 px border, stepped corners, whole
+   pixels only. Theme styles are `PixelStyleBox` resources; custom `_draw` code calls
+   `PixelStyleBox.create(...).draw(get_canvas_item(), rect)`. Never use antialiased shapes or
+   diagonal `draw_line` (upgrade tree links are right-angle elbows).
+10. **UI styling comes from the project theme** (`src/ui/theme/main_theme.tres`, set as
    `gui/theme/custom`). Use `theme_type_variation` (`TitleLabel`, `MutedLabel`, …) instead of
    per-node overrides; add new variations to the theme.
 
@@ -276,16 +280,23 @@ sources whose tool is unlocked.
 
 ### Asset workflow
 
-1. **Generate** with Pixellab (raw output → `pixelart/03_pixellab/...`). Always log the prompt.
-   Style references are pieces derived from the concept art (same size as the output), not
-   text alone. Do **not** ask for "neon"/"bioluminescent" objects: that made every test noisy.
-   Use `assets/palettes/deepglow_palette_8x.png` as the forced palette (`color_image`).
-   Objects that exist in the concept art are converted instead of generated:
-   `python3 tools/art/concept_to_sprite.py <cell_crop.png> <out.png> [piece_id]` (material ramps,
-   32x32); outputs go to `pixelart/02_source/concept_derived/`.
-   Icons, cursors and the extra sources (puddle, pond, boar) come from `concept-art-2.png` /
-   `concept-art-3.png` (Claude project files): `python3 tools/art/concept_panel_items.py <c2.png> <c3.png>`
-   (crop boxes and ramps per item in `ITEMS`). Cursor hotspots are set by hand in `data/tools/*.tres`.
+1. **Create the art** (current M4 pipeline — the owner's rules: hand-drawn look, no blur/halo,
+   palette only, light from the top-left, simple shapes at small sizes):
+   - **Board sources (32x32):** crop the item from the concept art (Claude project files
+     `concept-art*.png`) without its background, 4x the target size → Pixellab
+     `/image-to-pixelart` (default "reinterpret" mode, seed 11; raw outputs in
+     `pixelart/03_pixellab/...`) → `python3 tools/art/pixellab_palette_map.py <id> <pixellab.png> <out.png>`
+     (removes the grey background, maps each distinct color onto the material ramps, black outline).
+   - **HUD icons, cursors, upgrade icons:** hand-drawn pixel by pixel as ASCII maps in
+     `tools/art/hand_drawn/{icons,cursors,upgrades,pointer,hand}.py` (run them to rewrite the PNGs).
+     Pixellab is too muddy at 16–24 px. Cursor hotspots are set by hand in `data/tools/*.tres`
+     and `tool_cursor.tscn`.
+   - **Background:** `python3 tools/art/concept_background.py <concept-art-4.png>` (palette first,
+     majority-vote downscale, lonely-pixel cleanup; drawn at 320x180 and upscaled 2x).
+   - `concept_to_sprite.py` / `concept_panel_items.py` are the earlier script-only conversions,
+     kept as helpers (they produced halos; not used for final art).
+   - HUD text sits on opaque `HudPanel` panels (no transparency). Font: `assets/fonts/m5x7.ttf`
+     (Daniel Linssen), 16 px body / 32 px titles, no antialiasing.
 2. **Clean up/edit** in Aseprite → `pixelart/02_source/<category>/<id>.aseprite`.
 3. **Force and validate the palette:** `python3 tools/art/palette.py apply|check`.
 4. **Export** the final PNG to `assets/sprites/<category>/<id>.png` (32x32 for sources;

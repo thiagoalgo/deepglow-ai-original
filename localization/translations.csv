@@ -4,6 +4,7 @@ UI_LANGUAGE_PROMPT,Choose your language,Escolha seu idioma
 UI_CONTINUE,Continue,Continuar
 UI_BUY,Buy,Comprar
 UI_MAXED,Max,Máx
+UI_SELECT_UPGRADE,Select an upgrade to see its details.,Selecione uma evolução para ver os detalhes.
 UI_LEVEL,%d/%d,%d/%d
 UI_UPGRADES_TITLE,Upgrades,Evoluções
 UI_START_PHASE,Start phase %d,Iniciar fase %d

@@ -17,6 +17,11 @@ const STATE_COLORS := {
 var upgrade: UpgradeNode
 var state: NodeState = NodeState.LOCKED
 var level: int = 0
+## Shown with the highlight ring (independent of keyboard focus).
+var selected: bool = false:
+	set(v):
+		selected = v
+		queue_redraw()
 
 var _font: Font
 var _font_size: int = 16
@@ -37,7 +42,6 @@ func _ready() -> void:
 	_font_size = get_theme_default_font_size()
 	focus_entered.connect(queue_redraw)
 	focus_exited.connect(queue_redraw)
-	mouse_entered.connect(grab_focus)
 
 
 func refresh(progression: ProgressionState, inventory: Inventory) -> void:
@@ -63,19 +67,17 @@ func _draw() -> void:
 	var rect := Rect2(Vector2.ZERO, size)
 	var color := get_state_color()
 	var fill := Palette.SHADOW_DEEP if state != NodeState.LOCKED else Palette.SHADOW_BLUEBLACK
-	if upgrade.choice_group.is_empty():
-		draw_rect(rect, fill)
-		draw_rect(rect.grow(-1), color, false, 2.0)
-	else:
-		var pts := _octagon(rect)
-		draw_colored_polygon(pts, fill)
-		draw_polyline(pts + PackedVector2Array([pts[0]]), color, 2.0)
+	# Choice nodes (mutually exclusive) get deeper stepped corners, a pixel "octagon".
+	var steps := PackedInt32Array([2]) if upgrade.choice_group.is_empty() else PackedInt32Array([8, 6, 4, 2])
+	PixelStyleBox.create(fill, color, 2, steps).draw(get_canvas_item(), rect)
 	if upgrade.icon:
 		var icon_pos := ((size - upgrade.icon.get_size()) / 2.0).floor()
 		var tint := Color(1, 1, 1, 0.35) if state == NodeState.LOCKED else Color.WHITE
 		draw_texture(upgrade.icon, icon_pos, tint)
-	if has_focus():
-		draw_rect(rect.grow(3), Palette.LIGHT_BLUE_WHITE, false, 2.0)
+	if selected or has_focus():
+		var ring := PixelStyleBox.create(Color.TRANSPARENT, Palette.LIGHT_BLUE_WHITE, 2, steps)
+		ring.draw_center = false
+		ring.draw(get_canvas_item(), rect.grow(4))
 	# Level "n/max" under the node.
 	var text := "%d/%d" % [level, upgrade.max_level]
 	var text_width := _font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, _font_size).x
@@ -83,13 +85,3 @@ func _draw() -> void:
 	# Backdrop so connection lines never cross the text.
 	draw_rect(Rect2(baseline.x - 2, size.y + 2, text_width + 4, _font_size - 2), Palette.SHADOW_BLUEBLACK)
 	draw_string(_font, baseline, text, HORIZONTAL_ALIGNMENT_LEFT, -1, _font_size, color)
-
-
-static func _octagon(rect: Rect2) -> PackedVector2Array:
-	var c := 8.0
-	var p := rect.position
-	var s := rect.size
-	return PackedVector2Array([
-		p + Vector2(c, 0), p + Vector2(s.x - c, 0), p + Vector2(s.x, c), p + Vector2(s.x, s.y - c),
-		p + Vector2(s.x - c, s.y), p + Vector2(c, s.y), p + Vector2(0, s.y - c), p + Vector2(0, c),
-	])

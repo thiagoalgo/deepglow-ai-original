@@ -18,15 +18,12 @@ var hovered_cell: Vector2i = INVALID_CELL
 
 @onready var _grid_view: BoardGridView = %GridView
 @onready var _items_root: Node2D = %Items
-@onready var _cursor: CellCursor = %Cursor
 
 
 func _ready() -> void:
 	assert(config != null, "Board requires a BoardConfig.")
 	model = BoardModel.new(config.size)
 	_grid_view.config = config
-	_cursor.size = Vector2(config.cell_size)
-	_cursor.hide()
 
 
 # --- Coordinates -------------------------------------------------------------
@@ -92,10 +89,8 @@ func _update_hover(cell: Vector2i) -> void:
 		return
 	hovered_cell = cell
 	if cell == INVALID_CELL:
-		_cursor.hide()
 		cell_hover_exited.emit()
 		Events.cell_hover_exited.emit()
 	else:
-		_cursor.show_at(cell_to_local(cell))
 		cell_hovered.emit(cell)
 		Events.cell_hovered.emit(cell)

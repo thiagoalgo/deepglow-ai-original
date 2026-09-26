@@ -16,6 +16,10 @@ signal node_pressed(upgrade: UpgradeNode)
 @export var active_line_color: Color = Palette.VEGETATION_MOSS
 @export var gate_color: Color = Palette.STRUCTURE_VIOLET
 
+const LINE_WIDTH := 2.0
+## Height of the horizontal part of a connection, measured above the child node.
+const ELBOW_ABOVE_CHILD := 8.0
+
 var _views: Dictionary[StringName, UpgradeNodeView] = {}
 var _gates: Dictionary[int, int] = {}  # row -> required points
 var _progression: ProgressionState
@@ -55,16 +59,10 @@ func get_view(upgrade_id: StringName) -> UpgradeNodeView:
 	return _views.get(upgrade_id)
 
 
-func focus_first_affordable() -> void:
-	var fallback: UpgradeNodeView = null
+## Marks one node as the selected one (null clears the selection).
+func set_selected(upgrade: UpgradeNode) -> void:
 	for view: UpgradeNodeView in _views.values():
-		if view.state == UpgradeNodeView.NodeState.AFFORDABLE:
-			view.grab_focus()
-			return
-		if fallback == null:
-			fallback = view
-	if fallback:
-		fallback.grab_focus()
+		view.selected = upgrade != null and view.upgrade == upgrade
 
 
 func _node_position(cell: Vector2i) -> Vector2:
@@ -99,18 +97,44 @@ func _draw() -> void:
 		var label := tr(&"UI_REQUIRED_POINTS") % _gates[row]
 		var met := _progression != null and _progression.get_total_levels() >= _gates[row]
 		var color := active_line_color if met else gate_color
-		draw_line(Vector2(padding.x, y), Vector2(size.x - padding.x, y), color, 2.0)
+		draw_rect(Rect2(padding.x, y - 1, size.x - padding.x * 2, 2), color)
 		var width := font.get_string_size(label, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size).x
 		var x := floorf((size.x - width) / 2.0)
 		draw_rect(Rect2(x - 4, y - 8, width + 8, 16), Palette.SHADOW_BLUEBLACK)
 		draw_string(font, Vector2(x, y + 6), label, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, color)
-	# Connections (drawn under the nodes, which are child controls).
+	# Connections (drawn under the nodes, which are child controls): right-angle
+	# "elbow" lines on whole pixels, so there are no jagged diagonals. Owned
+	# (active) links are drawn last so they stay on top of shared segments.
+	var inactive: Array[Rect2] = []
+	var active: Array[Rect2] = []
 	for view: UpgradeNodeView in _views.values():
 		for prerequisite: UpgradeNode in view.upgrade.prerequisites:
 			var parent_view: UpgradeNodeView = _views.get(prerequisite.id)
 			if parent_view == null:
 				continue
-			var owned := parent_view.level > 0
-			var from := _node_center(prerequisite.grid_position)
-			var to := _node_center(view.upgrade.grid_position)
-			draw_line(from.floor(), to.floor(), active_line_color if owned else line_color, 4.0)
+			var segments := _elbow(prerequisite.grid_position, view.upgrade.grid_position)
+			if parent_view.level > 0:
+				active.append_array(segments)
+			else:
+				inactive.append_array(segments)
+	for segment: Rect2 in inactive:
+		draw_rect(segment, line_color)
+	for segment: Rect2 in active:
+		draw_rect(segment, active_line_color)
+
+
+## Axis-aligned segments from a parent node down to a child node: down from the
+## parent, across just above the child, then down into it.
+func _elbow(from_cell: Vector2i, to_cell: Vector2i) -> Array[Rect2]:
+	var w := LINE_WIDTH
+	var from := _node_center(from_cell).floor() - Vector2(w / 2.0, 0)
+	var to := _node_center(to_cell).floor() - Vector2(w / 2.0, 0)
+	if is_equal_approx(from.x, to.x):
+		return [Rect2(from.x, minf(from.y, to.y), w, absf(to.y - from.y))]
+	var bend_y := _node_position(to_cell).y - ELBOW_ABOVE_CHILD
+	var left := minf(from.x, to.x)
+	return [
+		Rect2(from.x, from.y, w, bend_y - from.y + w),
+		Rect2(left, bend_y, absf(to.x - from.x) + w, w),
+		Rect2(to.x, bend_y, w, to.y - bend_y),
+	]

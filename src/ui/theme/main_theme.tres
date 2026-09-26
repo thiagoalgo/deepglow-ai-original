@@ -1,126 +1,153 @@
 [gd_resource type="Theme" format=3]
 
-[sub_resource type="StyleBoxFlat" id="StyleBox_normal"]
+[ext_resource type="FontFile" path="res://assets/fonts/m5x7.ttf" id="1_font"]
+[ext_resource type="Script" path="res://src/ui/pixel_style_box.gd" id="2_psb"]
+
+[sub_resource type="StyleBox" id="StyleBox_normal"]
+script = ExtResource("2_psb")
 content_margin_left = 16.0
 content_margin_top = 4.0
 content_margin_right = 16.0
 content_margin_bottom = 6.0
 bg_color = Color(0.0510, 0.0745, 0.2039, 1)
 draw_center = true
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
 border_color = Color(0.0745, 0.1020, 0.2706, 1)
-anti_aliasing = false
+border_width = 2
+corner_steps = PackedInt32Array(4, 2)
+step = 2
 
-[sub_resource type="StyleBoxFlat" id="StyleBox_hover"]
+[sub_resource type="StyleBox" id="StyleBox_hover"]
+script = ExtResource("2_psb")
 content_margin_left = 16.0
 content_margin_top = 4.0
 content_margin_right = 16.0
 content_margin_bottom = 6.0
 bg_color = Color(0.0745, 0.1020, 0.2706, 1)
 draw_center = true
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
 border_color = Color(0.2157, 0.9490, 0.7608, 1)
-anti_aliasing = false
+border_width = 2
+corner_steps = PackedInt32Array(4, 2)
+step = 2
 
-[sub_resource type="StyleBoxFlat" id="StyleBox_pressed"]
+[sub_resource type="StyleBox" id="StyleBox_pressed"]
+script = ExtResource("2_psb")
 content_margin_left = 16.0
 content_margin_top = 4.0
 content_margin_right = 16.0
 content_margin_bottom = 6.0
 bg_color = Color(0.0627, 0.1020, 0.3216, 1)
 draw_center = true
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
 border_color = Color(0.2157, 0.9490, 0.7608, 1)
-anti_aliasing = false
+border_width = 2
+corner_steps = PackedInt32Array(4, 2)
+step = 2
 
-[sub_resource type="StyleBoxFlat" id="StyleBox_focus"]
+[sub_resource type="StyleBox" id="StyleBox_focus"]
+script = ExtResource("2_psb")
 content_margin_left = 16.0
 content_margin_top = 4.0
 content_margin_right = 16.0
 content_margin_bottom = 6.0
 bg_color = Color(0.0745, 0.1020, 0.2706, 1)
 draw_center = false
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
 border_color = Color(0.2157, 0.9490, 0.7608, 1)
-anti_aliasing = false
+border_width = 2
+corner_steps = PackedInt32Array(4, 2)
+step = 2
 
-[sub_resource type="StyleBoxFlat" id="StyleBox_disabled"]
+[sub_resource type="StyleBox" id="StyleBox_disabled"]
+script = ExtResource("2_psb")
 content_margin_left = 16.0
 content_margin_top = 4.0
 content_margin_right = 16.0
 content_margin_bottom = 6.0
 bg_color = Color(0.0510, 0.0745, 0.2039, 1)
 draw_center = true
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
 border_color = Color(0.0510, 0.0745, 0.2039, 1)
-anti_aliasing = false
+border_width = 2
+corner_steps = PackedInt32Array(4, 2)
+step = 2
 
-[sub_resource type="StyleBoxFlat" id="StyleBox_panel"]
+[sub_resource type="StyleBox" id="StyleBox_panel"]
+script = ExtResource("2_psb")
 content_margin_left = 20.0
 content_margin_top = 16.0
 content_margin_right = 20.0
 content_margin_bottom = 16.0
 bg_color = Color(0.0314, 0.0510, 0.1412, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
+draw_center = true
 border_color = Color(0.1451, 0.1961, 0.5490, 1)
-anti_aliasing = false
+border_width = 2
+corner_steps = PackedInt32Array(4, 2)
+step = 2
 
-[sub_resource type="StyleBoxFlat" id="StyleBox_compact_panel"]
+[sub_resource type="StyleBox" id="StyleBox_compact_panel"]
+script = ExtResource("2_psb")
 content_margin_left = 10.0
 content_margin_top = 8.0
 content_margin_right = 10.0
 content_margin_bottom = 8.0
 bg_color = Color(0.0314, 0.0510, 0.1412, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
+draw_center = true
 border_color = Color(0.1451, 0.1961, 0.5490, 1)
-anti_aliasing = false
+border_width = 2
+corner_steps = PackedInt32Array(4, 2)
+step = 2
 
-[sub_resource type="StyleBoxFlat" id="StyleBox_scroll"]
+[sub_resource type="StyleBox" id="StyleBox_scroll"]
+script = ExtResource("2_psb")
 content_margin_left = 2.0
 content_margin_top = 2.0
 content_margin_right = 2.0
 content_margin_bottom = 2.0
 bg_color = Color(0.0314, 0.0510, 0.1412, 1)
-anti_aliasing = false
+draw_center = true
+border_color = Color(0, 0, 0, 1)
+border_width = 0
+corner_steps = PackedInt32Array(2)
+step = 1
 
-[sub_resource type="StyleBoxFlat" id="StyleBox_grabber"]
+[sub_resource type="StyleBox" id="StyleBox_grabber"]
+script = ExtResource("2_psb")
 content_margin_left = 2.0
 content_margin_top = 2.0
 content_margin_right = 2.0
 content_margin_bottom = 2.0
 bg_color = Color(0.1451, 0.1961, 0.5490, 1)
-anti_aliasing = false
+draw_center = true
+border_color = Color(0, 0, 0, 1)
+border_width = 0
+corner_steps = PackedInt32Array(2)
+step = 1
 
-[sub_resource type="StyleBoxFlat" id="StyleBox_grabber_hl"]
+[sub_resource type="StyleBox" id="StyleBox_grabber_hl"]
+script = ExtResource("2_psb")
 content_margin_left = 2.0
 content_margin_top = 2.0
 content_margin_right = 2.0
 content_margin_bottom = 2.0
 bg_color = Color(0.2275, 0.2745, 0.6392, 1)
-anti_aliasing = false
+draw_center = true
+border_color = Color(0, 0, 0, 1)
+border_width = 0
+corner_steps = PackedInt32Array(2)
+step = 1
+
+[sub_resource type="StyleBox" id="StyleBox_hud_panel"]
+script = ExtResource("2_psb")
+content_margin_left = 10.0
+content_margin_top = 8.0
+content_margin_right = 10.0
+content_margin_bottom = 10.0
+bg_color = Color(0.0314, 0.0510, 0.1412, 1)
+draw_center = true
+border_color = Color(0.1451, 0.1961, 0.5490, 1)
+border_width = 2
+corner_steps = PackedInt32Array(4, 2)
+step = 2
 
 [resource]
+default_font = ExtResource("1_font")
 default_font_size = 16
 Button/colors/font_color = Color(0.8510, 0.9608, 0.9490, 1)
 Button/colors/font_focus_color = Color(0.2157, 0.9490, 0.7608, 1)
@@ -140,6 +167,7 @@ MutedLabel/colors/font_color = Color(0.6039, 0.4196, 0.8706, 1)
 TitleLabel/base_type = &"Label"
 TitleLabel/colors/font_color = Color(0.2157, 0.9490, 0.7608, 1)
 TitleLabel/font_sizes/font_size = 32
+AlertLabel/font_sizes/font_size = 32
 AlertLabel/base_type = &"Label"
 AlertLabel/colors/font_color = Color(0.9294, 0.4706, 0.7176, 1)
 FloatingLabel/base_type = &"Label"
@@ -149,6 +177,8 @@ FloatingLabel/constants/outline_size = 4
 PanelContainer/styles/panel = SubResource("StyleBox_panel")
 CompactPanel/base_type = &"PanelContainer"
 CompactPanel/styles/panel = SubResource("StyleBox_compact_panel")
+HudPanel/base_type = &"PanelContainer"
+HudPanel/styles/panel = SubResource("StyleBox_hud_panel")
 HScrollBar/styles/grabber = SubResource("StyleBox_grabber")
 HScrollBar/styles/grabber_highlight = SubResource("StyleBox_grabber_hl")
 HScrollBar/styles/grabber_pressed = SubResource("StyleBox_grabber_hl")

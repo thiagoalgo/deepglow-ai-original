@@ -14,11 +14,17 @@
 [ext_resource type="PackedScene" path="res://src/ui/phase_summary/phase_summary.tscn" id="12_summary_ui"]
 [ext_resource type="PackedScene" path="res://src/ui/upgrade_tree/upgrade_tree_screen.tscn" id="13_upgrade_ui"]
 [ext_resource type="PackedScene" path="res://src/ui/tool_cursor/tool_cursor.tscn" id="14_cursor"]
+[ext_resource type="Texture2D" path="res://assets/sprites/board/background.png" id="15_background"]
 
 [node name="Game" type="Node2D"]
 script = ExtResource("1_game")
 database = ExtResource("2_db")
 card_scene = ExtResource("3_card")
+
+[node name="Background" type="Sprite2D" parent="."]
+z_index = -10
+texture = ExtResource("15_background")
+centered = false
 
 [node name="Board" parent="." instance=ExtResource("4_board")]
 unique_name_in_owner = true

@@ -1,7 +1,8 @@
 class_name UpgradeTreeScreen
 extends Control
-## Between-phase upgrade tree (docs/game-design.md §7.1). Hover/focus a node
-## to see its details; buy with the Buy button or by clicking the node again.
+## Between-phase upgrade tree (docs/game-design.md §7.1). Clicking (or focusing
+## with the keyboard) a node only selects it and shows its details; buying is
+## always an explicit press of the Buy button. The screen opens with nothing selected.
 
 signal start_requested
 
@@ -24,7 +25,7 @@ var _selected: UpgradeNode
 func _ready() -> void:
 	hide()
 	_tree_view.node_focused.connect(_select)
-	_tree_view.node_pressed.connect(_on_node_pressed)
+	_tree_view.node_pressed.connect(_select)
 	_buy_button.pressed.connect(_buy_selected)
 	_start_button.pressed.connect(_on_start_pressed)
 
@@ -35,10 +36,10 @@ func open(database: GameDatabase, progression: ProgressionState, inventory: Inve
 	_progression = progression
 	_inventory = inventory
 	_start_button.text = tr(&"UI_START_PHASE") % next_phase
+	_selected = null
 	_tree_view.build(database)
 	_refresh()
 	show()
-	_tree_view.focus_first_affordable.call_deferred()
 
 
 func _refresh() -> void:
@@ -51,11 +52,13 @@ func _refresh() -> void:
 	if _selected:
 		_select(_selected)
 	else:
+		_tree_view.set_selected(null)
 		_clear_details()
 
 
 func _select(upgrade: UpgradeNode) -> void:
 	_selected = upgrade
+	_tree_view.set_selected(upgrade)
 	_name_label.text = tr(upgrade.get_name_key())
 	_level_label.text = tr(&"UI_LEVEL") % [_progression.get_level(upgrade.id), upgrade.max_level]
 	_description.text = tr(upgrade.get_desc_key())
@@ -91,16 +94,11 @@ func _lock_reason(upgrade: UpgradeNode) -> String:
 func _clear_details() -> void:
 	_name_label.text = ""
 	_level_label.text = ""
-	_description.text = ""
+	_description.text = tr(&"UI_SELECT_UPGRADE")
+	for child: Node in _costs.get_children():
+		child.queue_free()
 	_status_label.text = ""
 	_buy_button.disabled = true
-
-
-func _on_node_pressed(upgrade: UpgradeNode) -> void:
-	if upgrade == _selected:
-		_buy_selected()
-	else:
-		_select(upgrade)
 
 
 func _buy_selected() -> void:
@@ -109,5 +107,9 @@ func _buy_selected() -> void:
 
 
 func _on_start_pressed() -> void:
+	_selected = null
+	var focused := get_viewport().gui_get_focus_owner()
+	if focused:
+		focused.release_focus()
 	hide()
 	start_requested.emit()

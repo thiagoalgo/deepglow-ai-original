@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" path="res://src/ui/hud/hud.gd" id="1_hud"]
 [ext_resource type="Script" path="res://src/ui/hud/need_bar.gd" id="2_bar"]
+[ext_resource type="Script" path="res://src/ui/hud/clock_timer.gd" id="5_clock"]
 [ext_resource type="Texture2D" path="res://assets/sprites/icons/fruit.png" id="3_fruit"]
 [ext_resource type="Texture2D" path="res://assets/sprites/icons/water.png" id="4_water"]
 
@@ -14,70 +15,91 @@ offset_bottom = 360.0
 mouse_filter = 2
 theme_override_constants/margin_left = 12
 theme_override_constants/margin_top = 12
-theme_override_constants/margin_right = 8
+theme_override_constants/margin_right = 14
 
-[node name="Stack" type="VBoxContainer" parent="Left"]
+[node name="Panel" type="PanelContainer" parent="Left"]
+layout_mode = 2
+size_flags_vertical = 0
+mouse_filter = 2
+theme_type_variation = &"HudPanel"
+
+[node name="Stack" type="VBoxContainer" parent="Left/Panel"]
 layout_mode = 2
 mouse_filter = 2
 theme_override_constants/separation = 4
 
-[node name="PhaseLabel" type="Label" parent="Left/Stack"]
+[node name="PhaseLabel" type="Label" parent="Left/Panel/Stack"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_type_variation = &"MutedLabel"
 text = "HUD_PHASE"
 
-[node name="TimeLabel" type="Label" parent="Left/Stack"]
+[node name="TimeRow" type="HBoxContainer" parent="Left/Panel/Stack"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 8
+
+[node name="Clock" type="Control" parent="Left/Panel/Stack/TimeRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+mouse_filter = 2
+script = ExtResource("5_clock")
+
+[node name="TimeLabel" type="Label" parent="Left/Panel/Stack/TimeRow"]
 unique_name_in_owner = true
 layout_mode = 2
+size_flags_vertical = 4
 theme_type_variation = &"TitleLabel"
 text = "45"
 
-[node name="Spacer" type="Control" parent="Left/Stack"]
+[node name="Spacer" type="Control" parent="Left/Panel/Stack"]
 custom_minimum_size = Vector2(0, 12)
 layout_mode = 2
 mouse_filter = 2
 
-[node name="HungerLabel" type="Label" parent="Left/Stack"]
+[node name="HungerLabel" type="Label" parent="Left/Panel/Stack"]
 layout_mode = 2
 text = "HUD_HUNGER"
 
-[node name="HungerRow" type="HBoxContainer" parent="Left/Stack"]
+[node name="HungerRow" type="HBoxContainer" parent="Left/Panel/Stack"]
 layout_mode = 2
 mouse_filter = 2
 theme_override_constants/separation = 6
 
-[node name="Icon" type="TextureRect" parent="Left/Stack/HungerRow"]
+[node name="Icon" type="TextureRect" parent="Left/Panel/Stack/HungerRow"]
 layout_mode = 2
 texture = ExtResource("3_fruit")
 stretch_mode = 3
 
-[node name="HungerBar" type="Control" parent="Left/Stack/HungerRow"]
+[node name="HungerBar" type="Control" parent="Left/Panel/Stack/HungerRow"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(96, 10)
+custom_minimum_size = Vector2(64, 10)
 layout_mode = 2
+size_flags_horizontal = 3
 size_flags_vertical = 4
 mouse_filter = 2
 script = ExtResource("2_bar")
 
-[node name="ThirstLabel" type="Label" parent="Left/Stack"]
+[node name="ThirstLabel" type="Label" parent="Left/Panel/Stack"]
 layout_mode = 2
 text = "HUD_THIRST"
 
-[node name="ThirstRow" type="HBoxContainer" parent="Left/Stack"]
+[node name="ThirstRow" type="HBoxContainer" parent="Left/Panel/Stack"]
 layout_mode = 2
 mouse_filter = 2
 theme_override_constants/separation = 6
 
-[node name="Icon" type="TextureRect" parent="Left/Stack/ThirstRow"]
+[node name="Icon" type="TextureRect" parent="Left/Panel/Stack/ThirstRow"]
 layout_mode = 2
 texture = ExtResource("4_water")
 stretch_mode = 3
 
-[node name="ThirstBar" type="Control" parent="Left/Stack/ThirstRow"]
+[node name="ThirstBar" type="Control" parent="Left/Panel/Stack/ThirstRow"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(96, 10)
+custom_minimum_size = Vector2(64, 10)
 layout_mode = 2
+size_flags_horizontal = 3
 size_flags_vertical = 4
 mouse_filter = 2
 script = ExtResource("2_bar")
@@ -95,18 +117,28 @@ theme_override_constants/margin_left = 16
 theme_override_constants/margin_top = 12
 theme_override_constants/margin_right = 12
 
-[node name="Stack" type="VBoxContainer" parent="Right"]
+[node name="Panel" type="PanelContainer" parent="Right"]
+custom_minimum_size = Vector2(126, 0)
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 0
+mouse_filter = 2
+theme_type_variation = &"HudPanel"
+
+[node name="Stack" type="VBoxContainer" parent="Right/Panel"]
 layout_mode = 2
 mouse_filter = 2
 theme_override_constants/separation = 4
 
-[node name="InventoryTitle" type="Label" parent="Right/Stack"]
+[node name="InventoryTitle" type="Label" parent="Right/Panel/Stack"]
 layout_mode = 2
 theme_type_variation = &"MutedLabel"
 text = "HUD_INVENTORY"
 
-[node name="InventoryList" type="VBoxContainer" parent="Right/Stack"]
+[node name="InventoryList" type="GridContainer" parent="Right/Panel/Stack"]
 unique_name_in_owner = true
 layout_mode = 2
 mouse_filter = 2
-theme_override_constants/separation = 4
+theme_override_constants/h_separation = 10
+theme_override_constants/v_separation = 4
+columns = 2
