@@ -9,12 +9,12 @@
 [sub_resource type="Resource" id="Resource_37ihf"]
 script = ExtResource("1_hco2f")
 resource = ExtResource("2_ygah0")
-amount = 12
+amount = 30
 
 [sub_resource type="Resource" id="Resource_sqv2i"]
 script = ExtResource("1_hco2f")
 resource = ExtResource("3_lpkcf")
-amount = 12
+amount = 30
 
 [resource]
 script = ExtResource("4_yk8r8")
@@ -23,6 +23,6 @@ effect = 3
 value_per_level = 5.0
 max_level = 3
 base_costs = Array[ExtResource("1_hco2f")]([SubResource("Resource_37ihf"), SubResource("Resource_sqv2i")])
-cost_growth = 2.5
+cost_growth = 3.4
 prerequisites = Array[Resource]([ExtResource("5_vapvs")])
 grid_position = Vector2i(3, 1)

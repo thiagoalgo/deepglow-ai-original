@@ -7,7 +7,7 @@
 [sub_resource type="Resource" id="Resource_hholl"]
 script = ExtResource("1_quwbt")
 resource = ExtResource("2_8w78y")
-amount = 12
+amount = 15
 
 [resource]
 script = ExtResource("3_qeexp")
@@ -16,5 +16,5 @@ effect = 1
 target = &"axe"
 max_level = 3
 base_costs = Array[ExtResource("1_quwbt")]([SubResource("Resource_hholl")])
-cost_growth = 2.4
+cost_growth = 3.4
 grid_position = Vector2i(1, 0)

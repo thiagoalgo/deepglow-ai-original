@@ -1,4 +1,4 @@
-# Deepglow — Game Design Document (v0.3)
+# Deepglow — Game Design Document (v0.4)
 
 > Documento vivo. Nomes técnicos (ids, classes, chaves de tradução) ficam em inglês;
 > todo texto exibido ao jogador existe em `localization/translations.csv` (en + pt_BR).
@@ -82,8 +82,11 @@ que o pinheiro, a árvore luminosa brilha); o jogador aprende pela experiência.
 
 - Duas barras, **fome** e **sede**, esvaziam durante a fase.
 - Coletar comida/bebida enche a barra correspondente (além de guardar o recurso no inventário).
-- Barra vazia **não mata**: deixa a coleta mais lenta (ex.: cada clique conta 0,5). Isso cria o
+- Barra vazia **não mata**: deixa a coleta mais lenta (cada clique conta 0,5). Isso cria o
   dilema "coletar madeira agora ou beber água primeiro" sem punição dura.
+- Valores (simulador, D6): fome cai 4%/s e sede 4,5%/s (barras cheias duram ~22–25 s). Um jogador
+  atento quase nunca zera; um jogador descuidado (só madeira) passa ~10% do tempo com barra vazia e
+  perde ~4% de ritmo — a pressão existe, mas não pune demais.
 - Melhorias podem reduzir o consumo (cantil, cesta).
 
 ## 6. Gerador de fases (fases dinâmicas)
@@ -91,20 +94,26 @@ que o pinheiro, a árvore luminosa brilha); o jogador aprende pela experiência.
 As fases **não são fixas**: são montadas a partir do progresso atual para manter o tempo justo e
 impedir progressão absurda.
 
-1. **Capacidade do jogador:** `capacidade = duração_da_fase × cliques_por_segundo_efetivos`.
-   Os cliques por segundo são uma média móvel medida nas últimas fases (limitada entre um mínimo e
-   um máximo, para não punir nem premiar demais), já descontando o tempo de mover o mouse.
-2. **Orçamento de cliques:** `orçamento = capacidade × aperto`, com `aperto` entre **1,00 e 1,15**
-   (a fase quase sempre tem um pouco mais de trabalho do que dá para fazer; às vezes sobra).
-3. **Sorteio das fontes:** entre as fontes desbloqueadas, sorteia por peso de raridade e soma o custo
-   em cliques (já com o desconto das ferramentas) até atingir o orçamento ou encher o tabuleiro.
-   Garante um mínimo de comida e água para as barras de fome/sede.
+1. **Conteúdo da fase (igual para todos):** `orçamento = duração_base × cps_de_referência` (em
+   "cliques-equivalentes": cliques + deslocamento do mouse). Depende só do progresso (a melhoria de
+   tempo aumenta a duração base), nunca da velocidade do jogador.
+2. **Sorteio das fontes:** entre as fontes desbloqueadas, sorteia por peso de raridade e soma o custo
+   em cliques (já com o desconto das ferramentas) até atingir o orçamento ou encher o tabuleiro
+   (75% das casas). Garante um mínimo de comida e água. Quando fontes baratas encheriam o tabuleiro
+   antes do orçamento, o sorteio **favorece fontes mais caras/raras** (`cheap_source_penalty`).
+3. **Timer ajustado ao jogador:** `timer = trabalho_da_fase / (cps_medido × aperto)`, com `aperto`
+   sorteado entre **0,95 e 1,10** (acima de 1 falta um pouco de tempo; abaixo sobra). O cps medido é
+   uma média móvel das últimas fases (limitada entre 2 e 5), já contando o deslocamento do mouse.
+   Assim **toda fase é justa para qualquer jogador**: quem clica mais rápido ganha só tempo
+   (timer menor), não mais recursos por fase — não existe efeito bola de neve.
 4. **Posição:** distribui as fontes pelas casas (vizinhanças temáticas: água perto de água, árvores em
    grupos) para ficar bonito e legível.
 5. **Semente:** cada fase tem uma *seed* registrada, para reproduzir e depurar.
 
 Consequência: melhorar ferramentas não deixa a fase trivial, porque o gerador coloca fontes mais
 raras/duras. O ganho aparece como **recursos melhores**, não como fases vazias.
+
+Valores atuais em `data/phases/default_rules.tres` (ajustados pelo simulador, seção 8).
 
 ## 7. Árvore de evolução
 
@@ -141,14 +150,49 @@ continua funcionando até lá).
 ## 8. Balanceamento e duração
 
 - Todos os números ficam em dados (`.tres`), nunca no código.
-- **Ritmo:** fase de ~45–60 s + ~20–30 s entre fases ⇒ ~75–90 s por ciclo ⇒ 3 h ≈ **120–145 fases**.
-- **Marcos-alvo:** 1ª melhoria após 1–2 fases; camada 1 por volta de 20–30 min; 1ª automação
-  por volta de 45 min; camada 2 perto de 1h15; cristais na reta final (2h30+).
-- **Simulador** (`tools/balance/`): simula um jogador (cliques/s configurável, estratégia de compra
-  gananciosa) usando o mesmo gerador de fases e os mesmos dados do jogo, e informa o tempo até
-  cada marco e o total para completar a árvore.
-- **Critério de aceite:** com um jogador "médio" simulado, completar a árvore leva **≥ 3 h**; um
-  jogador "rápido" não pode passar de ~30% mais rápido.
+- **Ritmo:** fase de ~45–60 s + ~15–30 s entre fases ⇒ 3 h ≈ **120–145 fases** no jogo completo.
+- **Marcos-alvo:** 1ª melhoria após 1–2 fases; camada 0 completa (conteúdo do M1) em ~25–35 min;
+  camada 1 por volta de 20–30 min; 1ª automação ~45 min; camada 2 ~1h15; cristais 2h30+.
+
+### 8.1 Simulador (M2)
+
+`tools/balance/` — escrito em **GDScript** e roda o **código real do jogo** (`ProgressionState`,
+`PhaseGenerator`, `Inventory`, `Needs`) com os dados reais (`data/game_database.tres`), então nunca
+diverge do jogo. Um jogador simulado:
+
+- tem uma velocidade fixa (cliques-equivalentes/s) e um tempo fixo entre fases (15 s);
+- na fase, escolhe a fonte com melhor rendimento por clique, mas come/bebe quando uma barra fica
+  abaixo de 35% (perfil "descuidado" ignora as barras e prioriza madeira);
+- entre fases, compra sempre a melhoria disponível mais barata (guloso), até não poder mais.
+
+```bash
+godot --headless --path . -s res://tools/balance/simulate.gd -- --runs 30 --target-minutes 25
+```
+
+Relatório em `tools/balance/reports/latest.md` (não versionado). Perfis padrão: lento 2,2 · médio
+3,0 · rápido 4,5 cliques/s.
+
+**Critérios de aceite** (o script sai com erro se algum falhar):
+
+| Critério | Meta |
+|---|---|
+| Médio completa a árvore | em todas as execuções |
+| Duração do médio | ≥ alvo (`--target-minutes`: 25 no M1, 180 no jogo completo) |
+| 1ª melhoria | até a fase 2 |
+| Fases justas | 15–60% das fases totalmente limpas |
+| Rápido vs médio | no máximo 40% mais rápido **e** mesmo nº de fases (±10%) — sem bola de neve |
+
+### 8.2 Resultado atual (M1, 30 execuções por perfil)
+
+| Perfil | Minutos (médio) | Fases | Fases limpas | Barra vazia |
+|---|---|---|---|---|
+| Lento (2,2) | 41,9 | 29 | 29% | 2,0% |
+| Médio (3,0) | 32,5 | 29 | 39% | 0,8% |
+| Rápido (4,5) | 24,0 | 28 | 50% | 0,1% |
+
+Linha do tempo do médio (primeiro nível → nível máximo, em minutos): Machado Afiado 1,0 → 11,7 ·
+Cesta 1,0 → 14,0 · Cantil 2,0 → 19,9 · Dias Longos 2,1 → 24,2 · Olho de Lenhador 3,0 → 24,2 ·
+Olhar Atento 5,1 → 32,0.
 
 ## 9. Modelo de dados (técnico)
 
@@ -173,7 +217,7 @@ Estados da `StateMachine`: `Setup` → `PhaseBuild` → `Phase` → `PhaseSummar
 | Etapa | Entrega |
 |---|---|
 | M1 — Protótipo do loop ✅ | madeira, fruta e água (com variações de raridade); gerador de fases; timer; cursor contextual; fome/sede; HUD; tela de evolução com ~5 nós; arte provisória |
-| M2 — Simulador | script de balanceamento + meta de 3 h verificada |
+| M2 — Simulador ✅ | script de balanceamento + meta de 3 h verificada |
 | M2.5 — Árvore desenhada | tela da árvore em grade com conexões, níveis, escolhas e portões |
 | M3 — Camadas 1–2 | rochas, lago, javali, fogueira |
 | M4 — Arte | sprites definitivos no Pixellab (fontes por raridade + cursores + ícones) |
@@ -190,7 +234,7 @@ Estados da `StateMachine`: `Setup` → `PhaseBuild` → `Phase` → `PhaseSummar
 | D3 | Todas as fontes aparecem no início da fase; tempo justo; fases geradas pelo progresso | decidido |
 | D4 | Timer + ciclo dia-noite visual | decidido |
 | D5 | Duração mínima de 3 h para completar a árvore | decidido |
-| D6 | Fome/sede vazia: fator exato de lentidão | aberto (simulador) |
+| D6 | Fome/sede vazia: cada clique vale 0,5; drenagem 4%/s e 4,5%/s | decidido (simulador) |
 | D7 | Estruturas (fogueira) ocupam casa do tabuleiro ou ficam fora dele? | aberto |
 | D8 | Raridade não é exibida no tabuleiro; o sprite comunica o valor | decidido |
 | D9 | Árvore de evolução desenhada em grade (conexões, níveis, escolhas, portões) | decidido |

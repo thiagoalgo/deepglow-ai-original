@@ -22,8 +22,8 @@ Never hardcode player-facing strings in scripts or scenes: use translation keys 
   Visual reference: `00_references/concept-art.png` in the art directory.
 - **Engine:** Godot **4.7.x**, GDScript, **GL Compatibility** renderer.
 - **Game design:** `docs/game-design.md` (source of truth for rules, balance targets and roadmap).
-  Current milestone: **M1 prototype loop** (wood/fruit/water, phase generator, contextual cursor,
-  hunger/thirst, upgrade list) with temporary programmer art.
+  Done: **M1** prototype loop (wood/fruit/water, phase generator, contextual cursor, hunger/thirst,
+  upgrade list, programmer art) and **M2** balance simulator. Next: **M2.5** drawn upgrade tree.
 
 ### Directories
 
@@ -83,7 +83,7 @@ data/                 # .tres instances: game_database.tres (root), resources/, 
                       # tools/, sources/, upgrades/, phases/, board/
 assets/               # FINAL game-ready art/audio (sprites/, tilesets/, fonts/, audio/, palettes/)
 tests/                # headless tests (test_*.gd)
-tools/                # Python scripts outside the game (pixellab/, art/)
+tools/                # outside the game: pixellab/, art/ (Python), balance/ (GDScript simulator)
 addons/               # third-party plugins (do not edit)
 docs/                 # design and pipeline docs
 ```
@@ -267,6 +267,10 @@ $GODOT --path .                                        # run the game
 $GODOT --headless --path . --import                    # (re)import / check parse errors
 $GODOT --headless --path . -s res://tests/run_tests.gd # tests (exit 1 on failure)
 
+# Balance simulator (uses the real game code + data; exit 1 if a check fails)
+$GODOT --headless --path . -s res://tools/balance/simulate.gd -- --runs 30 --target-minutes 25
+#   report: tools/balance/reports/latest.md (git-ignored); options in simulate.gd header
+
 # Art
 python3 tools/art/palette.py check assets/sprites/**/*.png
 python3 tools/art/palette.py png --swatch 8 --out /tmp/palette.png
@@ -281,9 +285,11 @@ reference classes that depend on `Events`/`Settings` (Board, Game, UI).
 ## 7. Git workflow
 
 - **Remote:** https://github.com/thiagoalgo/deepglow-ai (default branch `main`).
-- **Never commit or push without the owner's explicit approval.** Before every commit, ask the
-  owner, showing a short summary of the changes and the proposed message. Pushing is a separate
-  approval. Approval for one commit does not carry over to the next.
+- **Never commit without the owner's explicit approval.** Before every commit, ask the owner,
+  showing a short summary of the changes and the proposed message. Approval for one commit does
+  not carry over to the next.
+- **Pushing is delegated to the agent:** once a commit is approved, the agent pushes it to
+  `origin/main` itself (no separate approval). Never force-push or rewrite published history.
 - **Messages:** English, [Conventional Commits](https://www.conventionalcommits.org/)
   (`feat:`, `fix:`, `refactor:`, `test:`, `docs:`, `chore:`, `art:`), imperative mood,
   subject ≤ 72 characters, body explaining the *why* when useful.
@@ -298,9 +304,11 @@ reference classes that depend on `Events`/`Settings` (Board, Game, UI).
 - [ ] `tests/run_tests.gd` passing; new rule logic has a test.
 - [ ] Everything technical (code, names, keys) is in English; player-facing text uses translation keys filled for
       `en` and `pt_BR`.
+- [ ] Changed anything in `data/` (costs, yields, rules) or the generator/progression code? Run the
+      balance simulator and keep all acceptance checks green (targets in GDD §8).
 - [ ] New assets pass `palette.py check` and respect 16x16 / 20 px grid.
 - [ ] `--headless --import` shows no "leaked"/"still in use" messages (see self-reference rule).
 - [ ] No secrets (`.env`, tokens) committed.
 - [ ] No raw/source art (`.aseprite`, discarded generations) inside this repository.
 - [ ] If architecture, folders, pipeline or conventions changed: **update this AGENTS.md**.
-- [ ] Changes committed **only** after the owner approved (see section 7).
+- [ ] Changes committed **only** after the owner approved, then pushed (see section 7).

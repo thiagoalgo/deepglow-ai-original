@@ -4,3 +4,8 @@
 
 [resource]
 script = ExtResource("1_gmwiw")
+tightness_min = 0.95
+tightness_max = 1.1
+max_cps = 5.0
+hunger_drain_per_second = 0.05
+thirst_drain_per_second = 0.055
