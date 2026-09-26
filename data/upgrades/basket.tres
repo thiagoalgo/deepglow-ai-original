@@ -3,6 +3,7 @@
 [ext_resource type="Script" path="res://src/economy/resource_amount.gd" id="1_lrpc1"]
 [ext_resource type="Resource" path="res://data/resources/wood.tres" id="2_47b3s"]
 [ext_resource type="Resource" path="res://data/resources/fruit.tres" id="3_s40tb"]
+[ext_resource type="Texture2D" path="res://assets/sprites/upgrades/basket.png" id="4_47b3s"]
 [ext_resource type="Script" path="res://src/progression/upgrade_node.gd" id="4_i2gh4"]
 
 [sub_resource type="Resource" id="Resource_ngp0w"]
@@ -18,6 +19,7 @@ amount = 10
 [resource]
 script = ExtResource("4_i2gh4")
 id = &"basket"
+icon = ExtResource("4_47b3s")
 target = &"fruit"
 max_level = 3
 base_costs = Array[ExtResource("1_lrpc1")]([SubResource("Resource_ngp0w"), SubResource("Resource_x3h8g")])

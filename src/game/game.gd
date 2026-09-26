@@ -19,7 +19,7 @@ var current_plan: PhasePlan
 @onready var phase_timer: Timer = %PhaseTimer
 @onready var hud: Hud = %Hud
 @onready var phase_summary: PhaseSummary = %PhaseSummary
-@onready var upgrade_screen: UpgradeScreen = %UpgradeScreen
+@onready var upgrade_screen: UpgradeTreeScreen = %UpgradeTreeScreen
 @onready var tool_cursor: ToolCursor = %ToolCursor
 
 

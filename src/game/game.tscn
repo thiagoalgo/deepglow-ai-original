@@ -12,7 +12,7 @@
 [ext_resource type="Script" path="res://src/game/states/upgrade_state.gd" id="10_upgrade"]
 [ext_resource type="PackedScene" path="res://src/ui/hud/hud.tscn" id="11_hud"]
 [ext_resource type="PackedScene" path="res://src/ui/phase_summary/phase_summary.tscn" id="12_summary_ui"]
-[ext_resource type="PackedScene" path="res://src/ui/upgrade_screen/upgrade_screen.tscn" id="13_upgrade_ui"]
+[ext_resource type="PackedScene" path="res://src/ui/upgrade_tree/upgrade_tree_screen.tscn" id="13_upgrade_ui"]
 [ext_resource type="PackedScene" path="res://src/ui/tool_cursor/tool_cursor.tscn" id="14_cursor"]
 
 [node name="Game" type="Node2D"]
@@ -60,7 +60,7 @@ layer = 10
 [node name="PhaseSummary" parent="Overlays" instance=ExtResource("12_summary_ui")]
 unique_name_in_owner = true
 
-[node name="UpgradeScreen" parent="Overlays" instance=ExtResource("13_upgrade_ui")]
+[node name="UpgradeTreeScreen" parent="Overlays" instance=ExtResource("13_upgrade_ui")]
 unique_name_in_owner = true
 
 [node name="ToolCursor" parent="." instance=ExtResource("14_cursor")]

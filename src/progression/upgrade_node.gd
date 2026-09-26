@@ -14,6 +14,8 @@ enum Effect {
 }
 
 @export var id: StringName
+## Tree node icon (10x10).
+@export var icon: Texture2D
 @export var effect: Effect = Effect.YIELD_BONUS
 @export var target: StringName
 @export var value_per_level: float = 1.0

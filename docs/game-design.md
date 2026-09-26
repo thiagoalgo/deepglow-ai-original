@@ -1,4 +1,4 @@
-# Deepglow — Game Design Document (v0.4)
+# Deepglow — Game Design Document (v0.5)
 
 > Documento vivo. Nomes técnicos (ids, classes, chaves de tradução) ficam em inglês;
 > todo texto exibido ao jogador existe em `localization/translations.csv` (en + pt_BR).
@@ -144,8 +144,11 @@ como lista:
   para liberar as linhas de baixo.
 - **Estados visuais:** bloqueado, disponível, comprável, parcialmente comprado, completo.
 
-O modelo de dados já suporta tudo isso; a **tela desenhada** entra logo depois do M2 (a lista atual
-continua funcionando até lá).
+**Tela (M2.5):** a árvore ocupa a área principal (com rolagem quando crescer) e um painel lateral
+mostra nome, nível, descrição, custo e o motivo do bloqueio (pré-requisito, pontos ou escolha já
+feita). Passar o mouse/foco num nó mostra os detalhes; clicar no nó selecionado (ou em "Comprar")
+compra um nível. Cores da moldura: cinza = bloqueado, azul = disponível sem recursos, turquesa =
+pode comprar, âmbar = parcialmente comprado, amarelo = completo.
 
 ## 8. Balanceamento e duração
 
@@ -218,7 +221,7 @@ Estados da `StateMachine`: `Setup` → `PhaseBuild` → `Phase` → `PhaseSummar
 |---|---|
 | M1 — Protótipo do loop ✅ | madeira, fruta e água (com variações de raridade); gerador de fases; timer; cursor contextual; fome/sede; HUD; tela de evolução com ~5 nós; arte provisória |
 | M2 — Simulador ✅ | script de balanceamento + meta de 3 h verificada |
-| M2.5 — Árvore desenhada | tela da árvore em grade com conexões, níveis, escolhas e portões |
+| M2.5 — Árvore desenhada ✅ | tela da árvore em grade com conexões, níveis, escolhas e portões |
 | M3 — Camadas 1–2 | rochas, lago, javali, fogueira |
 | M4 — Arte | sprites definitivos no Pixellab (fontes por raridade + cursores + ícones) |
 | M5 — Save | salvar/carregar progresso |

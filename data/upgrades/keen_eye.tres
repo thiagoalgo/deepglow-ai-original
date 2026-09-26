@@ -4,6 +4,7 @@
 [ext_resource type="Resource" path="res://data/resources/wood.tres" id="2_tclh2"]
 [ext_resource type="Resource" path="res://data/resources/fruit.tres" id="3_8yjrb"]
 [ext_resource type="Script" path="res://src/progression/upgrade_node.gd" id="4_jyu5t"]
+[ext_resource type="Texture2D" path="res://assets/sprites/upgrades/keen_eye.png" id="4_tclh2"]
 [ext_resource type="Resource" path="res://data/upgrades/sharp_axe.tres" id="5_1j01k"]
 
 [sub_resource type="Resource" id="Resource_lcc7i"]
@@ -19,10 +20,11 @@ amount = 25
 [resource]
 script = ExtResource("4_jyu5t")
 id = &"keen_eye"
+icon = ExtResource("4_tclh2")
 effect = 4
 value_per_level = 0.25
 max_level = 3
 base_costs = Array[ExtResource("1_fyw8b")]([SubResource("Resource_lcc7i"), SubResource("Resource_psrb3")])
 cost_growth = 3.4
-prerequisites = Array[Resource]([ExtResource("5_1j01k")])
 grid_position = Vector2i(2, 1)
+prerequisites = Array[Resource]([ExtResource("5_1j01k")])

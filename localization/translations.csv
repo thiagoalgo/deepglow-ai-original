@@ -42,3 +42,7 @@ UPGRADE_LONGER_DAYS_NAME,Longer Days,Dias Longos
 UPGRADE_LONGER_DAYS_DESC,Longer phases with more sources (+5 s per level).,Fases mais longas e com mais fontes (+5 s por nível).
 UPGRADE_KEEN_EYE_NAME,Keen Eye,Olhar Atento
 UPGRADE_KEEN_EYE_DESC,Uncommon and rarer sources appear 25% more often per level.,Fontes incomuns ou mais raras aparecem 25% mais por nível.
+UI_REQUIRED_POINTS,%d required,%d necessários
+UI_REQUIRES,Requires: %s,Requer: %s
+UI_REQUIRES_POINTS,Requires %d points in the tree,Requer %d pontos na árvore
+UI_CHOICE_TAKEN,Another option was chosen,Outra opção já foi escolhida

@@ -3,7 +3,7 @@
 
 These are placeholders until the final Pixellab art (roadmap M4). Each sprite is an
 ASCII map; every character is a palette color (see PALETTE). Outputs go to
-assets/sprites/{sources,cursors,icons}/. Re-run after editing a map:
+assets/sprites/{sources,cursors,icons,upgrades}/. Re-run after editing a map:
 
   python3 tools/art/placeholder_sprites.py
 """
@@ -268,6 +268,79 @@ SPRITES: dict[str, list[str]] = {
         ".odeeeo.",
         "..oooo..",
         "........",
+    ],
+    # --- upgrade icons (10x10) ---
+    "upgrades/sharp_axe": [
+        "...oooo...",
+        "..owwwxo..",
+        "..owwxxo..",
+        "...oxxoao.",
+        "....ooao..",
+        ".....oao..",
+        "....oao...",
+        "...oao....",
+        "..oao.....",
+        "..oo......",
+    ],
+    "upgrades/basket": [
+        "..........",
+        "...oooo...",
+        "..o....o..",
+        ".orrorroo.",
+        ".oaaaaaao.",
+        ".oaoaoaoo.",
+        ".oaaaaaao.",
+        "..oaoaoo..",
+        "...oooo...",
+        "..........",
+    ],
+    "upgrades/canteen": [
+        "....oo....",
+        "...oxxo...",
+        "..oooooo..",
+        ".oxxxxxxo.",
+        ".oxccccxo.",
+        ".oxcwccxo.",
+        ".oxccccxo.",
+        ".oxxxxxxo.",
+        "..oooooo..",
+        "..........",
+    ],
+    "upgrades/lumber_sense": [
+        "..........",
+        ".oooooooo.",
+        "oaaaaaaalo",
+        "oaoaaaoalo",
+        "oaaoaaaalo",
+        ".oooooooo.",
+        "...oyo....",
+        "..oyyyo...",
+        "...oyo....",
+        "..........",
+    ],
+    "upgrades/longer_days": [
+        "....yy....",
+        ".y..yy..y.",
+        "..yoooay..",
+        "..oyyyyo..",
+        "yyoyyyyoyy",
+        "yyoyyyyoyy",
+        "..oyyyyo..",
+        "..yooooy..",
+        ".y..yy..y.",
+        "....yy....",
+    ],
+    "upgrades/keen_eye": [
+        "..........",
+        "...oooo...",
+        "..owwwwo..",
+        ".owwttwwo.",
+        "owwtkktwwo",
+        "owwtkktwwo",
+        ".owwttwwo.",
+        "..owwwwo..",
+        "...oooo...",
+        "..........",
     ],
 }
 

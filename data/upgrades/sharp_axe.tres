@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" path="res://src/economy/resource_amount.gd" id="1_quwbt"]
 [ext_resource type="Resource" path="res://data/resources/wood.tres" id="2_8w78y"]
+[ext_resource type="Texture2D" path="res://assets/sprites/upgrades/sharp_axe.png" id="3_8w78y"]
 [ext_resource type="Script" path="res://src/progression/upgrade_node.gd" id="3_qeexp"]
 
 [sub_resource type="Resource" id="Resource_hholl"]
@@ -12,6 +13,7 @@ amount = 15
 [resource]
 script = ExtResource("3_qeexp")
 id = &"sharp_axe"
+icon = ExtResource("3_8w78y")
 effect = 1
 target = &"axe"
 max_level = 3
