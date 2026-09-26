@@ -6,8 +6,10 @@
 4. Downscale with a per-block majority vote (crisp pixels, no blending).
 5. Close the silhouette with a 1 px outline.
 
-Usage: python3 tools/art/concept_to_sprite.py <cell_crop.png> <out.png> [piece_id]
-(piece_id selects a material remap from REMAP, e.g. tree_pine).
+Usage:
+  python3 tools/art/concept_to_sprite.py --concept <concept-art.png> <out_dir> [piece_id ...]
+  python3 tools/art/concept_to_sprite.py <cell_crop.png> <out.png> [piece_id]
+(piece_id selects the cell in CELLS and a material remap from REMAP, e.g. tree_pine).
 """
 import colorsys, sys
 from collections import Counter, deque
@@ -20,6 +22,8 @@ C = {
  'LF0': (14, 48, 54), 'LF1': (25, 93, 80), 'LF2': (116, 232, 92),
  'WA0': (9, 42, 82), 'WA1': (18, 88, 158), 'WA2': (39, 116, 230), 'WA3': (33, 200, 217),
  'FR0': (198, 108, 156), 'FR1': (237, 120, 183), 'FR2': (244, 215, 165),
+ 'VIO': (86, 51, 168), 'VHI': (154, 107, 222), 'BW': (217, 245, 242),
+ 'AMB': (246, 168, 74), 'YEL': (241, 237, 101), 'TEAL': (55, 242, 194),
 }
 RAMPS = {
  'stone': (['ST0', 'ST1', 'ST2', 'ST3'], [0.22, 0.38, 0.32, 0.08]),
@@ -27,6 +31,13 @@ RAMPS = {
  'leaf': (['LF0', 'LF1', 'LF2'], [0.40, 0.48, 0.12]),
  'water': (['WA0', 'WA1', 'WA2', 'WA3'], [0.15, 0.30, 0.35, 0.20]),
  'fruit': (['FR0', 'FR1', 'FR2'], [0.35, 0.55, 0.10]),
+ # Special materials (selected per piece through REMAP).
+ 'glow_leaf': (['ST1', 'VIO', 'VHI'], [0.35, 0.45, 0.20]),
+ 'iron': (['ST0', 'ST1', 'ST2', 'BW'], [0.22, 0.38, 0.30, 0.10]),
+ 'copper': (['WD0', 'FR0', 'AMB'], [0.30, 0.45, 0.25]),
+ 'gold': (['AMB', 'YEL', 'BW'], [0.42, 0.52, 0.06]),
+ 'crystal_violet': (['ST1', 'VIO', 'VHI', 'BW'], [0.25, 0.35, 0.28, 0.12]),
+ 'crystal_teal': (['LF1', 'TEAL', 'WA3', 'BW'], [0.25, 0.40, 0.23, 0.12]),
 }
 
 def material(c):
@@ -139,7 +150,53 @@ REMAP = {
     'tree_pine': {'stone': 'leaf'},
     'fruit_tree': {'stone': 'leaf'},
     'spring': {'leaf': 'stone', 'wood': 'stone'},
+    'tree_oak': {'stone': 'leaf'},
+    'tree_glow': {'stone': 'glow_leaf', 'water': 'glow_leaf', 'fruit': 'glow_leaf'},
+    'berry_bush': {'stone': 'leaf', 'wood': 'leaf'},
+    'iron_vein': {'stone': 'iron', 'water': 'iron'},
+    'copper_vein': {'wood': 'copper', 'fruit': 'copper', 'stone': 'copper'},
+    'gold_vein': {'wood': 'gold', 'stone': 'gold', 'leaf': 'gold'},
+    'crystal_violet': {'stone': 'crystal_violet', 'water': 'crystal_violet', 'wood': 'crystal_violet', 'fruit': 'crystal_violet'},
+    'crystal_teal': {'leaf': 'crystal_teal', 'stone': 'crystal_teal', 'water': 'crystal_teal'},
 }
 
+# Pieces drawn smaller than the 32 px grid (sprite side in px, padded to 32, bottom-aligned).
+INNER = {'rock_small': 24}
+
+# Concept-art grid cell (column, row) of each piece in concept-art.png (1672x941).
+CONCEPT_GRID = (398, 32, 110.3)
+CELLS = {
+    'tree_pine': (0, 0), 'fruit_tree': (5, 0), 'tree_oak': (2, 0), 'tree_glow': (3, 0),
+    'rock_large': (0, 1), 'iron_vein': (1, 1), 'rock_small': (2, 1), 'copper_vein': (3, 1),
+    'gold_vein': (4, 1), 'crystal_violet': (5, 1), 'crystal_teal': (6, 1),
+    'spring': (0, 2), 'berry_bush': (6, 3),
+}
+
+
+def crop_cell(concept, piece, out):
+    x0, y0, p = CONCEPT_GRID
+    c, r = CELLS[piece]
+    im = Image.open(concept).convert('RGB')
+    im.crop((int(x0 + c * p), int(y0 + r * p), int(x0 + (c + 1) * p), int(y0 + (r + 1) * p))).save(out)
+
 if __name__ == '__main__':
-    convert(sys.argv[1], sys.argv[2], remap=REMAP.get(sys.argv[3] if len(sys.argv) > 3 else '', {}))
+    if sys.argv[1] == '--concept':
+        # --concept <concept-art.png> <out_dir> [piece ...]: crop and convert known cells.
+        import os
+        concept, out_dir = sys.argv[2], sys.argv[3]
+        os.makedirs(out_dir, exist_ok=True)
+        for piece in sys.argv[4:] or CELLS:
+            crop = os.path.join(out_dir, f'_crop_{piece}.png')
+            crop_cell(concept, piece, crop)
+            out = os.path.join(out_dir, f'{piece}.png')
+            inner = INNER.get(piece, 32)
+            convert(crop, out, size=inner, remap=REMAP.get(piece, {}))
+            if inner != 32:
+                small = Image.open(out)
+                canvas = Image.new('RGBA', (32, 32), (0, 0, 0, 0))
+                canvas.paste(small, ((32 - inner) // 2, 32 - inner - 2))
+                canvas.save(out)
+            os.remove(crop)
+            print(piece)
+    else:
+        convert(sys.argv[1], sys.argv[2], remap=REMAP.get(sys.argv[3] if len(sys.argv) > 3 else '', {}))

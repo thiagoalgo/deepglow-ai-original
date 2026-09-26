@@ -18,6 +18,14 @@ OUT = ROOT / "assets" / "sprites"
 # Maps are authored on the old 320x180 grid; output is upscaled for 640x360.
 SCALE = 2
 
+# Sprites that already have final art (M4). Never overwritten by this script.
+FINAL = {
+    "sources/tree_pine", "sources/fruit_tree", "sources/tree_oak", "sources/tree_glow",
+    "sources/berry_bush", "sources/rock_large", "sources/rock_small", "sources/iron_vein",
+    "sources/copper_vein", "sources/gold_vein", "sources/crystal_violet", "sources/crystal_teal",
+    "sources/spring",
+}
+
 PALETTE = {
     ".": None,
     "k": (5, 5, 9),         # Shadow Absolute
@@ -613,6 +621,8 @@ def main() -> None:
     for name, rows in SPRITES.items():
         lengths = {len(r) for r in rows}
         assert len(lengths) == 1, f"{name}: uneven rows {lengths}"
+        if name in FINAL:
+            continue
         path = OUT / f"{name}.png"
         path.parent.mkdir(parents=True, exist_ok=True)
         render(rows).save(path)
