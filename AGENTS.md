@@ -7,9 +7,10 @@ Read it fully before changing anything.
 
 | What | Language |
 |---|---|
-| **Everything technical**: code, identifiers, comments, doc comments (`##`), commit messages, file and directory names, asset names, node names, translation keys, log/error messages, tool output, technical docs (this file, `docs/`, READMEs) | **English** |
+| **Everything technical**: code, identifiers, comments, doc comments (`##`), commit messages, file and directory names, asset names, node names, translation keys, log/error messages, tool output | **English** |
+| **Documentation files** (`docs/`, READMEs, this AGENTS.md) | **Portuguese (pt-BR) or English** — Portuguese is welcome; file names stay in English. Identifiers, keys and paths quoted inside docs keep their original English form |
 | **Player-facing text** (UI, piece names, descriptions, dialogs) | **Localized** — English (`en`) and Brazilian Portuguese (`pt_BR`) from day one |
-| Conversation with the project owner | Portuguese is fine |
+| Conversation with the project owner | Portuguese |
 
 Never hardcode player-facing strings in scripts or scenes: use translation keys (section 4).
 
@@ -259,7 +260,7 @@ via `load()` without static typing of classes that depend on `Events`/`Settings`
 
 - [ ] `--headless --import` with no new GDScript errors/warnings.
 - [ ] `tests/run_tests.gd` passing; new rule logic has a test.
-- [ ] Everything technical is in English; player-facing text uses translation keys filled for
+- [ ] Everything technical (code, names, keys) is in English; player-facing text uses translation keys filled for
       `en` and `pt_BR`.
 - [ ] New assets pass `palette.py check` and respect 16x16 / 20 px grid.
 - [ ] No secrets (`.env`, tokens) committed.
