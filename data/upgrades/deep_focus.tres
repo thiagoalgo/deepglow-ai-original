@@ -1,0 +1,32 @@
+[gd_resource type="Resource" script_class="UpgradeNode" format=3]
+
+[ext_resource type="Script" path="res://src/economy/resource_amount.gd" id="1_g137a"]
+[ext_resource type="Resource" path="res://data/resources/gold.tres" id="2_w652l"]
+[ext_resource type="Resource" path="res://data/resources/copper.tres" id="3_5h1eu"]
+[ext_resource type="Texture2D" path="res://assets/sprites/upgrades/keen_eye.png" id="4_0hitn"]
+[ext_resource type="Resource" path="res://data/upgrades/iron_sense.tres" id="5_trj0d"]
+[ext_resource type="Script" path="res://src/progression/upgrade_node.gd" id="6_03q1m"]
+
+[sub_resource type="Resource" id="Resource_eijwh"]
+script = ExtResource("1_g137a")
+resource = ExtResource("2_w652l")
+amount = 15
+
+[sub_resource type="Resource" id="Resource_klst2"]
+script = ExtResource("1_g137a")
+resource = ExtResource("3_5h1eu")
+amount = 100
+
+[resource]
+script = ExtResource("6_03q1m")
+id = &"deep_focus"
+icon = ExtResource("4_0hitn")
+effect = 4
+value_per_level = 0.5
+max_level = 2
+base_costs = Array[ExtResource("1_g137a")]([SubResource("Resource_eijwh"), SubResource("Resource_klst2")])
+cost_growth = 2.4
+grid_position = Vector2i(2, 8)
+choice_group = &"deep_path"
+required_points = 45
+prerequisites = Array[Resource]([ExtResource("5_trj0d")])

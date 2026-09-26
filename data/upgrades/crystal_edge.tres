@@ -1,0 +1,31 @@
+[gd_resource type="Resource" script_class="UpgradeNode" format=3]
+
+[ext_resource type="Script" path="res://src/economy/resource_amount.gd" id="1_lsxjh"]
+[ext_resource type="Resource" path="res://data/resources/crystal.tres" id="2_q3fbb"]
+[ext_resource type="Resource" path="res://data/resources/iron.tres" id="3_3hyyl"]
+[ext_resource type="Texture2D" path="res://assets/sprites/cursors/crystal_pick.png" id="4_g8ndp"]
+[ext_resource type="Resource" path="res://data/upgrades/unlock_crystal_pick.tres" id="5_15gsu"]
+[ext_resource type="Script" path="res://src/progression/upgrade_node.gd" id="6_dkb6y"]
+
+[sub_resource type="Resource" id="Resource_kbv6l"]
+script = ExtResource("1_lsxjh")
+resource = ExtResource("2_q3fbb")
+amount = 15
+
+[sub_resource type="Resource" id="Resource_qe2im"]
+script = ExtResource("1_lsxjh")
+resource = ExtResource("3_3hyyl")
+amount = 60
+
+[resource]
+script = ExtResource("6_dkb6y")
+id = &"crystal_edge"
+icon = ExtResource("4_g8ndp")
+effect = 1
+target = &"crystal_pick"
+value_per_level = 3.0
+max_level = 2
+base_costs = Array[ExtResource("1_lsxjh")]([SubResource("Resource_kbv6l"), SubResource("Resource_qe2im")])
+cost_growth = 2.4
+grid_position = Vector2i(3, 9)
+prerequisites = Array[Resource]([ExtResource("5_15gsu")])

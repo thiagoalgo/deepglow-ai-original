@@ -16,10 +16,14 @@
 [ext_resource type="Script" path="res://src/sources/source_type.gd" id="12_hq7mt"]
 [ext_resource type="Resource" path="res://data/resources/meat.tres" id="13_2oi3a"]
 [ext_resource type="Resource" path="res://data/sources/tree_pine.tres" id="13_6nn2q"]
+[ext_resource type="Resource" path="res://data/resources/copper.tres" id="14_cn1df"]
 [ext_resource type="Resource" path="res://data/sources/tree_oak.tres" id="14_gcs4y"]
+[ext_resource type="Resource" path="res://data/resources/iron.tres" id="15_4jrh3"]
 [ext_resource type="Resource" path="res://data/sources/tree_glow.tres" id="15_yo4sn"]
 [ext_resource type="Resource" path="res://data/sources/berry_bush.tres" id="16_h6kyv"]
+[ext_resource type="Resource" path="res://data/resources/gold.tres" id="16_uh274"]
 [ext_resource type="Resource" path="res://data/sources/fruit_tree.tres" id="17_7kpo8"]
+[ext_resource type="Resource" path="res://data/resources/crystal.tres" id="17_wpqw5"]
 [ext_resource type="Resource" path="res://data/sources/puddle.tres" id="18_dsgde"]
 [ext_resource type="Resource" path="res://data/sources/spring.tres" id="19_a2emy"]
 [ext_resource type="Script" path="res://src/sources/tool_type.gd" id="20_yt75o"]
@@ -38,12 +42,19 @@
 [ext_resource type="Resource" path="res://data/upgrades/longer_days.tres" id="29_aolhs"]
 [ext_resource type="Resource" path="res://data/upgrades/keen_eye.tres" id="30_3k60q"]
 [ext_resource type="Resource" path="res://data/tools/pickaxe.tres" id="31_3k60q"]
+[ext_resource type="Resource" path="res://data/sources/copper_vein.tres" id="31_h4lum"]
+[ext_resource type="Resource" path="res://data/sources/iron_vein.tres" id="32_rb1b3"]
 [ext_resource type="Resource" path="res://data/tools/fishing_rod.tres" id="32_verxg"]
 [ext_resource type="Resource" path="res://data/tools/spear.tres" id="33_8xss3"]
+[ext_resource type="Resource" path="res://data/sources/gold_vein.tres" id="33_hs51r"]
+[ext_resource type="Resource" path="res://data/sources/crystal_violet.tres" id="34_3jnma"]
+[ext_resource type="Resource" path="res://data/sources/crystal_teal.tres" id="35_ksuw2"]
 [ext_resource type="Resource" path="res://data/upgrades/unlock_pickaxe.tres" id="41_w02ha"]
 [ext_resource type="Resource" path="res://data/upgrades/unlock_fishing_rod.tres" id="42_wstmq"]
+[ext_resource type="Resource" path="res://data/tools/ore_pick.tres" id="43_6mjkh"]
 [ext_resource type="Resource" path="res://data/upgrades/sharp_pickaxe.tres" id="43_73hi8"]
 [ext_resource type="Resource" path="res://data/upgrades/stone_sense.tres" id="44_4xfn1"]
+[ext_resource type="Resource" path="res://data/tools/crystal_pick.tres" id="44_ebqb5"]
 [ext_resource type="Resource" path="res://data/upgrades/bait.tres" id="45_0c6qd"]
 [ext_resource type="Resource" path="res://data/upgrades/steady_hands.tres" id="46_i83pe"]
 [ext_resource type="Resource" path="res://data/upgrades/unlock_spear.tres" id="47_u086u"]
@@ -52,12 +63,23 @@
 [ext_resource type="Resource" path="res://data/upgrades/sharp_spear.tres" id="50_hx2mh"]
 [ext_resource type="Resource" path="res://data/upgrades/hunter_instinct.tres" id="51_sft6f"]
 [ext_resource type="Resource" path="res://data/upgrades/hearty_meals.tres" id="52_rboy0"]
+[ext_resource type="Resource" path="res://data/upgrades/unlock_ore_pick.tres" id="64_imbhh"]
+[ext_resource type="Resource" path="res://data/upgrades/tempered_pick.tres" id="65_jri6p"]
+[ext_resource type="Resource" path="res://data/upgrades/copper_sense.tres" id="66_12562"]
+[ext_resource type="Resource" path="res://data/upgrades/iron_sense.tres" id="67_fv8h1"]
+[ext_resource type="Resource" path="res://data/upgrades/copper_flask.tres" id="68_vx7h0"]
+[ext_resource type="Resource" path="res://data/upgrades/gold_rush.tres" id="69_pbeij"]
+[ext_resource type="Resource" path="res://data/upgrades/deep_focus.tres" id="70_e8is3"]
+[ext_resource type="Resource" path="res://data/upgrades/unlock_crystal_pick.tres" id="71_j4oed"]
+[ext_resource type="Resource" path="res://data/upgrades/crystal_edge.tres" id="72_o6rf2"]
+[ext_resource type="Resource" path="res://data/upgrades/crystal_attunement.tres" id="73_qdys8"]
+[ext_resource type="Resource" path="res://data/upgrades/heart_of_deepglow.tres" id="74_6i0c5"]
 
 [resource]
 script = ExtResource("11_0rfu2")
-resources = Array[ExtResource("7_bm8cc")]([ExtResource("8_wdau7"), ExtResource("9_bs1kh"), ExtResource("10_y4ny8"), ExtResource("11_m1ws1"), ExtResource("12_ap1wn"), ExtResource("13_2oi3a")])
+resources = Array[ExtResource("7_bm8cc")]([ExtResource("8_wdau7"), ExtResource("9_bs1kh"), ExtResource("10_y4ny8"), ExtResource("11_m1ws1"), ExtResource("12_ap1wn"), ExtResource("13_2oi3a"), ExtResource("14_cn1df"), ExtResource("15_4jrh3"), ExtResource("16_uh274"), ExtResource("17_wpqw5")])
 rarities = Array[ExtResource("2_kib3y")]([ExtResource("3_br8rk"), ExtResource("4_t3hgm"), ExtResource("5_ins62"), ExtResource("6_mg05e")])
-tools = Array[ExtResource("20_yt75o")]([ExtResource("21_ydtca"), ExtResource("22_q0fyq"), ExtResource("23_m1ws1"), ExtResource("31_3k60q"), ExtResource("32_verxg"), ExtResource("33_8xss3")])
-sources = Array[ExtResource("12_hq7mt")]([ExtResource("13_6nn2q"), ExtResource("14_gcs4y"), ExtResource("15_yo4sn"), ExtResource("16_h6kyv"), ExtResource("17_7kpo8"), ExtResource("18_dsgde"), ExtResource("19_a2emy"), ExtResource("23_jm8uu"), ExtResource("24_wpomh"), ExtResource("25_7h56u"), ExtResource("26_aolhs")])
-upgrades = Array[ExtResource("24_ap1wn")]([ExtResource("25_2oi3a"), ExtResource("26_jm8uu"), ExtResource("27_wpomh"), ExtResource("28_7h56u"), ExtResource("29_aolhs"), ExtResource("30_3k60q"), ExtResource("41_w02ha"), ExtResource("42_wstmq"), ExtResource("43_73hi8"), ExtResource("44_4xfn1"), ExtResource("45_0c6qd"), ExtResource("46_i83pe"), ExtResource("47_u086u"), ExtResource("48_ynw4v"), ExtResource("49_xwqim"), ExtResource("50_hx2mh"), ExtResource("51_sft6f"), ExtResource("52_rboy0")])
+tools = Array[ExtResource("20_yt75o")]([ExtResource("21_ydtca"), ExtResource("22_q0fyq"), ExtResource("23_m1ws1"), ExtResource("31_3k60q"), ExtResource("32_verxg"), ExtResource("33_8xss3"), ExtResource("43_6mjkh"), ExtResource("44_ebqb5")])
+sources = Array[ExtResource("12_hq7mt")]([ExtResource("13_6nn2q"), ExtResource("14_gcs4y"), ExtResource("15_yo4sn"), ExtResource("16_h6kyv"), ExtResource("17_7kpo8"), ExtResource("18_dsgde"), ExtResource("19_a2emy"), ExtResource("23_jm8uu"), ExtResource("24_wpomh"), ExtResource("25_7h56u"), ExtResource("26_aolhs"), ExtResource("31_h4lum"), ExtResource("32_rb1b3"), ExtResource("33_hs51r"), ExtResource("34_3jnma"), ExtResource("35_ksuw2")])
+upgrades = Array[ExtResource("24_ap1wn")]([ExtResource("25_2oi3a"), ExtResource("26_jm8uu"), ExtResource("27_wpomh"), ExtResource("28_7h56u"), ExtResource("29_aolhs"), ExtResource("30_3k60q"), ExtResource("41_w02ha"), ExtResource("42_wstmq"), ExtResource("43_73hi8"), ExtResource("44_4xfn1"), ExtResource("45_0c6qd"), ExtResource("46_i83pe"), ExtResource("47_u086u"), ExtResource("48_ynw4v"), ExtResource("49_xwqim"), ExtResource("50_hx2mh"), ExtResource("51_sft6f"), ExtResource("52_rboy0"), ExtResource("64_imbhh"), ExtResource("65_jri6p"), ExtResource("66_12562"), ExtResource("67_fv8h1"), ExtResource("68_vx7h0"), ExtResource("69_pbeij"), ExtResource("70_e8is3"), ExtResource("71_j4oed"), ExtResource("72_o6rf2"), ExtResource("73_qdys8"), ExtResource("74_6i0c5")])
 phase_rules = ExtResource("1_m2bgv")

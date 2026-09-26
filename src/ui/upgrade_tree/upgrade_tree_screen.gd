@@ -10,7 +10,7 @@ var _progression: ProgressionState
 var _inventory: Inventory
 var _selected: UpgradeNode
 
-@onready var _inventory_bar: HBoxContainer = %InventoryBar
+@onready var _inventory_bar: HFlowContainer = %InventoryBar
 @onready var _tree_view: UpgradeTreeView = %TreeView
 @onready var _name_label: Label = %NameLabel
 @onready var _level_label: Label = %LevelLabel
@@ -45,7 +45,8 @@ func _refresh() -> void:
 	for child: Node in _inventory_bar.get_children():
 		child.queue_free()
 	for resource: ResourceType in _database.resources:
-		_inventory_bar.add_child(ResourceAmountView.create(resource, str(_inventory.get_amount(resource.id))))
+		if _inventory.is_discovered(resource.id):
+			_inventory_bar.add_child(ResourceAmountView.create(resource, NumberFormat.compact(_inventory.get_amount(resource.id))))
 	_tree_view.refresh(_progression, _inventory)
 	if _selected:
 		_select(_selected)
@@ -68,7 +69,7 @@ func _select(upgrade: UpgradeNode) -> void:
 	_buy_button.text = tr(&"UI_BUY")
 	for cost: ResourceAmount in _progression.get_next_cost(upgrade):
 		var missing := _inventory.get_amount(cost.resource.id) < cost.amount
-		_costs.add_child(ResourceAmountView.create(cost.resource, str(cost.amount), missing))
+		_costs.add_child(ResourceAmountView.create(cost.resource, NumberFormat.compact(cost.amount), missing))
 	_status_label.text = _lock_reason(upgrade)
 	_buy_button.disabled = not _progression.can_buy(upgrade, _inventory)
 

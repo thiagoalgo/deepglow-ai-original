@@ -416,6 +416,84 @@ SPRITES: dict[str, list[str]] = {
         "..owwo..",
         "..oo.oo.",
     ],
+    # --- M3.5 sources (16x16) ---
+    "sources/crystal_violet": [
+        "................",
+        "................",
+        ".......oo.......",
+        "......ohvo......",
+        "......ohvo..oo..",
+        "..oo.ohhvvooho..",
+        "..oho.ohvvohvo..",
+        "..ohvoohvvohvo..",
+        "..ohvvohvvohvvo.",
+        "...ohvohhvvohvo.",
+        "...ohvvohvvovo..",
+        "....ohvohvvoo...",
+        "....oooooooooo..",
+        "...oxxxxxxxxxxo.",
+        "....oooooooooo..",
+        "................",
+    ],
+    "sources/crystal_teal": [
+        "................",
+        "......oo........",
+        ".....owto.......",
+        ".....owtto...oo.",
+        "..oo.owttoo.owo.",
+        ".owto.owttoowto.",
+        ".owtto.owtoowtto",
+        ".owttooowttowtto",
+        "..owttowwttowto.",
+        "..owttoowttowto.",
+        "...owtoowttoto..",
+        "...owttowttoo...",
+        "...oooooooooo...",
+        "..oxxxxxxxxxxo..",
+        "...oooooooooo...",
+        "................",
+    ],
+    # --- M3.5 icons (8x8) ---
+    "icons/copper": [
+        "........",
+        "..oooo..",
+        ".oaaalo.",
+        "oaaaaalo",
+        "opaaaaao",
+        "oppaaaao",
+        ".oooooo.",
+        "........",
+    ],
+    "icons/iron": [
+        "........",
+        "..oooo..",
+        ".oxwwwo.",
+        "oxxxwwxo",
+        "oixxxxxo",
+        "oiixxxxo",
+        ".oooooo.",
+        "........",
+    ],
+    "icons/gold": [
+        "........",
+        "..oooo..",
+        ".oyyywo.",
+        "oayyyywo",
+        "oaayyyyo",
+        "oaaaayyo",
+        ".oooooo.",
+        "........",
+    ],
+    "icons/crystal": [
+        "...oo...",
+        "..ohvo..",
+        ".ohhvvo.",
+        ".ohhvvo.",
+        ".ohhvvo.",
+        "..ohvo..",
+        "...oo...",
+        "........",
+    ],
     # --- upgrade icons (10x10) ---
     "upgrades/sharp_axe": [
         "...oooo...",
@@ -491,6 +569,29 @@ SPRITES: dict[str, list[str]] = {
     ],
 }
 
+# Sprites derived from another map: recolor characters and/or add specks.
+# name: (base, {old_char: new_char}, speck_char, [(x, y), ...])
+DERIVED: dict[str, tuple] = {
+    "cursors/ore_pick": ("cursors/pickaxe", {"w": "a"}, None, []),
+    "cursors/crystal_pick": ("cursors/pickaxe", {"w": "t"}, None, []),
+    "sources/copper_vein": ("sources/rock_large", {}, "a",
+                            [(5, 5), (6, 5), (10, 6), (4, 9), (5, 9), (11, 10), (8, 11), (12, 7)]),
+    "sources/iron_vein": ("sources/rock_large", {}, "w",
+                          [(5, 5), (6, 6), (10, 6), (4, 9), (11, 10), (8, 11), (12, 7), (9, 9)]),
+    "sources/gold_vein": ("sources/rock_large", {}, "y",
+                          [(5, 5), (6, 5), (6, 6), (10, 6), (4, 9), (5, 9), (11, 10), (12, 10),
+                           (8, 11), (12, 7), (9, 9)]),
+}
+
+
+def derive(name: str) -> list[str]:
+    base, recolor, speck, points = DERIVED[name]
+    rows = [list("".join(recolor.get(c, c) for c in row)) for row in SPRITES[base]]
+    for x, y in points:
+        if rows[y][x] not in (".", "o"):
+            rows[y][x] = speck
+    return ["".join(r) for r in rows]
+
 
 def render(rows: list[str]) -> Image.Image:
     width = max(len(r) for r in rows)
@@ -504,6 +605,8 @@ def render(rows: list[str]) -> Image.Image:
 
 
 def main() -> None:
+    for name in DERIVED:
+        SPRITES[name] = derive(name)
     for name, rows in SPRITES.items():
         lengths = {len(r) for r in rows}
         assert len(lengths) == 1, f"{name}: uneven rows {lengths}"

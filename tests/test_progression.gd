@@ -133,3 +133,20 @@ func test_tree_positions_are_unique() -> String:
 			return "%s and %s share %s" % [seen[upgrade.grid_position], upgrade.id, upgrade.grid_position]
 		seen[upgrade.grid_position] = upgrade.id
 	return ""
+
+
+func test_inventory_discovery() -> String:
+	var inv := Inventory.new()
+	if inv.is_discovered(&"wood"):
+		return "nothing should be discovered at start"
+	inv.add(&"wood", 3)
+	inv.add(&"wood", -3)
+	return "" if inv.is_discovered(&"wood") else "wood should stay discovered after spending"
+
+
+func test_number_format_compact() -> String:
+	var cases := {999: "999", 1234: "1.2k", 25000: "25k", 1500000: "1.5M"}
+	for value: int in cases:
+		if NumberFormat.compact(value) != cases[value]:
+			return "%d -> %s" % [value, NumberFormat.compact(value)]
+	return ""

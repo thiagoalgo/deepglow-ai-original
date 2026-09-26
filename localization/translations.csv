@@ -80,3 +80,36 @@ UPGRADE_HUNTER_INSTINCT_NAME,Hunter Instinct,Instinto de Caçador
 UPGRADE_HUNTER_INSTINCT_DESC,+1 meat from every boar per level.,+1 carne em cada javali por nível.
 UPGRADE_HEARTY_MEALS_NAME,Hearty Meals,Refeições Fartas
 UPGRADE_HEARTY_MEALS_DESC,Hunger drops 15% slower per level.,A fome cai 15% mais devagar por nível.
+RESOURCE_COPPER_NAME,Copper,Cobre
+RESOURCE_IRON_NAME,Iron,Ferro
+RESOURCE_GOLD_NAME,Gold,Ouro
+RESOURCE_CRYSTAL_NAME,Crystal,Cristal
+TOOL_ORE_PICK_NAME,Reinforced Pickaxe,Picareta Reforçada
+TOOL_CRYSTAL_PICK_NAME,Crystal Pickaxe,Picareta de Cristal
+SOURCE_COPPER_VEIN_NAME,Copper Vein,Veio de Cobre
+SOURCE_IRON_VEIN_NAME,Iron Vein,Veio de Ferro
+SOURCE_GOLD_VEIN_NAME,Gold Vein,Veio de Ouro
+SOURCE_CRYSTAL_VIOLET_NAME,Violet Crystal,Cristal Violeta
+SOURCE_CRYSTAL_TEAL_NAME,Deepglow Crystal,Cristal Deepglow
+UPGRADE_UNLOCK_ORE_PICK_NAME,Reinforced Pickaxe,Picareta Reforçada
+UPGRADE_UNLOCK_ORE_PICK_DESC,"Unlocks ore veins: copper, iron and gold.","Libera os veios de minério: cobre, ferro e ouro."
+UPGRADE_TEMPERED_PICK_NAME,Tempered Pickaxe,Picareta Temperada
+UPGRADE_TEMPERED_PICK_DESC,Ore veins need 2 fewer clicks per level.,Veios de minério precisam de 2 cliques a menos por nível.
+UPGRADE_COPPER_SENSE_NAME,Copper Sense,Faro de Cobre
+UPGRADE_COPPER_SENSE_DESC,+1 copper from every vein per level.,+1 cobre em cada veio por nível.
+UPGRADE_IRON_SENSE_NAME,Iron Sense,Faro de Ferro
+UPGRADE_IRON_SENSE_DESC,+1 iron from every vein per level.,+1 ferro em cada veio por nível.
+UPGRADE_COPPER_FLASK_NAME,Copper Flask,Cantil de Cobre
+UPGRADE_COPPER_FLASK_DESC,Thirst drops 15% slower per level.,A sede cai 15% mais devagar por nível.
+UPGRADE_GOLD_RUSH_NAME,Gold Rush,Febre do Ouro
+UPGRADE_GOLD_RUSH_DESC,+2 gold per vein per level. Excludes Deep Focus.,+2 ouro por veio por nível. Exclui Foco Profundo.
+UPGRADE_DEEP_FOCUS_NAME,Deep Focus,Foco Profundo
+UPGRADE_DEEP_FOCUS_DESC,Rarer sources appear 50% more often per level. Excludes Gold Rush.,Fontes mais raras aparecem 50% mais por nível. Exclui Febre do Ouro.
+UPGRADE_UNLOCK_CRYSTAL_PICK_NAME,Crystal Pickaxe,Picareta de Cristal
+UPGRADE_UNLOCK_CRYSTAL_PICK_DESC,Unlocks the glowing crystals of the deep.,Libera os cristais luminosos das profundezas.
+UPGRADE_CRYSTAL_EDGE_NAME,Crystal Edge,Fio de Cristal
+UPGRADE_CRYSTAL_EDGE_DESC,Crystals need 3 fewer clicks per level.,Cristais precisam de 3 cliques a menos por nível.
+UPGRADE_CRYSTAL_ATTUNEMENT_NAME,Attunement,Sintonia
+UPGRADE_CRYSTAL_ATTUNEMENT_DESC,+2 crystals per crystal per level.,+2 cristais por cristal por nível.
+UPGRADE_HEART_OF_DEEPGLOW_NAME,Heart of Deepglow,Coração de Deepglow
+UPGRADE_HEART_OF_DEEPGLOW_DESC,The forest glows for you: rare sources appear twice as often.,A floresta brilha para você: fontes raras aparecem o dobro.

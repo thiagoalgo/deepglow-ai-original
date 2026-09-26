@@ -23,8 +23,9 @@ Never hardcode player-facing strings in scripts or scenes: use translation keys 
 - **Engine:** Godot **4.7.x**, GDScript, **GL Compatibility** renderer.
 - **Game design:** `docs/game-design.md` (source of truth for rules, balance targets and roadmap).
   Done: **M1** prototype loop (wood/fruit/water, phase generator, contextual cursor, hunger/thirst,
-  upgrade list, programmer art), **M2** balance simulator, **M2.5** drawn upgrade tree and **M3**
-  tiers 1–2 (stone, fish, meat; pickaxe, fishing rod, spear). Next: **M4** final art (Pixellab).
+  upgrade list, programmer art), **M2** balance simulator, **M2.5** drawn upgrade tree, **M3**
+  tiers 1–2 (stone, fish, meat) and **M3.5** tiers 3–4 (ores, crystals, final node; full game
+  ≈ 3h30 for the average player). Next: **M4** final art (Pixellab).
 
 ### Directories
 
@@ -170,6 +171,7 @@ yields, phase duration, drains, rarity weights) from upgrade levels → `PhaseGe
 - Document classes and public methods with `##` (shown in the editor).
 - Scripts used in the editor (`_draw` previews, Resources they read) need `@tool`.
 - Tabs for indentation (see `.editorconfig`).
+- Numbers shown to the player go through `NumberFormat.compact()` (1234 → "1.2k").
 - **Avoid script self-references in Resources** (e.g. `Array[UpgradeNode]` inside
   `upgrade_node.gd`): they create a reference cycle that leaks at exit. Type such fields as
   `Array[Resource]` and document the expected type.
@@ -283,7 +285,8 @@ $GODOT --headless --path . --import                    # (re)import / check pars
 $GODOT --headless --path . -s res://tests/run_tests.gd # tests (exit 1 on failure)
 
 # Balance simulator (uses the real game code + data; exit 1 if a check fails)
-$GODOT --headless --path . -s res://tools/balance/simulate.gd -- --runs 30 --target-minutes 90
+$GODOT --headless --path . -s res://tools/balance/simulate.gd -- --runs 12 --target-minutes 180
+#   (~3 min for the full game; use --profiles average:3.0 --runs 4 for quick iterations)
 #   report: tools/balance/reports/latest.md (git-ignored); options in simulate.gd header
 
 # Art

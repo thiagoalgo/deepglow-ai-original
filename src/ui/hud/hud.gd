@@ -35,8 +35,10 @@ func setup(database: GameDatabase, inventory: Inventory) -> void:
 		icon.stretch_mode = TextureRect.STRETCH_KEEP_CENTERED
 		row.add_child(icon)
 		var label := Label.new()
-		label.text = str(inventory.get_amount(resource.id))
+		label.text = NumberFormat.compact(inventory.get_amount(resource.id))
 		row.add_child(label)
+		# Rows appear once the resource is first collected (keeps the HUD short).
+		row.visible = inventory.is_discovered(resource.id)
 		_inventory_list.add_child(row)
 		_counters[resource.id] = label
 
@@ -58,4 +60,7 @@ func _on_needs_changed(hunger: float, thirst: float) -> void:
 
 func _on_inventory_changed(resource_id: StringName, amount: int) -> void:
 	if _counters.has(resource_id):
-		_counters[resource_id].text = str(amount)
+		var label := _counters[resource_id]
+		label.text = NumberFormat.compact(amount)
+		if amount > 0:
+			(label.get_parent() as Control).show()

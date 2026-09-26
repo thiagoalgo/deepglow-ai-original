@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="ToolType" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/cursors/crystal_pick.png" id="1_j1ahk"]
+[ext_resource type="Script" path="res://src/sources/tool_type.gd" id="2_6g2rn"]
+
+[resource]
+script = ExtResource("2_6g2rn")
+id = &"crystal_pick"
+cursor_texture = ExtResource("1_j1ahk")
+cursor_hotspot = Vector2i(2, 1)

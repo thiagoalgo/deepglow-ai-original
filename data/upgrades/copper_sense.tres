@@ -1,0 +1,29 @@
+[gd_resource type="Resource" script_class="UpgradeNode" format=3]
+
+[ext_resource type="Script" path="res://src/economy/resource_amount.gd" id="1_0c8k0"]
+[ext_resource type="Resource" path="res://data/resources/copper.tres" id="2_2xymm"]
+[ext_resource type="Resource" path="res://data/resources/stone.tres" id="3_t5nqf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/icons/copper.png" id="4_i11uq"]
+[ext_resource type="Resource" path="res://data/upgrades/unlock_ore_pick.tres" id="5_du1ax"]
+[ext_resource type="Script" path="res://src/progression/upgrade_node.gd" id="6_ax5ep"]
+
+[sub_resource type="Resource" id="Resource_y2m3o"]
+script = ExtResource("1_0c8k0")
+resource = ExtResource("2_2xymm")
+amount = 25
+
+[sub_resource type="Resource" id="Resource_uxmt0"]
+script = ExtResource("1_0c8k0")
+resource = ExtResource("3_t5nqf")
+amount = 100
+
+[resource]
+script = ExtResource("6_ax5ep")
+id = &"copper_sense"
+icon = ExtResource("4_i11uq")
+target = &"copper"
+max_level = 3
+base_costs = Array[ExtResource("1_0c8k0")]([SubResource("Resource_y2m3o"), SubResource("Resource_uxmt0")])
+cost_growth = 2.1
+grid_position = Vector2i(1, 7)
+prerequisites = Array[Resource]([ExtResource("5_du1ax")])

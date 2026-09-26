@@ -5,6 +5,8 @@ extends RefCounted
 signal changed(resource_id: StringName, amount: int)
 
 var _amounts: Dictionary[StringName, int] = {}
+## Resources the player has ever owned (UI only shows these).
+var _discovered: Dictionary[StringName, bool] = {}
 
 
 func get_amount(resource_id: StringName) -> int:
@@ -17,7 +19,13 @@ func add(resource_id: StringName, amount: int) -> void:
 	var total: int = get_amount(resource_id) + amount
 	assert(total >= 0, "Inventory would go negative for %s" % resource_id)
 	_amounts[resource_id] = total
+	if amount > 0:
+		_discovered[resource_id] = true
 	changed.emit(resource_id, total)
+
+
+func is_discovered(resource_id: StringName) -> bool:
+	return _discovered.has(resource_id)
 
 
 func has_all(costs: Array[ResourceAmount]) -> bool:

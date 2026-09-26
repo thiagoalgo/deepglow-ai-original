@@ -1,0 +1,30 @@
+[gd_resource type="Resource" script_class="UpgradeNode" format=3]
+
+[ext_resource type="Script" path="res://src/economy/resource_amount.gd" id="1_t6a6t"]
+[ext_resource type="Resource" path="res://data/resources/stone.tres" id="2_b3m3y"]
+[ext_resource type="Resource" path="res://data/resources/wood.tres" id="3_7w2va"]
+[ext_resource type="Texture2D" path="res://assets/sprites/cursors/ore_pick.png" id="4_ag82w"]
+[ext_resource type="Resource" path="res://data/upgrades/sharp_pickaxe.tres" id="5_t2n17"]
+[ext_resource type="Script" path="res://src/progression/upgrade_node.gd" id="6_xnwgs"]
+
+[sub_resource type="Resource" id="Resource_wfcpk"]
+script = ExtResource("1_t6a6t")
+resource = ExtResource("2_b3m3y")
+amount = 400
+
+[sub_resource type="Resource" id="Resource_hec0x"]
+script = ExtResource("1_t6a6t")
+resource = ExtResource("3_7w2va")
+amount = 600
+
+[resource]
+script = ExtResource("6_xnwgs")
+id = &"unlock_ore_pick"
+icon = ExtResource("4_ag82w")
+effect = 0
+target = &"ore_pick"
+base_costs = Array[ExtResource("1_t6a6t")]([SubResource("Resource_wfcpk"), SubResource("Resource_hec0x")])
+cost_growth = 1.0
+grid_position = Vector2i(0, 6)
+required_points = 34
+prerequisites = Array[Resource]([ExtResource("5_t2n17")])

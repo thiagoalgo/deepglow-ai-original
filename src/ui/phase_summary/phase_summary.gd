@@ -23,7 +23,8 @@ func open(phase_number: int, gathered: Dictionary[StringName, int], cleared: int
 		child.queue_free()
 	for resource: ResourceType in database.resources:
 		var amount: int = gathered.get(resource.id, 0)
-		_gathered_list.add_child(ResourceAmountView.create(resource, "+%d" % amount))
+		if amount > 0:
+			_gathered_list.add_child(ResourceAmountView.create(resource, "+%d" % amount))
 	show()
 	_continue_button.grab_focus.call_deferred()
 

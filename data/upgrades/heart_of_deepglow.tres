@@ -1,0 +1,36 @@
+[gd_resource type="Resource" script_class="UpgradeNode" format=3]
+
+[ext_resource type="Script" path="res://src/economy/resource_amount.gd" id="1_d6w3c"]
+[ext_resource type="Resource" path="res://data/resources/crystal.tres" id="2_qo8rd"]
+[ext_resource type="Resource" path="res://data/resources/gold.tres" id="3_kjueq"]
+[ext_resource type="Resource" path="res://data/resources/iron.tres" id="4_b85o7"]
+[ext_resource type="Texture2D" path="res://assets/sprites/icons/crystal.png" id="5_csp47"]
+[ext_resource type="Resource" path="res://data/upgrades/crystal_edge.tres" id="6_vmnxx"]
+[ext_resource type="Resource" path="res://data/upgrades/crystal_attunement.tres" id="7_p73yn"]
+[ext_resource type="Script" path="res://src/progression/upgrade_node.gd" id="8_twevn"]
+
+[sub_resource type="Resource" id="Resource_afi1t"]
+script = ExtResource("1_d6w3c")
+resource = ExtResource("2_qo8rd")
+amount = 100
+
+[sub_resource type="Resource" id="Resource_rqg5j"]
+script = ExtResource("1_d6w3c")
+resource = ExtResource("3_kjueq")
+amount = 60
+
+[sub_resource type="Resource" id="Resource_ywyw4"]
+script = ExtResource("1_d6w3c")
+resource = ExtResource("4_b85o7")
+amount = 100
+
+[resource]
+script = ExtResource("8_twevn")
+id = &"heart_of_deepglow"
+icon = ExtResource("5_csp47")
+effect = 4
+base_costs = Array[ExtResource("1_d6w3c")]([SubResource("Resource_afi1t"), SubResource("Resource_rqg5j"), SubResource("Resource_ywyw4")])
+cost_growth = 1.0
+grid_position = Vector2i(4, 10)
+required_points = 55
+prerequisites = Array[Resource]([ExtResource("6_vmnxx"), ExtResource("7_p73yn")])

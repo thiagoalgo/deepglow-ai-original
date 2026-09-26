@@ -1,0 +1,32 @@
+[gd_resource type="Resource" script_class="UpgradeNode" format=3]
+
+[ext_resource type="Script" path="res://src/economy/resource_amount.gd" id="1_k84dc"]
+[ext_resource type="Resource" path="res://data/resources/gold.tres" id="2_d5q31"]
+[ext_resource type="Resource" path="res://data/resources/iron.tres" id="3_td15g"]
+[ext_resource type="Texture2D" path="res://assets/sprites/icons/gold.png" id="4_be5ce"]
+[ext_resource type="Resource" path="res://data/upgrades/copper_sense.tres" id="5_ee5fd"]
+[ext_resource type="Script" path="res://src/progression/upgrade_node.gd" id="6_nugtk"]
+
+[sub_resource type="Resource" id="Resource_ke1wd"]
+script = ExtResource("1_k84dc")
+resource = ExtResource("2_d5q31")
+amount = 15
+
+[sub_resource type="Resource" id="Resource_kr4wv"]
+script = ExtResource("1_k84dc")
+resource = ExtResource("3_td15g")
+amount = 50
+
+[resource]
+script = ExtResource("6_nugtk")
+id = &"gold_rush"
+icon = ExtResource("4_be5ce")
+target = &"gold"
+value_per_level = 2.0
+max_level = 2
+base_costs = Array[ExtResource("1_k84dc")]([SubResource("Resource_ke1wd"), SubResource("Resource_kr4wv")])
+cost_growth = 2.4
+grid_position = Vector2i(1, 8)
+choice_group = &"deep_path"
+required_points = 45
+prerequisites = Array[Resource]([ExtResource("5_ee5fd")])

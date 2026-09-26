@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="SourceType" format=3]
+
+[ext_resource type="Resource" path="res://data/rarities/common.tres" id="1_gsqep"]
+[ext_resource type="Script" path="res://src/sources/source_type.gd" id="2_h5o65"]
+[ext_resource type="Texture2D" path="res://assets/sprites/sources/copper_vein.png" id="3_2ldp5"]
+[ext_resource type="Resource" path="res://data/tools/ore_pick.tres" id="4_lwhmo"]
+[ext_resource type="Resource" path="res://data/resources/copper.tres" id="5_gmo54"]
+
+[resource]
+script = ExtResource("2_h5o65")
+id = &"copper_vein"
+family = &"ore"
+tier = 3
+rarity = ExtResource("1_gsqep")
+tool = ExtResource("4_lwhmo")
+clicks = 8
+yield_resource = ExtResource("5_gmo54")
+yield_amount = 3
+texture = ExtResource("3_2ldp5")
