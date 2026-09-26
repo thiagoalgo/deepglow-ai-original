@@ -1,0 +1,34 @@
+GIMP Palette
+Name: Deepglow 24 (Animal Well Inspired)
+Columns: 6
+# 24-color pixel-art palette inspired by dark, bioluminescent environments.
+# Shadows
+  5   5   9	Shadow Absolute
+  8  13  36	Shadow Blueblack
+ 13  19  52	Shadow Deep
+ 19  26  69	Shadow Lifted
+# Structure
+ 16  26  82	Structure Deep Blue
+ 37  50 140	Structure Indigo
+ 58  70 163	Structure Mid Blue
+ 86  51 168	Structure Violet
+154 107 222	Structure Highlight
+# Vegetation
+ 14  48  54	Vegetation Shadow
+ 25  93  80	Vegetation Moss
+ 55 242 194	Vegetation Neon Teal
+116 232  92	Vegetation Glow Green
+# Water
+  9  42  82	Water Abyss
+ 18  88 158	Water Midtone
+ 39 116 230	Water Electric Blue
+ 33 200 217	Water Cyan
+# Lights
+241 237 101	Light Sulfur Yellow
+246 168  74	Light Amber
+237 120 183	Light Pink
+217 245 242	Light Blue White
+# Characters
+ 42  33  71	Character Outline
+198 108 156	Character Midtone
+244 215 165	Character Highlight

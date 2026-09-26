@@ -1,0 +1,22 @@
+# Godot
+.godot/
+/android/
+*.translation
+export_presets.cfg
+/build/
+
+# Secrets
+.env
+*.env.local
+
+# Python / tools
+__pycache__/
+*.pyc
+.venv/
+
+# IDE (JetBrains)
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db

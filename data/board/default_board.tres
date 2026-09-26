@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="BoardConfig" format=3]
+
+[ext_resource type="Script" path="res://src/board/board_config.gd" id="1_cfg"]
+
+[resource]
+script = ExtResource("1_cfg")
+size = Vector2i(8, 8)
+cell_size = Vector2i(20, 20)
+piece_sprite_size = Vector2i(16, 16)

@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="PieceData" format=3]
+
+[ext_resource type="Script" path="res://src/pieces/piece_data.gd" id="1_data"]
+
+[resource]
+script = ExtResource("1_data")
+id = &"ore_gold"
+category = 2
+placeholder_color = Color(0.9451, 0.9294, 0.3961, 1)
+tags = PackedStringArray("mineral")

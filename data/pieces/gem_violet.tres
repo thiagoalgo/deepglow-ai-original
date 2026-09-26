@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="PieceData" format=3]
+
+[ext_resource type="Script" path="res://src/pieces/piece_data.gd" id="1_data"]
+
+[resource]
+script = ExtResource("1_data")
+id = &"gem_violet"
+category = 3
+placeholder_color = Color(0.6039, 0.4196, 0.8706, 1)
+tags = PackedStringArray("mineral")

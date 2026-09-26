@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="PieceCatalog" format=3]
+
+[ext_resource type="Script" path="res://src/pieces/piece_catalog.gd" id="1_cat"]
+[ext_resource type="Script" path="res://src/pieces/piece_data.gd" id="2_data"]
+[ext_resource type="Resource" path="res://data/pieces/tree_pine.tres" id="p0"]
+[ext_resource type="Resource" path="res://data/pieces/rock_gray.tres" id="p1"]
+[ext_resource type="Resource" path="res://data/pieces/ore_gold.tres" id="p2"]
+[ext_resource type="Resource" path="res://data/pieces/gem_violet.tres" id="p3"]
+[ext_resource type="Resource" path="res://data/pieces/gem_teal.tres" id="p4"]
+[ext_resource type="Resource" path="res://data/pieces/mushroom_glow.tres" id="p5"]
+[ext_resource type="Resource" path="res://data/pieces/flower_white.tres" id="p6"]
+[ext_resource type="Resource" path="res://data/pieces/well.tres" id="p7"]
+[ext_resource type="Resource" path="res://data/pieces/campfire.tres" id="p8"]
+
+[resource]
+script = ExtResource("1_cat")
+pieces = Array[ExtResource("2_data")]([ExtResource("p0"), ExtResource("p1"), ExtResource("p2"), ExtResource("p3"), ExtResource("p4"), ExtResource("p5"), ExtResource("p6"), ExtResource("p7"), ExtResource("p8")])
