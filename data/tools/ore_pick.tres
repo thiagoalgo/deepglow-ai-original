@@ -7,4 +7,4 @@
 script = ExtResource("2_mq7es")
 id = &"ore_pick"
 cursor_texture = ExtResource("1_m0xpl")
-cursor_hotspot = Vector2i(4, 2)
+cursor_hotspot = Vector2i(12, 1)

@@ -7,4 +7,4 @@
 script = ExtResource("2_wrp5u")
 id = &"pickaxe"
 cursor_texture = ExtResource("1_wcnr0")
-cursor_hotspot = Vector2i(4, 2)
+cursor_hotspot = Vector2i(14, 0)

@@ -38,6 +38,10 @@ RAMPS = {
  'gold': (['AMB', 'YEL', 'BW'], [0.42, 0.52, 0.06]),
  'crystal_violet': (['ST1', 'VIO', 'VHI', 'BW'], [0.25, 0.35, 0.28, 0.12]),
  'crystal_teal': (['LF1', 'TEAL', 'WA3', 'BW'], [0.25, 0.40, 0.23, 0.12]),
+ 'white': (['BW'], [1.0]),
+ 'skin': (['WD0', 'FR0', 'FR2'], [0.25, 0.50, 0.25]),
+ 'metal': (['ST1', 'ST2', 'VHI', 'BW'], [0.25, 0.35, 0.22, 0.18]),
+ 'stone_light': (['ST1', 'ST2', 'VHI'], [0.30, 0.45, 0.25]),
 }
 
 def material(c):
@@ -79,7 +83,7 @@ def remove_bg(im, tol=34):
                 q.append(n)
     return bg
 
-def convert(src, out, side=84, size=32, dy=0, remap=None):
+def convert(src, out, side=84, size=32, dy=0, remap=None, white=False):
     remap = remap or {}
     full = Image.open(src).convert('RGB')
     w, h = full.size
@@ -93,7 +97,13 @@ def convert(src, out, side=84, size=32, dy=0, remap=None):
         for x in range(side):
             if (x, y) not in bg:
                 m = material(px[x, y])
-                labels[(x, y)] = remap.get(m, m)
+                if white:
+                    hh, ss, vv = colorsys.rgb_to_hsv(*(c / 255 for c in px[x, y]))
+                    if ss < 0.15 and vv > 0.85:
+                        m = 'white'
+                m = remap.get(m, m)
+            if m != 'drop':
+                labels[(x, y)] = m
     colors = {k: C['OUT'] for k, m in labels.items() if m == 'outline'}
     for mat, (ramp, shares) in RAMPS.items():
         pts = sorted((lum(soft[k]), k) for k, m in labels.items() if m == mat)
@@ -178,6 +188,107 @@ def crop_cell(concept, piece, out):
     c, r = CELLS[piece]
     im = Image.open(concept).convert('RGB')
     im.crop((int(x0 + c * p), int(y0 + r * p), int(x0 + (c + 1) * p), int(y0 + (r + 1) * p))).save(out)
+
+def remove_bg_multi(im, tol=30, ring=6):
+    """Flood fill from the borders against several reference colors (panel frame + slot fill)."""
+    w, h = im.size
+    px = im.load()
+    border = [(x, y) for x in range(w) for y in (0, h - 1)] + [(x, y) for y in range(h) for x in (0, w - 1)]
+    inner = [(x, y) for x in range(ring, w - ring) for y in (ring, h - 1 - ring)] + \
+            [(x, y) for y in range(ring, h - ring) for x in (ring, w - 1 - ring)]
+    q8 = lambda c: tuple(v // 8 * 8 for v in c)
+    refs = [c for c, _ in Counter(q8(px[p]) for p in border).most_common(2)]
+    refs += [c for c, _ in Counter(q8(px[p]) for p in inner).most_common(1)]
+    near = lambda c: min(sum(abs(a - b) for a, b in zip(c, r)) for r in refs) <= tol
+    bg, q = set(), deque(border)
+    while q:
+        p = q.popleft()
+        if p in bg or not near(px[p]):
+            continue
+        bg.add(p)
+        x, y = p
+        for n in ((x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)):
+            if 0 <= n[0] < w and 0 <= n[1] < h and n not in bg:
+                q.append(n)
+    return bg
+
+
+def convert_object(crop, out, size, extent=None, inset=8, remap=None, white=False, bg_tol=34):
+    """Any-size crop (e.g. a UI panel slot) -> `size` sprite; the object is scaled to fit `extent`."""
+    remap = remap or {}
+    extent = extent or size - 2
+    full = Image.open(crop).convert('RGB')
+    im = full.crop((inset, inset, full.width - inset, full.height - inset))
+    bg = remove_bg_multi(im, bg_tol)
+    px = im.load()
+    soft = im.filter(ImageFilter.GaussianBlur(1.5)).load()
+    labels = {}
+    for y in range(im.height):
+        for x in range(im.width):
+            if (x, y) in bg:
+                continue
+            m = material(px[x, y])
+            if white:
+                _, ss, vv = colorsys.rgb_to_hsv(*(c / 255 for c in px[x, y]))
+                if ss < 0.15 and vv > 0.85:
+                    m = 'white'
+            m = remap.get(m, m)
+            if m != 'drop':
+                labels[(x, y)] = m
+    colors = {k: C['OUT'] for k, m in labels.items() if m == 'outline'}
+    for mat, (ramp, shares) in RAMPS.items():
+        pts = sorted((lum(soft[k]), k) for k, m in labels.items() if m == mat)
+        n = len(pts)
+        bounds, acc = [], 0.0
+        for sh in shares:
+            acc += sh
+            bounds.append(acc * n)
+        for i, (_, k) in enumerate(pts):
+            step = next(j for j, b in enumerate(bounds) if i < b or j == len(bounds) - 1)
+            colors[k] = C[ramp[step]]
+    xs = [k[0] for k in colors]
+    ys = [k[1] for k in colors]
+    x0, y0, x1, y1 = min(xs), min(ys), max(xs) + 1, max(ys) + 1
+    s = max(x1 - x0, y1 - y0) / extent
+    ow, oh = max(1, round((x1 - x0) / s)), max(1, round((y1 - y0) / s))
+    ox, oy = (size - ow) // 2, (size - oh) // 2
+    img = Image.new('RGBA', (size, size), (0, 0, 0, 0))
+    for ty in range(oh):
+        for tx in range(ow):
+            votes, total = Counter(), 0
+            for y in range(int(y0 + ty * s), max(int(y0 + ty * s) + 1, int(y0 + (ty + 1) * s))):
+                for x in range(int(x0 + tx * s), max(int(x0 + tx * s) + 1, int(x0 + (tx + 1) * s))):
+                    total += 1
+                    votes[colors.get((x, y))] += 1
+            opaque = total - votes.pop(None, 0)
+            if opaque * 2 < total or not votes:
+                continue
+            best, cnt = votes.most_common(1)[0]
+            if best == C['OUT'] and len(votes) > 1 and cnt < opaque * 0.6:
+                best = votes.most_common(2)[1][0]
+            img.putpixel((ox + tx, oy + ty), best + (255,))
+    op = {(x, y) for y in range(size) for x in range(size) if img.getpixel((x, y))[3]}
+    seen = set()
+    for start in list(op):
+        if start in seen:
+            continue
+        comp, stack = [], [start]
+        seen.add(start)
+        while stack:
+            x, y = stack.pop(); comp.append((x, y))
+            for n in ((x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)):
+                if n in op and n not in seen:
+                    seen.add(n); stack.append(n)
+        if len(comp) < 3:
+            for p in comp:
+                img.putpixel(p, (0, 0, 0, 0)); op.discard(p)
+    for (x, y) in op:
+        for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+            q = (x + dx, y + dy)
+            if 0 <= q[0] < size and 0 <= q[1] < size and q not in op:
+                img.putpixel(q, C['OUT'] + (255,))
+    img.save(out)
+
 
 if __name__ == '__main__':
     if sys.argv[1] == '--concept':

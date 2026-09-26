@@ -8,6 +8,7 @@
 layer = 100
 script = ExtResource("1_cursor")
 pointer_texture = ExtResource("2_pointer")
+pointer_hotspot = Vector2i(5, 1)
 lock_texture = ExtResource("3_lock")
 
 [node name="Sprite" type="Sprite2D" parent="."]

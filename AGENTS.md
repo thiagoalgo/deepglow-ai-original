@@ -283,6 +283,9 @@ sources whose tool is unlocked.
    Objects that exist in the concept art are converted instead of generated:
    `python3 tools/art/concept_to_sprite.py <cell_crop.png> <out.png> [piece_id]` (material ramps,
    32x32); outputs go to `pixelart/02_source/concept_derived/`.
+   Icons, cursors and the extra sources (puddle, pond, boar) come from `concept-art-2.png` /
+   `concept-art-3.png` (Claude project files): `python3 tools/art/concept_panel_items.py <c2.png> <c3.png>`
+   (crop boxes and ramps per item in `ITEMS`). Cursor hotspots are set by hand in `data/tools/*.tres`.
 2. **Clean up/edit** in Aseprite → `pixelart/02_source/<category>/<id>.aseprite`.
 3. **Force and validate the palette:** `python3 tools/art/palette.py apply|check`.
 4. **Export** the final PNG to `assets/sprites/<category>/<id>.png` (32x32 for sources;
