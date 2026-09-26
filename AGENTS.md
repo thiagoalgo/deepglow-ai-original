@@ -288,8 +288,9 @@ reference classes that depend on `Events`/`Settings` (Board, Game, UI).
 - **Never commit without the owner's explicit approval.** Before every commit, ask the owner,
   showing a short summary of the changes and the proposed message. Approval for one commit does
   not carry over to the next.
-- **Pushing is delegated to the agent:** once a commit is approved, the agent pushes it to
-  `origin/main` itself (no separate approval). Never force-push or rewrite published history.
+- **Pushing is done manually by the owner** (the agent environment has no GitHub credentials).
+  After every commit, the agent must **remind the owner to run `git push`** and say how many
+  commits are waiting. Never force-push or rewrite published history.
 - **Messages:** English, [Conventional Commits](https://www.conventionalcommits.org/)
   (`feat:`, `fix:`, `refactor:`, `test:`, `docs:`, `chore:`, `art:`), imperative mood,
   subject ≤ 72 characters, body explaining the *why* when useful.
@@ -311,4 +312,4 @@ reference classes that depend on `Events`/`Settings` (Board, Game, UI).
 - [ ] No secrets (`.env`, tokens) committed.
 - [ ] No raw/source art (`.aseprite`, discarded generations) inside this repository.
 - [ ] If architecture, folders, pipeline or conventions changed: **update this AGENTS.md**.
-- [ ] Changes committed **only** after the owner approved, then pushed (see section 7).
+- [ ] Changes committed **only** after the owner approved; owner reminded to push (see section 7).
