@@ -2,7 +2,7 @@ class_name CellCursor
 extends Node2D
 ## Highlight for the cell under the mouse. Positioned by Board.
 
-@export var color: Color = Palette.VEGETATION_NEON_TEAL
+@export var color: Color = Palette.LIGHT_BLUE_WHITE
 @export var size: Vector2 = Vector2(20, 20)
 
 

@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="SourceType" format=3]
+
+[ext_resource type="Resource" path="res://data/rarities/uncommon.tres" id="1_cjvvq"]
+[ext_resource type="Script" path="res://src/sources/source_type.gd" id="2_qrot7"]
+[ext_resource type="Texture2D" path="res://assets/sprites/sources/tree_oak.png" id="3_5fk8i"]
+[ext_resource type="Resource" path="res://data/tools/axe.tres" id="4_pxnv8"]
+[ext_resource type="Resource" path="res://data/resources/wood.tres" id="5_ioike"]
+
+[resource]
+script = ExtResource("2_qrot7")
+id = &"tree_oak"
+family = &"tree"
+rarity = ExtResource("1_cjvvq")
+tool = ExtResource("4_pxnv8")
+clicks = 7
+yield_resource = ExtResource("5_ioike")
+yield_amount = 6
+texture = ExtResource("3_5fk8i")

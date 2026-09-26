@@ -1,0 +1,15 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://src/ui/tool_cursor/tool_cursor.gd" id="1_cursor"]
+[ext_resource type="Texture2D" path="res://assets/sprites/cursors/pointer.png" id="2_pointer"]
+[ext_resource type="Texture2D" path="res://assets/sprites/cursors/lock.png" id="3_lock"]
+
+[node name="ToolCursor" type="CanvasLayer"]
+layer = 100
+script = ExtResource("1_cursor")
+pointer_texture = ExtResource("2_pointer")
+lock_texture = ExtResource("3_lock")
+
+[node name="Sprite" type="Sprite2D" parent="."]
+unique_name_in_owner = true
+centered = false

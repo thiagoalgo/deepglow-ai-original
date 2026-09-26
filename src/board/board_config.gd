@@ -7,8 +7,8 @@ extends Resource
 @export var size: Vector2i = Vector2i(8, 8)
 ## Cell size in pixels (includes the cell frame).
 @export var cell_size: Vector2i = Vector2i(20, 20)
-## Expected piece sprite size (art is generated/authored at this size).
-@export var piece_sprite_size: Vector2i = Vector2i(16, 16)
+## Expected source sprite size (art is generated/authored at this size).
+@export var source_sprite_size: Vector2i = Vector2i(16, 16)
 
 
 func get_pixel_size() -> Vector2i:

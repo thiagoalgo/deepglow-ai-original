@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="SourceType" format=3]
+
+[ext_resource type="Resource" path="res://data/rarities/uncommon.tres" id="1_3f8v1"]
+[ext_resource type="Script" path="res://src/sources/source_type.gd" id="2_tcupt"]
+[ext_resource type="Texture2D" path="res://assets/sprites/sources/fruit_tree.png" id="3_idkia"]
+[ext_resource type="Resource" path="res://data/tools/hand.tres" id="4_njx03"]
+[ext_resource type="Resource" path="res://data/resources/fruit.tres" id="5_64qe4"]
+
+[resource]
+script = ExtResource("2_tcupt")
+id = &"fruit_tree"
+family = &"fruit"
+rarity = ExtResource("1_3f8v1")
+tool = ExtResource("4_njx03")
+clicks = 5
+yield_resource = ExtResource("5_64qe4")
+yield_amount = 5
+texture = ExtResource("3_idkia")

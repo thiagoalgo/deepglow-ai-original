@@ -1,26 +1,67 @@
 [gd_scene format=3]
 
 [ext_resource type="Script" path="res://src/game/game.gd" id="1_game"]
-[ext_resource type="Resource" path="res://data/pieces/catalog.tres" id="2_catalog"]
-[ext_resource type="PackedScene" path="res://src/board/board.tscn" id="3_board"]
-[ext_resource type="Script" path="res://src/core/state_machine/state_machine.gd" id="4_sm"]
-[ext_resource type="Script" path="res://src/game/states/setup_state.gd" id="5_setup"]
-[ext_resource type="Script" path="res://src/game/states/player_turn_state.gd" id="6_turn"]
+[ext_resource type="Resource" path="res://data/game_database.tres" id="2_db"]
+[ext_resource type="PackedScene" path="res://src/sources/source_card.tscn" id="3_card"]
+[ext_resource type="PackedScene" path="res://src/board/board.tscn" id="4_board"]
+[ext_resource type="Script" path="res://src/core/state_machine/state_machine.gd" id="5_sm"]
+[ext_resource type="Script" path="res://src/game/states/setup_state.gd" id="6_setup"]
+[ext_resource type="Script" path="res://src/game/states/phase_build_state.gd" id="7_build"]
+[ext_resource type="Script" path="res://src/game/states/phase_state.gd" id="8_phase"]
+[ext_resource type="Script" path="res://src/game/states/phase_summary_state.gd" id="9_summary"]
+[ext_resource type="Script" path="res://src/game/states/upgrade_state.gd" id="10_upgrade"]
+[ext_resource type="PackedScene" path="res://src/ui/hud/hud.tscn" id="11_hud"]
+[ext_resource type="PackedScene" path="res://src/ui/phase_summary/phase_summary.tscn" id="12_summary_ui"]
+[ext_resource type="PackedScene" path="res://src/ui/upgrade_screen/upgrade_screen.tscn" id="13_upgrade_ui"]
+[ext_resource type="PackedScene" path="res://src/ui/tool_cursor/tool_cursor.tscn" id="14_cursor"]
 
 [node name="Game" type="Node2D"]
 script = ExtResource("1_game")
-catalog = ExtResource("2_catalog")
+database = ExtResource("2_db")
+card_scene = ExtResource("3_card")
 
-[node name="Board" parent="." instance=ExtResource("3_board")]
+[node name="Board" parent="." instance=ExtResource("4_board")]
 unique_name_in_owner = true
+
+[node name="Effects" type="Node2D" parent="."]
+unique_name_in_owner = true
+z_index = 20
+
+[node name="PhaseTimer" type="Timer" parent="."]
+unique_name_in_owner = true
+one_shot = true
 
 [node name="StateMachine" type="Node" parent="." node_paths=PackedStringArray("initial_state")]
 unique_name_in_owner = true
-script = ExtResource("4_sm")
+script = ExtResource("5_sm")
 initial_state = NodePath("Setup")
 
 [node name="Setup" type="Node" parent="StateMachine"]
-script = ExtResource("5_setup")
+script = ExtResource("6_setup")
 
-[node name="PlayerTurn" type="Node" parent="StateMachine"]
-script = ExtResource("6_turn")
+[node name="PhaseBuild" type="Node" parent="StateMachine"]
+script = ExtResource("7_build")
+
+[node name="Phase" type="Node" parent="StateMachine"]
+script = ExtResource("8_phase")
+
+[node name="PhaseSummary" type="Node" parent="StateMachine"]
+script = ExtResource("9_summary")
+
+[node name="Upgrade" type="Node" parent="StateMachine"]
+script = ExtResource("10_upgrade")
+
+[node name="Hud" parent="." instance=ExtResource("11_hud")]
+unique_name_in_owner = true
+
+[node name="Overlays" type="CanvasLayer" parent="."]
+layer = 10
+
+[node name="PhaseSummary" parent="Overlays" instance=ExtResource("12_summary_ui")]
+unique_name_in_owner = true
+
+[node name="UpgradeScreen" parent="Overlays" instance=ExtResource("13_upgrade_ui")]
+unique_name_in_owner = true
+
+[node name="ToolCursor" parent="." instance=ExtResource("14_cursor")]
+unique_name_in_owner = true

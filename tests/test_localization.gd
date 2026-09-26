@@ -2,7 +2,7 @@ extends RefCounted
 ## Localization tests: translation table completeness and locale matching.
 
 const CSV_PATH := "res://localization/translations.csv"
-const CATALOG_PATH := "res://data/pieces/catalog.tres"
+const DATABASE_PATH := "res://data/game_database.tres"
 const SETTINGS_PATH := "res://src/autoload/settings.gd"
 
 
@@ -40,11 +40,22 @@ func test_supported_locales_match_csv_columns() -> String:
 	return ""
 
 
-func test_every_piece_has_name_key() -> String:
+func test_every_data_item_has_keys() -> String:
 	var rows: Dictionary = _read_table()["rows"]
-	var catalog: Resource = load(CATALOG_PATH)
-	for data: Resource in catalog.get("pieces"):
-		var key := String(data.call("get_name_key"))
+	var db: Resource = load(DATABASE_PATH)
+	var keys: Array[String] = []
+	for item: Resource in db.get("resources"):
+		keys.append(String(item.call("get_name_key")))
+	for item: Resource in db.get("sources"):
+		keys.append(String(item.call("get_name_key")))
+	for item: Resource in db.get("upgrades"):
+		keys.append(String(item.call("get_name_key")))
+		keys.append(String(item.call("get_desc_key")))
+	for item: Resource in db.get("tools"):
+		keys.append("TOOL_%s_NAME" % String(item.get("id")).to_upper())
+	for item: Resource in db.get("rarities"):
+		keys.append("RARITY_%s_NAME" % String(item.get("id")).to_upper())
+	for key: String in keys:
 		if not rows.has(key):
 			return "missing translation key %s" % key
 	return ""

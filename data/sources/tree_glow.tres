@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="SourceType" format=3]
+
+[ext_resource type="Resource" path="res://data/rarities/rare.tres" id="1_x1ctv"]
+[ext_resource type="Script" path="res://src/sources/source_type.gd" id="2_d5lj2"]
+[ext_resource type="Texture2D" path="res://assets/sprites/sources/tree_glow.png" id="3_igo6d"]
+[ext_resource type="Resource" path="res://data/tools/axe.tres" id="4_8vqxo"]
+[ext_resource type="Resource" path="res://data/resources/wood.tres" id="5_8ao5c"]
+
+[resource]
+script = ExtResource("2_d5lj2")
+id = &"tree_glow"
+family = &"tree"
+rarity = ExtResource("1_x1ctv")
+tool = ExtResource("4_8vqxo")
+clicks = 12
+yield_resource = ExtResource("5_8ao5c")
+yield_amount = 12
+texture = ExtResource("3_igo6d")

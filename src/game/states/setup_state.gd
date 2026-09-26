@@ -1,8 +1,7 @@
 extends GameState
-## Prepares a new match and moves to the first turn.
+## Prepares the run and moves to the first phase.
 
 
 func enter(_payload: Dictionary = {}) -> void:
-	game.board.reset()
-	game.turn_number = 0
-	request_transition.call_deferred(&"PlayerTurn")
+	game.board.clear_items()
+	request_transition.call_deferred(&"PhaseBuild")

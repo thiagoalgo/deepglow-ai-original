@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="UpgradeNode" format=3]
+
+[ext_resource type="Script" path="res://src/economy/resource_amount.gd" id="1_fyw8b"]
+[ext_resource type="Resource" path="res://data/resources/wood.tres" id="2_tclh2"]
+[ext_resource type="Resource" path="res://data/resources/fruit.tres" id="3_8yjrb"]
+[ext_resource type="Script" path="res://src/progression/upgrade_node.gd" id="4_jyu5t"]
+[ext_resource type="Resource" path="res://data/upgrades/sharp_axe.tres" id="5_1j01k"]
+
+[sub_resource type="Resource" id="Resource_lcc7i"]
+script = ExtResource("1_fyw8b")
+resource = ExtResource("2_tclh2")
+amount = 25
+
+[sub_resource type="Resource" id="Resource_psrb3"]
+script = ExtResource("1_fyw8b")
+resource = ExtResource("3_8yjrb")
+amount = 10
+
+[resource]
+script = ExtResource("4_jyu5t")
+id = &"keen_eye"
+effect = 4
+value_per_level = 0.25
+max_level = 3
+base_costs = Array[ExtResource("1_fyw8b")]([SubResource("Resource_lcc7i"), SubResource("Resource_psrb3")])
+cost_growth = 2.5
+prerequisites = Array[Resource]([ExtResource("5_1j01k")])

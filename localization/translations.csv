@@ -1,13 +1,44 @@
 keys,en,pt_BR
 GAME_TITLE,Deepglow,Deepglow
 UI_LANGUAGE_PROMPT,Choose your language,Escolha seu idioma
-HUD_TURN,Turn %d,Turno %d
-PIECE_TREE_PINE_NAME,Pine Tree,Pinheiro
-PIECE_ROCK_GRAY_NAME,Stone,Pedra
-PIECE_ORE_GOLD_NAME,Gold Ore,Minério de Ouro
-PIECE_GEM_VIOLET_NAME,Violet Crystal,Cristal Violeta
-PIECE_GEM_TEAL_NAME,Teal Crystal,Cristal Turquesa
-PIECE_MUSHROOM_GLOW_NAME,Glowing Mushroom,Cogumelo Luminoso
-PIECE_FLOWER_WHITE_NAME,White Flower,Flor Branca
-PIECE_WELL_NAME,Well,Poço
-PIECE_CAMPFIRE_NAME,Campfire,Fogueira
+UI_CONTINUE,Continue,Continuar
+UI_BUY,Buy,Comprar
+UI_MAXED,Max,Máx
+UI_LEVEL,%d/%d,%d/%d
+UI_UPGRADES_TITLE,Upgrades,Evoluções
+UI_START_PHASE,Start phase %d,Iniciar fase %d
+UI_SUMMARY_TITLE,Phase %d complete,Fase %d concluída
+UI_SUMMARY_CLEARED,Collected %d of %d sources,Coletou %d de %d fontes
+HUD_PHASE,Phase %d,Fase %d
+HUD_HUNGER,Hunger,Fome
+HUD_THIRST,Thirst,Sede
+HUD_INVENTORY,Resources,Recursos
+RESOURCE_WOOD_NAME,Wood,Madeira
+RESOURCE_FRUIT_NAME,Fruit,Fruta
+RESOURCE_WATER_NAME,Water,Água
+RARITY_COMMON_NAME,Common,Comum
+RARITY_UNCOMMON_NAME,Uncommon,Incomum
+RARITY_RARE_NAME,Rare,Rara
+RARITY_EPIC_NAME,Epic,Épica
+TOOL_AXE_NAME,Axe,Machado
+TOOL_HAND_NAME,Hand,Mão
+TOOL_CUP_NAME,Cup,Copo
+SOURCE_TREE_PINE_NAME,Pine Tree,Pinheiro
+SOURCE_TREE_OAK_NAME,Oak,Carvalho
+SOURCE_TREE_GLOW_NAME,Glowing Tree,Árvore Luminosa
+SOURCE_BERRY_BUSH_NAME,Berry Bush,Arbusto de Frutas
+SOURCE_FRUIT_TREE_NAME,Apple Tree,Macieira
+SOURCE_PUDDLE_NAME,Puddle,Poça
+SOURCE_SPRING_NAME,Spring,Nascente
+UPGRADE_SHARP_AXE_NAME,Sharp Axe,Machado Afiado
+UPGRADE_SHARP_AXE_DESC,Trees need 1 fewer click per level.,Árvores precisam de 1 clique a menos por nível.
+UPGRADE_BASKET_NAME,Basket,Cesta
+UPGRADE_BASKET_DESC,+1 fruit from every fruit source per level.,+1 fruta em cada fonte de fruta por nível.
+UPGRADE_CANTEEN_NAME,Canteen,Cantil
+UPGRADE_CANTEEN_DESC,Thirst drops 20% slower per level.,A sede cai 20% mais devagar por nível.
+UPGRADE_LUMBER_SENSE_NAME,Lumber Sense,Olho de Lenhador
+UPGRADE_LUMBER_SENSE_DESC,+1 wood from every tree per level.,+1 madeira em cada árvore por nível.
+UPGRADE_LONGER_DAYS_NAME,Longer Days,Dias Longos
+UPGRADE_LONGER_DAYS_DESC,+5 seconds per phase per level.,+5 segundos por fase por nível.
+UPGRADE_KEEN_EYE_NAME,Keen Eye,Olhar Atento
+UPGRADE_KEEN_EYE_DESC,Uncommon and rarer sources appear 25% more often per level.,Fontes incomuns ou mais raras aparecem 25% mais por nível.

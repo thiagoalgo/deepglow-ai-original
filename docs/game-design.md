@@ -143,8 +143,9 @@ Custos crescem de forma geométrica por nível. A árvore completa terá ~50–7
 | `PhaseRules` | duração base, faixa de aperto, limites de CPS, mínimos de comida/água | `data/phases/` |
 
 Estado em tempo de execução (classes puras, testáveis e salváveis): `Inventory`,
-`ProgressionState` (melhorias, desbloqueios, CPS medido), `PhaseGenerator` (entrada: progresso +
-seed; saída: lista de fontes com posição). O simulador em Python e o jogo devem usar a **mesma
+`ProgressionState` (melhorias, desbloqueios, CPS medido), `Needs` (fome/sede) e `PhaseGenerator`
+(entrada: progresso + seed; saída: `PhasePlan` com fontes e posições). Todo o banco de dados fica em
+`data/game_database.tres` (`GameDatabase`). O simulador em Python e o jogo devem usar a **mesma
 fórmula**; o gerador fica isolado para permitir testes.
 Estados da `StateMachine`: `Setup` → `PhaseBuild` → `Phase` → `PhaseSummary` → `Upgrade`.
 
@@ -152,7 +153,7 @@ Estados da `StateMachine`: `Setup` → `PhaseBuild` → `Phase` → `PhaseSummar
 
 | Etapa | Entrega |
 |---|---|
-| M1 — Protótipo do loop | madeira, fruta e água (com variações de raridade); gerador de fases; timer; cursor contextual; fome/sede; HUD; tela de evolução com ~5 nós; arte provisória |
+| M1 — Protótipo do loop ✅ | madeira, fruta e água (com variações de raridade); gerador de fases; timer; cursor contextual; fome/sede; HUD; tela de evolução com ~5 nós; arte provisória |
 | M2 — Simulador | script de balanceamento + meta de 3 h verificada |
 | M3 — Camadas 1–2 | rochas, lago, javali, fogueira |
 | M4 — Arte | sprites definitivos no Pixellab (fontes por raridade + cursores + ícones) |

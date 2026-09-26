@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="SourceType" format=3]
+
+[ext_resource type="Resource" path="res://data/rarities/uncommon.tres" id="1_7qe8s"]
+[ext_resource type="Script" path="res://src/sources/source_type.gd" id="2_tx4vf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/sources/spring.png" id="3_m42ht"]
+[ext_resource type="Resource" path="res://data/tools/cup.tres" id="4_em31m"]
+[ext_resource type="Resource" path="res://data/resources/water.tres" id="5_gieiy"]
+
+[resource]
+script = ExtResource("2_tx4vf")
+id = &"spring"
+family = &"water"
+rarity = ExtResource("1_7qe8s")
+tool = ExtResource("4_em31m")
+clicks = 4
+yield_resource = ExtResource("5_gieiy")
+yield_amount = 5
+texture = ExtResource("3_m42ht")

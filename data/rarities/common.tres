@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="Rarity" format=3]
+
+[ext_resource type="Script" path="res://src/sources/rarity.gd" id="1_pu5f5"]
+
+[resource]
+script = ExtResource("1_pu5f5")
+id = &"common"
+weight = 60.0
+color = Color(0.22745098, 0.27450982, 0.6392157, 1)
+is_baseline = true

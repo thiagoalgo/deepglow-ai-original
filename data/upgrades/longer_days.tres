@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="UpgradeNode" format=3]
+
+[ext_resource type="Script" path="res://src/economy/resource_amount.gd" id="1_hco2f"]
+[ext_resource type="Resource" path="res://data/resources/fruit.tres" id="2_ygah0"]
+[ext_resource type="Resource" path="res://data/resources/water.tres" id="3_lpkcf"]
+[ext_resource type="Script" path="res://src/progression/upgrade_node.gd" id="4_yk8r8"]
+[ext_resource type="Resource" path="res://data/upgrades/basket.tres" id="5_vapvs"]
+
+[sub_resource type="Resource" id="Resource_37ihf"]
+script = ExtResource("1_hco2f")
+resource = ExtResource("2_ygah0")
+amount = 12
+
+[sub_resource type="Resource" id="Resource_sqv2i"]
+script = ExtResource("1_hco2f")
+resource = ExtResource("3_lpkcf")
+amount = 12
+
+[resource]
+script = ExtResource("4_yk8r8")
+id = &"longer_days"
+effect = 3
+value_per_level = 5.0
+max_level = 3
+base_costs = Array[ExtResource("1_hco2f")]([SubResource("Resource_37ihf"), SubResource("Resource_sqv2i")])
+cost_growth = 2.5
+prerequisites = Array[Resource]([ExtResource("5_vapvs")])

@@ -1,8 +1,8 @@
 class_name Board
 extends Node2D
-## Board view + input. Holds a BoardModel (pure state) and keeps the
-## Piece nodes in sync with it. Contains no game rules: rules live in the
-## Game states (src/game/states/).
+## Board view + input. Holds a BoardModel (pure state) with one Node2D item per
+## occupied cell. Contains no game rules: rules live in the Game states
+## (src/game/states/). Items are owned by the board once placed.
 
 signal cell_hovered(cell: Vector2i)
 signal cell_hover_exited
@@ -12,19 +12,17 @@ signal cell_cancelled(cell: Vector2i)
 const INVALID_CELL := Vector2i(-1, -1)
 
 @export var config: BoardConfig
-@export var piece_scene: PackedScene
 
 var model: BoardModel
 var hovered_cell: Vector2i = INVALID_CELL
 
 @onready var _grid_view: BoardGridView = %GridView
-@onready var _pieces_root: Node2D = %Pieces
+@onready var _items_root: Node2D = %Items
 @onready var _cursor: CellCursor = %Cursor
 
 
 func _ready() -> void:
 	assert(config != null, "Board requires a BoardConfig.")
-	assert(piece_scene != null, "Board requires piece_scene.")
 	model = BoardModel.new(config.size)
 	_grid_view.config = config
 	_cursor.size = Vector2(config.cell_size)
@@ -42,50 +40,37 @@ func local_to_cell(local_pos: Vector2) -> Vector2i:
 	return cell if model.is_inside(cell) else INVALID_CELL
 
 
-# --- Pieces ------------------------------------------------------------------
+# --- Items -------------------------------------------------------------------
 
-func place_piece(data: PieceData, cell: Vector2i) -> Piece:
+func place_item(item: Node2D, cell: Vector2i) -> bool:
 	if not model.is_empty(cell):
 		push_warning("Cell occupied or invalid: %s" % cell)
-		return null
-	var piece := piece_scene.instantiate() as Piece
-	piece.data = data
-	piece.cell = cell
-	piece.position = cell_to_local(cell)
-	_pieces_root.add_child(piece)
-	model.set_at(cell, piece)
-	piece.play_spawn()
-	Events.piece_placed.emit(piece, cell)
-	return piece
-
-
-func remove_piece(cell: Vector2i) -> void:
-	var piece := get_piece(cell)
-	if piece == null:
-		return
-	model.clear_at(cell)
-	Events.piece_removed.emit(piece, cell)
-	piece.despawn()
-
-
-func move_piece(from: Vector2i, to: Vector2i) -> bool:
-	var piece := get_piece(from)
-	if piece == null or not model.is_empty(to):
 		return false
-	model.clear_at(from)
-	model.set_at(to, piece)
-	piece.cell = to
-	piece.move_to(cell_to_local(to))
+	item.position = cell_to_local(cell)
+	_items_root.add_child(item)
+	model.set_at(cell, item)
 	return true
 
 
-func get_piece(cell: Vector2i) -> Piece:
-	return model.get_at(cell) as Piece
+## Detaches the item from the cell and returns it (the caller frees/animates it).
+func take_item(cell: Vector2i) -> Node2D:
+	var item := get_item(cell)
+	if item:
+		model.clear_at(cell)
+	return item
 
 
-func reset() -> void:
+func get_item(cell: Vector2i) -> Node2D:
+	return model.get_at(cell) as Node2D
+
+
+func is_empty() -> bool:
+	return model.occupied_cells().is_empty()
+
+
+func clear_items() -> void:
 	for cell: Vector2i in model.occupied_cells():
-		remove_piece(cell)
+		take_item(cell).queue_free()
 
 
 # --- Input -------------------------------------------------------------------

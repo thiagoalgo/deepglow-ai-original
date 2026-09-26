@@ -16,13 +16,14 @@ Never hardcode player-facing strings in scripts or scenes: use translation keys 
 
 ## 1. The project
 
-- **Game:** Deepglow — a pixel art **board game** with a night-time, bioluminescent setting
-  (forest, waterfall, crystals, glowing mushrooms). 8x8 board with icon-like pieces
-  (trees, rocks, ores, gems, plants, structures). Visual reference:
-  `00_references/concept-art.png` in the art directory.
+- **Game:** Deepglow — a pixel art **incremental game** on an 8x8 board, night-time bioluminescent
+  setting. Timed phases: resource sources (trees, fruit, water, later rocks, fish, game, crystals)
+  appear on the board, the player clicks to harvest them, then spends resources on an upgrade tree.
+  Visual reference: `00_references/concept-art.png` in the art directory.
 - **Engine:** Godot **4.7.x**, GDScript, **GL Compatibility** renderer.
-- **Game rules:** still being designed (`docs/game-design.md`). The current loop (click places
-  a random piece, right click removes) is a **prototype** in `src/game/states/player_turn_state.gd`.
+- **Game design:** `docs/game-design.md` (source of truth for rules, balance targets and roadmap).
+  Current milestone: **M1 prototype loop** (wood/fruit/water, phase generator, contextual cursor,
+  hunger/thirst, upgrade list) with temporary programmer art.
 
 ### Directories
 
@@ -65,14 +66,21 @@ pixelart/
 ```
 src/                  # code + scenes, organized by FEATURE (.tscn next to its .gd)
   autoload/           # singletons: Settings (persisted prefs), Events (signal bus)
-  core/               # generic utilities, no game rules (StateMachine, Palette)
+  core/               # generic utilities (StateMachine, Palette, GameDatabase)
   main/               # entry scene and screen flow
-  game/               # match orchestration + states/ (rules per state)
-  board/              # Board (view/input), BoardModel (pure state), BoardConfig
-  pieces/             # Piece (scene), PieceData/PieceCatalog (Resources)
-  ui/                 # one subfolder per screen/component + theme/
+  game/               # run orchestration (Game) + states/ (rules per state)
+  board/              # Board (view/input, generic items), BoardModel (pure state), BoardConfig
+  economy/            # ResourceType, ResourceAmount (data) + Inventory (state)
+  sources/            # Rarity, ToolType, SourceType (data) + SourceCard (scene)
+  progression/        # UpgradeNode (data) + ProgressionState (state, derived stats)
+  survival/           # Needs (hunger/thirst state)
+  phases/             # PhaseRules (data) + PhaseGenerator/PhasePlan (pure logic)
+  fx/                 # visual effects (FloatingText)
+  ui/                 # one subfolder per screen/component (hud, phase_summary,
+                      # upgrade_screen, tool_cursor, language_select) + theme/
 localization/         # translations.csv (source of all player-facing text)
-data/                 # .tres instances (configs, catalog, piece definitions)
+data/                 # .tres instances: game_database.tres (root), resources/, rarities/,
+                      # tools/, sources/, upgrades/, phases/, board/
 assets/               # FINAL game-ready art/audio (sprites/, tilesets/, fonts/, audio/, palettes/)
 tests/                # headless tests (test_*.gd)
 tools/                # Python scripts outside the game (pixellab/, art/)
@@ -86,27 +94,40 @@ docs/                 # design and pipeline docs
 Main (Node)                          src/main/main.tscn — swaps screens
 ├── LanguageSelect (Control)         src/ui/language_select/  — start screen
 │
-└── (after a language is confirmed)
-    ├── Game (Node2D)                src/game/game.tscn      — match context
-    │   ├── Board (Node2D) %         src/board/board.tscn    — view + input
-    │   │   ├── GridView (Node2D) %  — placeholder drawing (_draw) → future TileMapLayer
-    │   │   ├── Pieces (Node2D, y_sort) %
-    │   │   └── Cursor (Node2D) %
-    │   └── StateMachine (Node) %
-    │       ├── Setup (GameState)
-    │       └── PlayerTurn (GameState)
-    └── Hud (CanvasLayer)            src/ui/hud/hud.tscn
+└── Game (Node2D)                    src/game/game.tscn — run state: inventory, progression, needs
+    ├── Board (Node2D) %             src/board/board.tscn
+    │   ├── GridView (Node2D) %      — placeholder drawing (_draw) → future TileMapLayer
+    │   ├── Items (Node2D, y_sort) % — SourceCard instances
+    │   └── Cursor (Node2D) %        — hovered cell highlight
+    ├── Effects (Node2D) %           — FloatingText popups
+    ├── PhaseTimer (Timer) %
+    ├── StateMachine (Node) %
+    │   ├── Setup          → PhaseBuild
+    │   ├── PhaseBuild     — PhaseGenerator fills the board → Phase
+    │   ├── Phase          — timer, clicks, needs, collection → PhaseSummary
+    │   ├── PhaseSummary   — results overlay → Upgrade
+    │   └── Upgrade        — upgrade list → PhaseBuild
+    ├── Hud (CanvasLayer) %          src/ui/hud/ — timer, needs bars, inventory
+    ├── Overlays (CanvasLayer 10)
+    │   ├── PhaseSummary (Control) %
+    │   └── UpgradeScreen (Control) %
+    └── ToolCursor (CanvasLayer 100) % — software cursor showing the contextual tool
 ```
 
-Autoloads (in order): `Settings`, `Events`.
+Data flow: `GameDatabase` (all data) → `ProgressionState` computes derived stats (effective clicks,
+yields, phase duration, drains, rarity weights) from upgrade levels → `PhaseGenerator` builds a
+`PhasePlan` from progression + seed → states apply it. Game relays `Inventory.changed` and
+`Needs.changed` to `Events` for the HUD.
 
 ### Principles
 
 1. **Separate data, state and view.**
-   - *Data* → `Resource` with `class_name` (`PieceData`, `BoardConfig`), instances in `data/`.
-     New piece type = new `.tres` + translation keys, no new code.
-   - *State* → pure `RefCounted` classes (`BoardModel`), testable headless.
-   - *View* → nodes/scenes that reflect the state (`Board`, `Piece`).
+   - *Data* → `Resource` with `class_name` (`SourceType`, `UpgradeNode`, `PhaseRules`…), instances
+     in `data/` and registered in `data/game_database.tres`. New source/upgrade = new `.tres` +
+     translation keys + database entry, no new code. Balance numbers never live in code.
+   - *State/logic* → pure `RefCounted` classes (`BoardModel`, `Inventory`, `ProgressionState`,
+     `Needs`, `PhaseGenerator`), testable headless and reusable by the balance simulator.
+   - *View* → nodes/scenes that reflect the state (`Board`, `SourceCard`, HUD).
 2. **One scene = one responsibility**, with a same-named script next to it
    (`board.tscn` + `board.gd`). Compose scenes by instancing; avoid giant scenes.
 3. **Communication:** "call down, signal up".
@@ -147,6 +168,10 @@ Autoloads (in order): `Settings`, `Events`.
 - Document classes and public methods with `##` (shown in the editor).
 - Scripts used in the editor (`_draw` previews, Resources they read) need `@tool`.
 - Tabs for indentation (see `.editorconfig`).
+- **Avoid script self-references in Resources** (e.g. `Array[UpgradeNode]` inside
+  `upgrade_node.gd`): they create a reference cycle that leaks at exit. Type such fields as
+  `Array[Resource]` and document the expected type.
+- Don't name methods after `Object` virtuals (`_set`, `_get`, `_notification`…).
 
 ### Input
 
@@ -169,8 +194,9 @@ block the board use `mouse_filter = IGNORE`.
     locale change).
   - Dynamic text in code: `tr(&"HUD_TURN") % value`; in Resources use
     `TranslationServer.translate(key)`.
-  - Pieces: the key is derived from `PieceData.id` (`gem_violet` → `PIECE_GEM_VIOLET_NAME`);
-    use `PieceData.get_display_name()`.
+  - Data items derive keys from their `id`: `RESOURCE_<ID>_NAME`, `SOURCE_<ID>_NAME`,
+    `UPGRADE_<ID>_NAME` / `_DESC`, `TOOL_<ID>_NAME`, `RARITY_<ID>_NAME` (checked by
+    `tests/test_localization.gd` against `data/game_database.tres`).
   - Language names are always written in their own language and never translated.
 - **Active locale:** owned by the `Settings` autoload (`Settings.set_locale()`), persisted to
   `user://settings.cfg`. On first launch it defaults to the OS locale when supported.
@@ -206,6 +232,14 @@ never in git):
 **Credits are limited:** only generate what the task needs, start with the cheapest
 tool/size, and never batch-generate without the owner's approval.
 
+### Placeholder art
+
+Until M4, sprites are **programmer art** generated by `tools/art/placeholder_sprites.py`
+(ASCII maps → palette-only PNGs in `assets/sprites/{sources,cursors,icons}/`). Edit the maps and
+re-run the script; final art replaces the PNGs with the same file names.
+
+Sizes: sources 16x16, cursors 12x12 (hotspot in `ToolType.cursor_hotspot`), HUD icons 8x8.
+
 ### Asset workflow
 
 1. **Generate** with Pixellab (raw output → `pixelart/03_pixellab/...`). Always log the prompt.
@@ -214,13 +248,14 @@ tool/size, and never batch-generate without the owner's approval.
    Use `pixelart/01_palette/deepglow_palette.png` as the color/palette image when supported.
 2. **Clean up/edit** in Aseprite → `pixelart/02_source/<category>/<id>.aseprite`.
 3. **Force and validate the palette:** `python3 tools/art/palette.py apply|check`.
-4. **Export** the final PNG to `assets/sprites/<category>/<id>.png` (16x16 for pieces;
+4. **Export** the final PNG to `assets/sprites/<category>/<id>.png` (16x16 for sources;
    spritesheets as `assets/sprites/.../<id>_sheet.png`).
-5. **Hook it up:** set `texture` in `data/pieces/<id>.tres` (or create a `SpriteFrames`).
+5. **Hook it up:** set `texture` in `data/sources/<id>.tres` (or `icon` / `cursor_texture` for
+   resources/tools; create a `SpriteFrames` for animations).
 6. **Record progress:** screenshots/videos in `pixelart/05_progress/`.
 
-Art file names: `snake_case`, no spaces, English, id equal to `PieceData.id`
-(e.g. `gem_violet.png` ↔ `data/pieces/gem_violet.tres` ↔ `PIECE_GEM_VIOLET_NAME`).
+Art file names: `snake_case`, no spaces, English, id equal to the data `id`
+(e.g. `tree_oak.png` ↔ `data/sources/tree_oak.tres` ↔ `SOURCE_TREE_OAK_NAME`).
 
 ## 6. Useful commands
 
@@ -239,8 +274,9 @@ python3 tools/art/palette.py png --swatch 8 --out /tmp/palette.png
 
 Tests: `tests/test_*.gd` files extending `RefCounted`, with `test_*()` methods returning
 `""` (pass) or a failure message. Scripts run with `-s` are compiled before autoloads exist:
-tests must cover pure logic (`BoardModel`, Resources, static helpers) and load scenes/scripts
-via `load()` without static typing of classes that depend on `Events`/`Settings`.
+tests must cover pure logic (`BoardModel`, `Inventory`, `ProgressionState`, `Needs`,
+`PhaseGenerator`, Resources) using the real `data/game_database.tres`, and must not statically
+reference classes that depend on `Events`/`Settings` (Board, Game, UI).
 
 ## 7. Git workflow
 
@@ -263,6 +299,7 @@ via `load()` without static typing of classes that depend on `Events`/`Settings`
 - [ ] Everything technical (code, names, keys) is in English; player-facing text uses translation keys filled for
       `en` and `pt_BR`.
 - [ ] New assets pass `palette.py check` and respect 16x16 / 20 px grid.
+- [ ] `--headless --import` shows no "leaked"/"still in use" messages (see self-reference rule).
 - [ ] No secrets (`.env`, tokens) committed.
 - [ ] No raw/source art (`.aseprite`, discarded generations) inside this repository.
 - [ ] If architecture, folders, pipeline or conventions changed: **update this AGENTS.md**.

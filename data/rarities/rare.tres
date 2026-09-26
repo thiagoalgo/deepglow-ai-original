@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="Rarity" format=3]
+
+[ext_resource type="Script" path="res://src/sources/rarity.gd" id="1_w4wvk"]
+
+[resource]
+script = ExtResource("1_w4wvk")
+id = &"rare"
+weight = 12.0
+color = Color(0.6039216, 0.41960785, 0.87058824, 1)

@@ -2,8 +2,8 @@ extends Node
 ## Global signal bus (autoload "Events").
 ##
 ## Use ONLY for communication between systems that don't know each other
-## (e.g. Board -> HUD). Parent/child communication must use direct signals
-## or method calls. Never store state here.
+## (e.g. game states -> HUD). Parent/child communication must use direct
+## signals or method calls. Never store state here.
 
 @warning_ignore_start("unused_signal")
 
@@ -12,13 +12,14 @@ signal cell_hovered(cell: Vector2i)
 signal cell_hover_exited
 signal cell_selected(cell: Vector2i)
 
-# --- Pieces ---
-signal piece_placed(piece: Piece, cell: Vector2i)
-signal piece_removed(piece: Piece, cell: Vector2i)
+# --- Phase ---
+signal phase_started(phase_number: int, duration: float)
+signal phase_time_changed(time_left: float)
+signal phase_ended(phase_number: int)
+signal source_collected(source: SourceType, amount: int, cell: Vector2i)
 
-# --- Game flow ---
-signal turn_started(turn_number: int)
-signal turn_ended(turn_number: int)
-signal game_over(result: Dictionary)
+# --- Player state ---
+signal needs_changed(hunger: float, thirst: float)
+signal inventory_changed(resource_id: StringName, amount: int)
 
 @warning_ignore_restore("unused_signal")

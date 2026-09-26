@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="ToolType" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/cursors/axe.png" id="1_aahbs"]
+[ext_resource type="Script" path="res://src/sources/tool_type.gd" id="2_ewmie"]
+
+[resource]
+script = ExtResource("2_ewmie")
+id = &"axe"
+cursor_texture = ExtResource("1_aahbs")
+cursor_hotspot = Vector2i(5, 1)
+unlocked_by_default = true

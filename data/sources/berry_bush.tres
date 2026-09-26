@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="SourceType" format=3]
+
+[ext_resource type="Resource" path="res://data/rarities/common.tres" id="1_1r4cn"]
+[ext_resource type="Script" path="res://src/sources/source_type.gd" id="2_dbxou"]
+[ext_resource type="Texture2D" path="res://assets/sprites/sources/berry_bush.png" id="3_57nbb"]
+[ext_resource type="Resource" path="res://data/tools/hand.tres" id="4_bg3ym"]
+[ext_resource type="Resource" path="res://data/resources/fruit.tres" id="5_kfeso"]
+
+[resource]
+script = ExtResource("2_dbxou")
+id = &"berry_bush"
+family = &"fruit"
+rarity = ExtResource("1_1r4cn")
+tool = ExtResource("4_bg3ym")
+clicks = 2
+yield_resource = ExtResource("5_kfeso")
+yield_amount = 2
+texture = ExtResource("3_57nbb")

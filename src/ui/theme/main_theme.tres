@@ -70,6 +70,19 @@ border_width_bottom = 1
 border_color = Color(0.0510, 0.0745, 0.2039, 1)
 anti_aliasing = false
 
+[sub_resource type="StyleBoxFlat" id="StyleBox_panel"]
+content_margin_left = 10.0
+content_margin_top = 8.0
+content_margin_right = 10.0
+content_margin_bottom = 8.0
+bg_color = Color(0.0314, 0.0510, 0.1412, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.1451, 0.1961, 0.5490, 1)
+anti_aliasing = false
+
 [resource]
 default_font_size = 8
 Button/colors/font_color = Color(0.8510, 0.9608, 0.9490, 1)
@@ -90,3 +103,10 @@ MutedLabel/colors/font_color = Color(0.6039, 0.4196, 0.8706, 1)
 TitleLabel/base_type = &"Label"
 TitleLabel/colors/font_color = Color(0.2157, 0.9490, 0.7608, 1)
 TitleLabel/font_sizes/font_size = 16
+AlertLabel/base_type = &"Label"
+AlertLabel/colors/font_color = Color(0.9294, 0.4706, 0.7176, 1)
+FloatingLabel/base_type = &"Label"
+FloatingLabel/colors/font_color = Color(0.9451, 0.9294, 0.3961, 1)
+FloatingLabel/colors/font_outline_color = Color(0.0196, 0.0196, 0.0353, 1)
+FloatingLabel/constants/outline_size = 2
+PanelContainer/styles/panel = SubResource("StyleBox_panel")

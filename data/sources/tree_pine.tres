@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="SourceType" format=3]
+
+[ext_resource type="Resource" path="res://data/rarities/common.tres" id="1_17rhp"]
+[ext_resource type="Script" path="res://src/sources/source_type.gd" id="2_j7cpf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/sources/tree_pine.png" id="3_ofqwa"]
+[ext_resource type="Resource" path="res://data/tools/axe.tres" id="4_v0mnd"]
+[ext_resource type="Resource" path="res://data/resources/wood.tres" id="5_2c42q"]
+
+[resource]
+script = ExtResource("2_j7cpf")
+id = &"tree_pine"
+family = &"tree"
+rarity = ExtResource("1_17rhp")
+tool = ExtResource("4_v0mnd")
+clicks = 3
+yield_resource = ExtResource("5_2c42q")
+yield_amount = 2
+texture = ExtResource("3_ofqwa")

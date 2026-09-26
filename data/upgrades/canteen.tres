@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="UpgradeNode" format=3]
+
+[ext_resource type="Script" path="res://src/economy/resource_amount.gd" id="1_ciil4"]
+[ext_resource type="Resource" path="res://data/resources/wood.tres" id="2_2hv6a"]
+[ext_resource type="Resource" path="res://data/resources/water.tres" id="3_4axqb"]
+[ext_resource type="Script" path="res://src/progression/upgrade_node.gd" id="4_s32qy"]
+
+[sub_resource type="Resource" id="Resource_861ob"]
+script = ExtResource("1_ciil4")
+resource = ExtResource("2_2hv6a")
+amount = 12
+
+[sub_resource type="Resource" id="Resource_c1q3n"]
+script = ExtResource("1_ciil4")
+resource = ExtResource("3_4axqb")
+amount = 8
+
+[resource]
+script = ExtResource("4_s32qy")
+id = &"canteen"
+effect = 6
+value_per_level = 0.2
+max_level = 3
+base_costs = Array[ExtResource("1_ciil4")]([SubResource("Resource_861ob"), SubResource("Resource_c1q3n")])
+cost_growth = 2.2

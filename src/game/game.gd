@@ -1,19 +1,51 @@
 class_name Game
 extends Node2D
-## Match root. Orchestrates Board + StateMachine and holds the match
-## context (turn, catalog). Rules live in the states under states/.
+## Run root. Owns the run state (inventory, progression, needs) and the
+## scene parts the states drive. Rules live in the states under states/.
 
-@export var catalog: PieceCatalog
+@export var database: GameDatabase
+@export var card_scene: PackedScene
 
-var turn_number: int = 0
+var inventory: Inventory
+var progression: ProgressionState
+var needs: Needs
+var phase_number: int = 0
+var run_seed: int
+var current_plan: PhasePlan
 
 @onready var board: Board = %Board
+@onready var effects: Node2D = %Effects
 @onready var state_machine: StateMachine = %StateMachine
+@onready var phase_timer: Timer = %PhaseTimer
+@onready var hud: Hud = %Hud
+@onready var phase_summary: PhaseSummary = %PhaseSummary
+@onready var upgrade_screen: UpgradeScreen = %UpgradeScreen
+@onready var tool_cursor: ToolCursor = %ToolCursor
 
 
 func _ready() -> void:
-	assert(catalog != null, "Game requires a PieceCatalog.")
+	assert(database != null, "Game requires a GameDatabase.")
+	assert(card_scene != null, "Game requires card_scene.")
 	_center_board()
+	new_run()
+
+
+## Resets all run state. Called on start (and in the future by "new game").
+func new_run(p_seed: int = 0) -> void:
+	run_seed = p_seed if p_seed != 0 else randi()
+	phase_number = 0
+	inventory = Inventory.new()
+	progression = ProgressionState.new(database)
+	needs = Needs.new()
+	# Relay model signals to the global bus for decoupled UI.
+	inventory.changed.connect(Events.inventory_changed.emit)
+	needs.changed.connect(Events.needs_changed.emit)
+	hud.setup(database, inventory)
+
+
+## Seed for a given phase: stable per run, different per phase.
+func get_phase_seed(number: int) -> int:
+	return hash([run_seed, number])
 
 
 func _center_board() -> void:
