@@ -1,12 +1,12 @@
 class_name ToolCursor
 extends CanvasLayer
-## Software mouse cursor rendered in the 320x180 viewport (pixel-perfect,
+## Software mouse cursor rendered in the 640x360 viewport (pixel-perfect,
 ## scales with the game). Shows the contextual tool (docs/game-design.md §4).
 
 @export var pointer_texture: Texture2D
 @export var pointer_hotspot: Vector2i = Vector2i.ZERO
 @export var lock_texture: Texture2D
-@export var lock_hotspot: Vector2i = Vector2i(6, 6)
+@export var lock_hotspot: Vector2i = Vector2i(12, 12)
 
 var _hotspot: Vector2i = Vector2i.ZERO
 

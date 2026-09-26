@@ -28,14 +28,14 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_left = 8
-theme_override_constants/margin_top = 6
-theme_override_constants/margin_right = 8
-theme_override_constants/margin_bottom = 6
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 12
 
 [node name="Stack" type="VBoxContainer" parent="Margin"]
 layout_mode = 2
-theme_override_constants/separation = 3
+theme_override_constants/separation = 6
 
 [node name="Header" type="HBoxContainer" parent="Margin/Stack"]
 layout_mode = 2
@@ -49,13 +49,13 @@ text = "UI_UPGRADES_TITLE"
 [node name="InventoryBar" type="HFlowContainer" parent="Margin/Stack"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_constants/h_separation = 7
-theme_override_constants/v_separation = 1
+theme_override_constants/h_separation = 14
+theme_override_constants/v_separation = 2
 
 [node name="Body" type="HBoxContainer" parent="Margin/Stack"]
 layout_mode = 2
 size_flags_vertical = 3
-theme_override_constants/separation = 6
+theme_override_constants/separation = 12
 
 [node name="Scroll" type="ScrollContainer" parent="Margin/Stack/Body"]
 layout_mode = 2
@@ -69,13 +69,13 @@ size_flags_vertical = 3
 script = ExtResource("2_view")
 
 [node name="Details" type="PanelContainer" parent="Margin/Stack/Body"]
-custom_minimum_size = Vector2(108, 0)
+custom_minimum_size = Vector2(216, 0)
 layout_mode = 2
 theme_type_variation = &"CompactPanel"
 
 [node name="Info" type="VBoxContainer" parent="Margin/Stack/Body/Details"]
 layout_mode = 2
-theme_override_constants/separation = 2
+theme_override_constants/separation = 4
 
 [node name="NameLabel" type="Label" parent="Margin/Stack/Body/Details/Info"]
 unique_name_in_owner = true
@@ -89,7 +89,7 @@ theme_type_variation = &"MutedLabel"
 
 [node name="Description" type="Label" parent="Margin/Stack/Body/Details/Info"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(96, 0)
+custom_minimum_size = Vector2(192, 0)
 layout_mode = 2
 size_flags_vertical = 3
 theme_type_variation = &"MutedLabel"
@@ -97,7 +97,7 @@ autowrap_mode = 3
 
 [node name="StatusLabel" type="Label" parent="Margin/Stack/Body/Details/Info"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(96, 0)
+custom_minimum_size = Vector2(192, 0)
 layout_mode = 2
 theme_type_variation = &"AlertLabel"
 autowrap_mode = 3
@@ -105,7 +105,7 @@ autowrap_mode = 3
 [node name="Costs" type="HBoxContainer" parent="Margin/Stack/Body/Details/Info"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_constants/separation = 5
+theme_override_constants/separation = 10
 
 [node name="BuyButton" type="Button" parent="Margin/Stack/Body/Details/Info"]
 unique_name_in_owner = true

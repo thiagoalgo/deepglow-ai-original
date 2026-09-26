@@ -8,10 +8,10 @@ signal node_focused(upgrade: UpgradeNode)
 signal node_pressed(upgrade: UpgradeNode)
 
 ## Distance between grid cells (node + level label + spacing).
-@export var cell_size: Vector2 = Vector2(28, 28)
-@export var padding: Vector2 = Vector2(10, 12)
+@export var cell_size: Vector2 = Vector2(56, 56)
+@export var padding: Vector2 = Vector2(20, 24)
 ## Extra vertical space inserted above rows that have a gate divider.
-@export var gate_gap: float = 12.0
+@export var gate_gap: float = 24.0
 @export var line_color: Color = Palette.STRUCTURE_INDIGO
 @export var active_line_color: Color = Palette.VEGETATION_MOSS
 @export var gate_color: Color = Palette.STRUCTURE_VIOLET
@@ -99,11 +99,11 @@ func _draw() -> void:
 		var label := tr(&"UI_REQUIRED_POINTS") % _gates[row]
 		var met := _progression != null and _progression.get_total_levels() >= _gates[row]
 		var color := active_line_color if met else gate_color
-		draw_line(Vector2(padding.x, y), Vector2(size.x - padding.x, y), color, 1.0)
+		draw_line(Vector2(padding.x, y), Vector2(size.x - padding.x, y), color, 2.0)
 		var width := font.get_string_size(label, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size).x
 		var x := floorf((size.x - width) / 2.0)
-		draw_rect(Rect2(x - 2, y - 4, width + 4, 8), Palette.SHADOW_BLUEBLACK)
-		draw_string(font, Vector2(x, y + 3), label, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, color)
+		draw_rect(Rect2(x - 4, y - 8, width + 8, 16), Palette.SHADOW_BLUEBLACK)
+		draw_string(font, Vector2(x, y + 6), label, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, color)
 	# Connections (drawn under the nodes, which are child controls).
 	for view: UpgradeNodeView in _views.values():
 		for prerequisite: UpgradeNode in view.upgrade.prerequisites:
@@ -113,4 +113,4 @@ func _draw() -> void:
 			var owned := parent_view.level > 0
 			var from := _node_center(prerequisite.grid_position)
 			var to := _node_center(view.upgrade.grid_position)
-			draw_line(from.floor(), to.floor(), active_line_color if owned else line_color, 2.0)
+			draw_line(from.floor(), to.floor(), active_line_color if owned else line_color, 4.0)

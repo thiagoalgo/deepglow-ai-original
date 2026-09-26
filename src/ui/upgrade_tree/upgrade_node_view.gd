@@ -5,7 +5,7 @@ extends BaseButton
 
 enum NodeState { LOCKED, AVAILABLE, AFFORDABLE, PARTIAL, MAXED }
 
-const FRAME_SIZE := 16
+const FRAME_SIZE := 32
 const STATE_COLORS := {
 	NodeState.LOCKED: Palette.SHADOW_LIFTED,
 	NodeState.AVAILABLE: Palette.STRUCTURE_MID_BLUE,
@@ -19,7 +19,7 @@ var state: NodeState = NodeState.LOCKED
 var level: int = 0
 
 var _font: Font
-var _font_size: int = 8
+var _font_size: int = 16
 
 
 static func create(p_upgrade: UpgradeNode) -> UpgradeNodeView:
@@ -65,28 +65,28 @@ func _draw() -> void:
 	var fill := Palette.SHADOW_DEEP if state != NodeState.LOCKED else Palette.SHADOW_BLUEBLACK
 	if upgrade.choice_group.is_empty():
 		draw_rect(rect, fill)
-		draw_rect(rect.grow(-0.5), color, false, 1.0)
+		draw_rect(rect.grow(-1), color, false, 2.0)
 	else:
 		var pts := _octagon(rect)
 		draw_colored_polygon(pts, fill)
-		draw_polyline(pts + PackedVector2Array([pts[0]]), color, 1.0)
+		draw_polyline(pts + PackedVector2Array([pts[0]]), color, 2.0)
 	if upgrade.icon:
 		var icon_pos := ((size - upgrade.icon.get_size()) / 2.0).floor()
 		var tint := Color(1, 1, 1, 0.35) if state == NodeState.LOCKED else Color.WHITE
 		draw_texture(upgrade.icon, icon_pos, tint)
 	if has_focus():
-		draw_rect(rect.grow(1.5), Palette.LIGHT_BLUE_WHITE, false, 1.0)
+		draw_rect(rect.grow(3), Palette.LIGHT_BLUE_WHITE, false, 2.0)
 	# Level "n/max" under the node.
 	var text := "%d/%d" % [level, upgrade.max_level]
 	var text_width := _font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, _font_size).x
-	var baseline := Vector2(floorf((size.x - text_width) / 2.0), size.y + _font_size - 1)
+	var baseline := Vector2(floorf((size.x - text_width) / 2.0), size.y + _font_size - 2)
 	# Backdrop so connection lines never cross the text.
-	draw_rect(Rect2(baseline.x - 1, size.y + 1, text_width + 2, _font_size - 1), Palette.SHADOW_BLUEBLACK)
+	draw_rect(Rect2(baseline.x - 2, size.y + 2, text_width + 4, _font_size - 2), Palette.SHADOW_BLUEBLACK)
 	draw_string(_font, baseline, text, HORIZONTAL_ALIGNMENT_LEFT, -1, _font_size, color)
 
 
 static func _octagon(rect: Rect2) -> PackedVector2Array:
-	var c := 4.0
+	var c := 8.0
 	var p := rect.position
 	var s := rect.size
 	return PackedVector2Array([

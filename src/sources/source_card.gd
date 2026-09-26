@@ -6,7 +6,7 @@ extends Node2D
 
 signal depleted
 
-const BAR_WIDTH := 14.0
+const BAR_WIDTH := 28.0
 
 var source: SourceType
 var total_health: float = 1.0
@@ -52,11 +52,11 @@ func _draw() -> void:
 	if source == null:
 		return
 	if source.texture == null:
-		draw_rect(Rect2(-5, -5, 10, 10), source.placeholder_color)
+		draw_rect(Rect2(-10, -10, 20, 20), source.placeholder_color)
 	if health < total_health:
-		var bar := Rect2(-BAR_WIDTH / 2.0, 7, BAR_WIDTH, 2)
+		var bar := Rect2(-BAR_WIDTH / 2.0, 14, BAR_WIDTH, 4)
 		draw_rect(bar, Palette.SHADOW_ABSOLUTE)
-		draw_rect(Rect2(bar.position, Vector2(ceilf(BAR_WIDTH * health / total_health), 2)),
+		draw_rect(Rect2(bar.position, Vector2(ceilf(BAR_WIDTH * health / total_health), 4)),
 			Palette.VEGETATION_NEON_TEAL)
 
 
@@ -65,6 +65,6 @@ func _shake() -> void:
 		_shake_tween.kill()
 	_sprite.position = Vector2.ZERO
 	_shake_tween = create_tween()
-	_shake_tween.tween_property(_sprite, ^"position", Vector2(1, 0), 0.03)
-	_shake_tween.tween_property(_sprite, ^"position", Vector2(-1, 0), 0.03)
+	_shake_tween.tween_property(_sprite, ^"position", Vector2(2, 0), 0.03)
+	_shake_tween.tween_property(_sprite, ^"position", Vector2(-2, 0), 0.03)
 	_shake_tween.tween_property(_sprite, ^"position", Vector2.ZERO, 0.03)

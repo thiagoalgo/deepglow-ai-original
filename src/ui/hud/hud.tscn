@@ -9,17 +9,17 @@
 script = ExtResource("1_hud")
 
 [node name="Left" type="MarginContainer" parent="."]
-offset_right = 76.0
-offset_bottom = 180.0
+offset_right = 152.0
+offset_bottom = 360.0
 mouse_filter = 2
-theme_override_constants/margin_left = 6
-theme_override_constants/margin_top = 6
-theme_override_constants/margin_right = 4
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 8
 
 [node name="Stack" type="VBoxContainer" parent="Left"]
 layout_mode = 2
 mouse_filter = 2
-theme_override_constants/separation = 2
+theme_override_constants/separation = 4
 
 [node name="PhaseLabel" type="Label" parent="Left/Stack"]
 unique_name_in_owner = true
@@ -34,7 +34,7 @@ theme_type_variation = &"TitleLabel"
 text = "45"
 
 [node name="Spacer" type="Control" parent="Left/Stack"]
-custom_minimum_size = Vector2(0, 6)
+custom_minimum_size = Vector2(0, 12)
 layout_mode = 2
 mouse_filter = 2
 
@@ -45,7 +45,7 @@ text = "HUD_HUNGER"
 [node name="HungerRow" type="HBoxContainer" parent="Left/Stack"]
 layout_mode = 2
 mouse_filter = 2
-theme_override_constants/separation = 3
+theme_override_constants/separation = 6
 
 [node name="Icon" type="TextureRect" parent="Left/Stack/HungerRow"]
 layout_mode = 2
@@ -54,7 +54,7 @@ stretch_mode = 3
 
 [node name="HungerBar" type="Control" parent="Left/Stack/HungerRow"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(48, 5)
+custom_minimum_size = Vector2(96, 10)
 layout_mode = 2
 size_flags_vertical = 4
 mouse_filter = 2
@@ -67,7 +67,7 @@ text = "HUD_THIRST"
 [node name="ThirstRow" type="HBoxContainer" parent="Left/Stack"]
 layout_mode = 2
 mouse_filter = 2
-theme_override_constants/separation = 3
+theme_override_constants/separation = 6
 
 [node name="Icon" type="TextureRect" parent="Left/Stack/ThirstRow"]
 layout_mode = 2
@@ -76,7 +76,7 @@ stretch_mode = 3
 
 [node name="ThirstBar" type="Control" parent="Left/Stack/ThirstRow"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(48, 5)
+custom_minimum_size = Vector2(96, 10)
 layout_mode = 2
 size_flags_vertical = 4
 mouse_filter = 2
@@ -87,18 +87,18 @@ fill_color = Color(0.1294, 0.7843, 0.851, 1)
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -76.0
-offset_bottom = 180.0
+offset_left = -152.0
+offset_bottom = 360.0
 grow_horizontal = 0
 mouse_filter = 2
-theme_override_constants/margin_left = 8
-theme_override_constants/margin_top = 6
-theme_override_constants/margin_right = 6
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 12
 
 [node name="Stack" type="VBoxContainer" parent="Right"]
 layout_mode = 2
 mouse_filter = 2
-theme_override_constants/separation = 2
+theme_override_constants/separation = 4
 
 [node name="InventoryTitle" type="Label" parent="Right/Stack"]
 layout_mode = 2
@@ -109,4 +109,4 @@ text = "HUD_INVENTORY"
 unique_name_in_owner = true
 layout_mode = 2
 mouse_filter = 2
-theme_override_constants/separation = 2
+theme_override_constants/separation = 4

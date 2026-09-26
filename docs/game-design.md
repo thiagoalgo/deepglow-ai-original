@@ -150,7 +150,7 @@ Custos crescem de forma geométrica por nível. A árvore completa terá ~50–7
 | 10 | **Coração de Deepglow** (4) — nó final | 55 pontos |
 
 A interface mostra no HUD e no topo da árvore apenas os recursos já descobertos (coletados ao
-menos uma vez) e usa números compactos (1.2k) para caber em 320x180.
+menos uma vez) e usa números compactos (1.2k) para caber em 640x360.
 
 ### 7.1 Estrutura (decidido)
 

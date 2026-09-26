@@ -4,7 +4,7 @@ extends Resource
 ## Name key: TOOL_<ID>_NAME.
 
 @export var id: StringName
-## Cursor image (12x12, hotspot at `cursor_hotspot`).
+## Cursor image (24x24, hotspot at `cursor_hotspot`).
 @export var cursor_texture: Texture2D
 @export var cursor_hotspot: Vector2i = Vector2i(1, 1)
 ## Available from the start. Otherwise an UNLOCK_TOOL upgrade targeting this id is required.

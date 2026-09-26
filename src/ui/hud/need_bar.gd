@@ -13,13 +13,13 @@ extends Control
 
 
 func _init() -> void:
-	custom_minimum_size = Vector2(48, 5)
+	custom_minimum_size = Vector2(96, 10)
 
 
 func _draw() -> void:
 	var rect := Rect2(Vector2.ZERO, size)
 	draw_rect(rect, Palette.SHADOW_ABSOLUTE)
-	var inner := rect.grow(-1)
+	var inner := rect.grow(-2)
 	var color := low_color if value <= low_threshold else fill_color
 	draw_rect(Rect2(inner.position, Vector2(floorf(inner.size.x * value), inner.size.y)), color)
-	draw_rect(rect, Palette.SHADOW_LIFTED, false, 1.0)
+	draw_rect(rect.grow(-1), Palette.SHADOW_LIFTED, false, 2.0)

@@ -7,4 +7,4 @@
 script = ExtResource("2_6g2rn")
 id = &"crystal_pick"
 cursor_texture = ExtResource("1_j1ahk")
-cursor_hotspot = Vector2i(2, 1)
+cursor_hotspot = Vector2i(4, 2)

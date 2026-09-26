@@ -29,7 +29,7 @@ func setup(database: GameDatabase, inventory: Inventory) -> void:
 	_counters.clear()
 	for resource: ResourceType in database.resources:
 		var row := HBoxContainer.new()
-		row.add_theme_constant_override(&"separation", 3)
+		row.add_theme_constant_override(&"separation", 6)
 		var icon := TextureRect.new()
 		icon.texture = resource.icon
 		icon.stretch_mode = TextureRect.STRETCH_KEEP_CENTERED

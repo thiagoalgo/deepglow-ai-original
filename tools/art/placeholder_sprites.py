@@ -15,6 +15,8 @@ from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "assets" / "sprites"
+# Maps are authored on the old 320x180 grid; output is upscaled for 640x360.
+SCALE = 2
 
 PALETTE = {
     ".": None,
@@ -594,6 +596,7 @@ def derive(name: str) -> list[str]:
 
 
 def render(rows: list[str]) -> Image.Image:
+    """Draws the map at 1x, then upscales by SCALE (nearest) to the 640x360 art grid."""
     width = max(len(r) for r in rows)
     img = Image.new("RGBA", (width, len(rows)), (0, 0, 0, 0))
     for y, row in enumerate(rows):
@@ -601,7 +604,7 @@ def render(rows: list[str]) -> Image.Image:
             rgb = PALETTE[ch]
             if rgb is not None:
                 img.putpixel((x, y), rgb + (255,))
-    return img
+    return img.resize((img.width * SCALE, img.height * SCALE), Image.NEAREST)
 
 
 def main() -> None:
@@ -613,7 +616,7 @@ def main() -> None:
         path = OUT / f"{name}.png"
         path.parent.mkdir(parents=True, exist_ok=True)
         render(rows).save(path)
-        print(f"{path.relative_to(ROOT)}  {len(rows[0])}x{len(rows)}")
+        print(f"{path.relative_to(ROOT)}  {len(rows[0]) * SCALE}x{len(rows) * SCALE}")
 
 
 if __name__ == "__main__":

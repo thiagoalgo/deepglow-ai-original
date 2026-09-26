@@ -2,7 +2,7 @@ class_name FloatingText
 extends Node2D
 ## "+2 [icon]" popup that rises and fades, then frees itself.
 
-const RISE := 10.0
+const RISE := 20.0
 const DURATION := 0.8
 
 
@@ -13,13 +13,13 @@ static func spawn(parent: Node, at: Vector2, text: String, icon: Texture2D = nul
 	var label := Label.new()
 	label.text = text
 	label.theme_type_variation = &"FloatingLabel"
-	label.position = Vector2(-10, -14)
+	label.position = Vector2(-20, -28)
 	popup.add_child(label)
 	if icon:
 		var sprite := Sprite2D.new()
 		sprite.texture = icon
 		sprite.centered = false
-		sprite.position = Vector2(4, -10)
+		sprite.position = Vector2(8, -20)
 		popup.add_child(sprite)
 	parent.add_child(popup)
 	popup._animate()
