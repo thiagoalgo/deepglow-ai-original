@@ -54,8 +54,8 @@ ITEMS: dict[str, tuple] = {
     'crystal_pick': (2, (254, 750, 346, 836), 'cursors', 24, 22, 8,
                      {'stone': 'crystal_violet', 'water': 'crystal_violet'}, False),
     # Upgrade tree icons (20x20).
-    'basket': (2, (1312, 122, 1420, 232), 'upgrades', 20, 18, 10, {'stone': 'wood', 'fruit': 'wood'}, False),
-    'canteen': (2, (1428, 122, 1536, 232), 'upgrades', 20, 18, 10, {}, False),
+    'basket': (2, (1312, 122, 1420, 232), 'upgrades', 20, 19, 10, {'stone': 'wood', 'fruit': 'wood'}, False),
+    'canteen': (2, (1428, 122, 1536, 232), 'upgrades', 20, 19, 10, {}, False),
     'keen_eye': (2, (1312, 240, 1420, 350), 'upgrades', 20, 18, 10,
                  {'stone': 'white', 'leaf': 'crystal_teal', 'water': 'crystal_teal'}, True),
     'longer_days': (2, (1428, 240, 1536, 350), 'upgrades', 20, 18, 10,
@@ -64,6 +64,10 @@ ITEMS: dict[str, tuple] = {
                      {'leaf': 'crystal_teal', 'water': 'crystal_teal'}, False),
     'sharp_axe': (2, (1428, 358, 1536, 468), 'upgrades', 20, 18, 10, METAL, False),
 }
+
+
+# Stronger luminance smoothing for textured items (fewer, cleaner shading bands).
+SOFTEN = {'basket': 5.0, 'canteen': 5.0}
 
 
 def main() -> None:
@@ -77,7 +81,7 @@ def main() -> None:
             concepts[source].crop(box).save(crop)
             out = out_root / category / f'{item_id}.png'
             out.parent.mkdir(parents=True, exist_ok=True)
-            convert_object(crop, str(out), size, extent, inset, remap, white)
+            convert_object(crop, str(out), size, extent, inset, remap, white, soften=SOFTEN.get(item_id, 1.5))
             print(out)
 
 

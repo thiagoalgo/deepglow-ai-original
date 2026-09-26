@@ -7,4 +7,4 @@
 script = ExtResource("2_pinfw")
 id = &"spear"
 cursor_texture = ExtResource("1_tr8qn")
-cursor_hotspot = Vector2i(22, 0)
+cursor_hotspot = Vector2i(22, 1)

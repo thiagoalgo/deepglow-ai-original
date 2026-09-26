@@ -7,5 +7,5 @@
 script = ExtResource("2_ewmie")
 id = &"axe"
 cursor_texture = ExtResource("1_aahbs")
-cursor_hotspot = Vector2i(16, 1)
+cursor_hotspot = Vector2i(22, 7)
 unlocked_by_default = true

@@ -7,4 +7,4 @@
 script = ExtResource("2_1vt5p")
 id = &"fishing_rod"
 cursor_texture = ExtResource("1_imyi2")
-cursor_hotspot = Vector2i(20, 0)
+cursor_hotspot = Vector2i(21, 2)

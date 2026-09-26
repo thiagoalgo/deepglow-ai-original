@@ -213,7 +213,7 @@ def remove_bg_multi(im, tol=30, ring=6):
     return bg
 
 
-def convert_object(crop, out, size, extent=None, inset=8, remap=None, white=False, bg_tol=34):
+def convert_object(crop, out, size, extent=None, inset=8, remap=None, white=False, bg_tol=34, soften=1.5):
     """Any-size crop (e.g. a UI panel slot) -> `size` sprite; the object is scaled to fit `extent`."""
     remap = remap or {}
     extent = extent or size - 2
@@ -221,7 +221,7 @@ def convert_object(crop, out, size, extent=None, inset=8, remap=None, white=Fals
     im = full.crop((inset, inset, full.width - inset, full.height - inset))
     bg = remove_bg_multi(im, bg_tol)
     px = im.load()
-    soft = im.filter(ImageFilter.GaussianBlur(1.5)).load()
+    soft = im.filter(ImageFilter.GaussianBlur(soften)).load()
     labels = {}
     for y in range(im.height):
         for x in range(im.width):
