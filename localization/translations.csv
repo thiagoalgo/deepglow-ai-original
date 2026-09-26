@@ -46,3 +46,37 @@ UI_REQUIRED_POINTS,%d required,%d necessários
 UI_REQUIRES,Requires: %s,Requer: %s
 UI_REQUIRES_POINTS,Requires %d points in the tree,Requer %d pontos na árvore
 UI_CHOICE_TAKEN,Another option was chosen,Outra opção já foi escolhida
+RESOURCE_STONE_NAME,Stone,Pedra
+RESOURCE_FISH_NAME,Fish,Peixe
+RESOURCE_MEAT_NAME,Meat,Carne
+TOOL_PICKAXE_NAME,Pickaxe,Picareta
+TOOL_FISHING_ROD_NAME,Fishing Rod,Vara de Pesca
+TOOL_SPEAR_NAME,Spear,Lança
+SOURCE_ROCK_SMALL_NAME,Loose Stone,Pedra Solta
+SOURCE_ROCK_LARGE_NAME,Boulder,Rocha
+SOURCE_POND_NAME,Pond,Lago
+SOURCE_BOAR_NAME,Boar,Javali
+UPGRADE_UNLOCK_PICKAXE_NAME,Pickaxe,Picareta
+UPGRADE_UNLOCK_PICKAXE_DESC,Unlocks mining: rocks start appearing.,Libera a mineração: rochas passam a aparecer.
+UPGRADE_UNLOCK_FISHING_ROD_NAME,Fishing Rod,Vara de Pesca
+UPGRADE_UNLOCK_FISHING_ROD_DESC,Unlocks fishing: ponds start appearing.,Libera a pesca: lagos passam a aparecer.
+UPGRADE_SHARP_PICKAXE_NAME,Sharp Pickaxe,Picareta Afiada
+UPGRADE_SHARP_PICKAXE_DESC,Rocks need 1 fewer click per level.,Rochas precisam de 1 clique a menos por nível.
+UPGRADE_STONE_SENSE_NAME,Stone Sense,Olho de Pedreiro
+UPGRADE_STONE_SENSE_DESC,+1 stone from every rock per level.,+1 pedra em cada rocha por nível.
+UPGRADE_BAIT_NAME,Bait,Isca
+UPGRADE_BAIT_DESC,+1 fish from every pond per level.,+1 peixe em cada lago por nível.
+UPGRADE_STEADY_HANDS_NAME,Steady Hands,Mãos Firmes
+UPGRADE_STEADY_HANDS_DESC,Ponds need 1 fewer click per level.,Lagos precisam de 1 clique a menos por nível.
+UPGRADE_UNLOCK_SPEAR_NAME,Spear,Lança
+UPGRADE_UNLOCK_SPEAR_DESC,Unlocks hunting: boars start appearing.,Libera a caça: javalis passam a aparecer.
+UPGRADE_MASTER_MASON_NAME,Master Mason,Mestre Pedreiro
+UPGRADE_MASTER_MASON_DESC,+2 stone per rock per level. Excludes Master Angler.,+2 pedras por rocha por nível. Exclui Mestre Pescador.
+UPGRADE_MASTER_ANGLER_NAME,Master Angler,Mestre Pescador
+UPGRADE_MASTER_ANGLER_DESC,+2 fish per pond per level. Excludes Master Mason.,+2 peixes por lago por nível. Exclui Mestre Pedreiro.
+UPGRADE_SHARP_SPEAR_NAME,Sharp Spear,Lança Afiada
+UPGRADE_SHARP_SPEAR_DESC,Boars need 1 fewer click per level.,Javalis precisam de 1 clique a menos por nível.
+UPGRADE_HUNTER_INSTINCT_NAME,Hunter Instinct,Instinto de Caçador
+UPGRADE_HUNTER_INSTINCT_DESC,+1 meat from every boar per level.,+1 carne em cada javali por nível.
+UPGRADE_HEARTY_MEALS_NAME,Hearty Meals,Refeições Fartas
+UPGRADE_HEARTY_MEALS_DESC,Hunger drops 15% slower per level.,A fome cai 15% mais devagar por nível.

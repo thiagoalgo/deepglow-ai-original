@@ -1,4 +1,4 @@
-# Deepglow — Game Design Document (v0.6)
+# Deepglow — Game Design Document (v0.7)
 
 > Documento vivo. Nomes técnicos (ids, classes, chaves de tradução) ficam em inglês;
 > todo texto exibido ao jogador existe em `localization/translations.csv` (en + pt_BR).
@@ -51,7 +51,7 @@ Os pesos são o ponto de partida; o gerador ainda filtra por desbloqueios e pelo
 controlar a frequência de cada fonte. Quem comunica o valor é o próprio sprite (o carvalho é maior
 que o pinheiro, a árvore luminosa brilha); o jogador aprende pela experiência.
 
-### 3.2 Fontes (valores iniciais para o protótipo — serão ajustados pelo simulador)
+### 3.2 Fontes (camadas 0–2 implementadas; valores em `data/sources/`)
 
 | Camada | Fonte (id) | Raridade | Cliques | Rende | Ferramenta (cursor) |
 |---|---|---|---|---|---|
@@ -64,8 +64,8 @@ que o pinheiro, a árvore luminosa brilha); o jogador aprende pela experiência.
 | 0 | Nascente (`spring`) | incomum | 4 | 5 água | copo |
 | 1 | Pedra solta (`rock_small`) | comum | 4 | 2 pedra | picareta (`pickaxe`) |
 | 1 | Rocha (`rock_large`) | incomum | 9 | 6 pedra | picareta |
-| 1 | Lago raso (`pond`) | incomum | 6 | 2 peixe | vara (`fishing_rod`) |
-| 2 | Javali (`boar`) | rara | 10 | 3 carne no osso | lança (`spear`) |
+| 1 | Lago (`pond`) | incomum | 6 | 3 peixe | vara (`fishing_rod`) |
+| 2 | Javali (`boar`) | rara | 10 | 4 carne | lança (`spear`) |
 | 3+ | Veio de cobre/ferro/ouro (`ore_*`) | incomum → rara | 10–18 | minérios | picareta melhor |
 | 3+ | Cristal (`crystal_*`) | rara/épica | 15–25 | cristais | picareta de cristal |
 
@@ -130,6 +130,17 @@ Aberta entre as fases. Cada nó tem custo (um ou vários recursos), pré-requisi
 
 Custos crescem de forma geométrica por nível. A árvore completa terá ~50–70 nós.
 
+### 7.0 Nós atuais (camadas 0–2)
+
+| Linha | Nós (coluna) | Portão |
+|---|---|---|
+| 0 | Machado Afiado (1) · Cesta (3) · Cantil (5) | — |
+| 1 | Olho de Lenhador (0) · Olhar Atento (2) · Dias Longos (3) | — |
+| 2 | **Picareta** (1) · **Vara de Pesca** (4) | 10 pontos |
+| 3 | Picareta Afiada (0) · Olho de Pedreiro (2) · Isca (4) · Mãos Firmes (5) | — |
+| 4 | **Lança** (1) · escolha: Mestre Pedreiro (3) **ou** Mestre Pescador (4) | 22 pontos |
+| 5 | Lança Afiada (0) · Instinto de Caçador (1) · Refeições Fartas (2) | — |
+
 ### 7.1 Estrutura (decidido)
 
 A árvore é **desenhada como árvore** (referência estrutural: árvores de talentos em grade), não
@@ -184,17 +195,19 @@ Relatório em `tools/balance/reports/latest.md` (não versionado). Perfis padrã
 | Fases justas | 15–60% das fases totalmente limpas |
 | Rápido vs médio | no máximo 40% mais rápido **e** mesmo nº de fases (±10%) — sem bola de neve |
 
-### 8.2 Resultado atual (M1, 30 execuções por perfil)
+### 8.2 Resultado atual (M3: camadas 0–2, 18 nós, 30 execuções por perfil)
 
 | Perfil | Minutos (médio) | Fases | Fases limpas | Barra vazia |
 |---|---|---|---|---|
-| Lento (2,2) | 41,9 | 29 | 29% | 2,0% |
-| Médio (3,0) | 32,5 | 29 | 39% | 0,8% |
-| Rápido (4,5) | 24,0 | 28 | 50% | 0,1% |
+| Lento (2,2) | 144,7 | 94 | 31% | 2,6% |
+| Médio (3,0) | 112,2 | 94 | 38% | 1,3% |
+| Rápido (4,5) | 82,5 | 93 | 46% | 0,2% |
 
-Linha do tempo do médio (primeiro nível → nível máximo, em minutos): Machado Afiado 1,0 → 11,7 ·
-Cesta 1,0 → 14,0 · Cantil 2,0 → 19,9 · Dias Longos 2,1 → 24,2 · Olho de Lenhador 3,0 → 24,2 ·
-Olhar Atento 5,1 → 32,0.
+Marcos do jogador médio (minutos): picareta **19** · vara de pesca **30** · lança **66** · árvore
+das camadas 0–2 completa **~112**. As camadas 3+ (minérios e cristais) devem somar ~70 min para
+fechar as 3 h.
+
+Comando usado: `--runs 30 --target-minutes 90`.
 
 ## 9. Modelo de dados (técnico)
 
@@ -221,7 +234,7 @@ Estados da `StateMachine`: `Setup` → `PhaseBuild` → `Phase` → `PhaseSummar
 | M1 — Protótipo do loop ✅ | madeira, fruta e água (com variações de raridade); gerador de fases; timer; cursor contextual; fome/sede; HUD; tela de evolução com ~5 nós; arte provisória |
 | M2 — Simulador ✅ | script de balanceamento + meta de 3 h verificada |
 | M2.5 — Árvore desenhada ✅ | tela da árvore em grade com conexões, níveis, escolhas e portões |
-| M3 — Camadas 1–2 | rochas, lago, javali |
+| M3 — Camadas 1–2 ✅ | rochas, lago, javali |
 | M4 — Arte | sprites definitivos no Pixellab (fontes por raridade + cursores + ícones) |
 | M5 — Save | salvar/carregar progresso |
 | M6 — Sensação | partículas, sons, ciclo dia-noite, luzes bioluminescentes |

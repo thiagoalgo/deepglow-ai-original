@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="UpgradeNode" format=3]
+
+[ext_resource type="Script" path="res://src/economy/resource_amount.gd" id="1_td2qu"]
+[ext_resource type="Resource" path="res://data/resources/stone.tres" id="2_cmttf"]
+[ext_resource type="Texture2D" path="res://assets/sprites/icons/stone.png" id="3_8cd6l"]
+[ext_resource type="Resource" path="res://data/upgrades/stone_sense.tres" id="4_milrv"]
+[ext_resource type="Script" path="res://src/progression/upgrade_node.gd" id="5_gpqgw"]
+
+[sub_resource type="Resource" id="Resource_303ch"]
+script = ExtResource("1_td2qu")
+resource = ExtResource("2_cmttf")
+amount = 150
+
+[resource]
+script = ExtResource("5_gpqgw")
+id = &"master_mason"
+icon = ExtResource("3_8cd6l")
+target = &"stone"
+value_per_level = 2.0
+max_level = 2
+base_costs = Array[ExtResource("1_td2qu")]([SubResource("Resource_303ch")])
+cost_growth = 3.0
+grid_position = Vector2i(3, 4)
+choice_group = &"mastery"
+required_points = 22
+prerequisites = Array[Resource]([ExtResource("4_milrv")])

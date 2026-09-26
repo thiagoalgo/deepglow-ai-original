@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="SourceType" format=3]
+
+[ext_resource type="Resource" path="res://data/rarities/uncommon.tres" id="1_t3cxw"]
+[ext_resource type="Script" path="res://src/sources/source_type.gd" id="2_upv7x"]
+[ext_resource type="Texture2D" path="res://assets/sprites/sources/pond.png" id="3_7w6b8"]
+[ext_resource type="Resource" path="res://data/tools/fishing_rod.tres" id="4_4jnj6"]
+[ext_resource type="Resource" path="res://data/resources/fish.tres" id="5_4652d"]
+
+[resource]
+script = ExtResource("2_upv7x")
+id = &"pond"
+family = &"fish"
+tier = 1
+rarity = ExtResource("1_t3cxw")
+tool = ExtResource("4_4jnj6")
+clicks = 6
+yield_resource = ExtResource("5_4652d")
+yield_amount = 3
+texture = ExtResource("3_7w6b8")

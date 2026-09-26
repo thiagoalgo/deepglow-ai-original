@@ -11,7 +11,10 @@
 [ext_resource type="Resource" path="res://data/resources/fruit.tres" id="9_bs1kh"]
 [ext_resource type="Resource" path="res://data/resources/water.tres" id="10_y4ny8"]
 [ext_resource type="Script" path="res://src/core/game_database.gd" id="11_0rfu2"]
+[ext_resource type="Resource" path="res://data/resources/stone.tres" id="11_m1ws1"]
+[ext_resource type="Resource" path="res://data/resources/fish.tres" id="12_ap1wn"]
 [ext_resource type="Script" path="res://src/sources/source_type.gd" id="12_hq7mt"]
+[ext_resource type="Resource" path="res://data/resources/meat.tres" id="13_2oi3a"]
 [ext_resource type="Resource" path="res://data/sources/tree_pine.tres" id="13_6nn2q"]
 [ext_resource type="Resource" path="res://data/sources/tree_oak.tres" id="14_gcs4y"]
 [ext_resource type="Resource" path="res://data/sources/tree_glow.tres" id="15_yo4sn"]
@@ -22,20 +25,39 @@
 [ext_resource type="Script" path="res://src/sources/tool_type.gd" id="20_yt75o"]
 [ext_resource type="Resource" path="res://data/tools/axe.tres" id="21_ydtca"]
 [ext_resource type="Resource" path="res://data/tools/hand.tres" id="22_q0fyq"]
+[ext_resource type="Resource" path="res://data/sources/rock_small.tres" id="23_jm8uu"]
 [ext_resource type="Resource" path="res://data/tools/cup.tres" id="23_m1ws1"]
 [ext_resource type="Script" path="res://src/progression/upgrade_node.gd" id="24_ap1wn"]
+[ext_resource type="Resource" path="res://data/sources/rock_large.tres" id="24_wpomh"]
 [ext_resource type="Resource" path="res://data/upgrades/sharp_axe.tres" id="25_2oi3a"]
+[ext_resource type="Resource" path="res://data/sources/pond.tres" id="25_7h56u"]
+[ext_resource type="Resource" path="res://data/sources/boar.tres" id="26_aolhs"]
 [ext_resource type="Resource" path="res://data/upgrades/basket.tres" id="26_jm8uu"]
 [ext_resource type="Resource" path="res://data/upgrades/canteen.tres" id="27_wpomh"]
 [ext_resource type="Resource" path="res://data/upgrades/lumber_sense.tres" id="28_7h56u"]
 [ext_resource type="Resource" path="res://data/upgrades/longer_days.tres" id="29_aolhs"]
 [ext_resource type="Resource" path="res://data/upgrades/keen_eye.tres" id="30_3k60q"]
+[ext_resource type="Resource" path="res://data/tools/pickaxe.tres" id="31_3k60q"]
+[ext_resource type="Resource" path="res://data/tools/fishing_rod.tres" id="32_verxg"]
+[ext_resource type="Resource" path="res://data/tools/spear.tres" id="33_8xss3"]
+[ext_resource type="Resource" path="res://data/upgrades/unlock_pickaxe.tres" id="41_w02ha"]
+[ext_resource type="Resource" path="res://data/upgrades/unlock_fishing_rod.tres" id="42_wstmq"]
+[ext_resource type="Resource" path="res://data/upgrades/sharp_pickaxe.tres" id="43_73hi8"]
+[ext_resource type="Resource" path="res://data/upgrades/stone_sense.tres" id="44_4xfn1"]
+[ext_resource type="Resource" path="res://data/upgrades/bait.tres" id="45_0c6qd"]
+[ext_resource type="Resource" path="res://data/upgrades/steady_hands.tres" id="46_i83pe"]
+[ext_resource type="Resource" path="res://data/upgrades/unlock_spear.tres" id="47_u086u"]
+[ext_resource type="Resource" path="res://data/upgrades/master_mason.tres" id="48_ynw4v"]
+[ext_resource type="Resource" path="res://data/upgrades/master_angler.tres" id="49_xwqim"]
+[ext_resource type="Resource" path="res://data/upgrades/sharp_spear.tres" id="50_hx2mh"]
+[ext_resource type="Resource" path="res://data/upgrades/hunter_instinct.tres" id="51_sft6f"]
+[ext_resource type="Resource" path="res://data/upgrades/hearty_meals.tres" id="52_rboy0"]
 
 [resource]
 script = ExtResource("11_0rfu2")
-resources = Array[ExtResource("7_bm8cc")]([ExtResource("8_wdau7"), ExtResource("9_bs1kh"), ExtResource("10_y4ny8")])
+resources = Array[ExtResource("7_bm8cc")]([ExtResource("8_wdau7"), ExtResource("9_bs1kh"), ExtResource("10_y4ny8"), ExtResource("11_m1ws1"), ExtResource("12_ap1wn"), ExtResource("13_2oi3a")])
 rarities = Array[ExtResource("2_kib3y")]([ExtResource("3_br8rk"), ExtResource("4_t3hgm"), ExtResource("5_ins62"), ExtResource("6_mg05e")])
-tools = Array[ExtResource("20_yt75o")]([ExtResource("21_ydtca"), ExtResource("22_q0fyq"), ExtResource("23_m1ws1")])
-sources = Array[ExtResource("12_hq7mt")]([ExtResource("13_6nn2q"), ExtResource("14_gcs4y"), ExtResource("15_yo4sn"), ExtResource("16_h6kyv"), ExtResource("17_7kpo8"), ExtResource("18_dsgde"), ExtResource("19_a2emy")])
-upgrades = Array[ExtResource("24_ap1wn")]([ExtResource("25_2oi3a"), ExtResource("26_jm8uu"), ExtResource("27_wpomh"), ExtResource("28_7h56u"), ExtResource("29_aolhs"), ExtResource("30_3k60q")])
+tools = Array[ExtResource("20_yt75o")]([ExtResource("21_ydtca"), ExtResource("22_q0fyq"), ExtResource("23_m1ws1"), ExtResource("31_3k60q"), ExtResource("32_verxg"), ExtResource("33_8xss3")])
+sources = Array[ExtResource("12_hq7mt")]([ExtResource("13_6nn2q"), ExtResource("14_gcs4y"), ExtResource("15_yo4sn"), ExtResource("16_h6kyv"), ExtResource("17_7kpo8"), ExtResource("18_dsgde"), ExtResource("19_a2emy"), ExtResource("23_jm8uu"), ExtResource("24_wpomh"), ExtResource("25_7h56u"), ExtResource("26_aolhs")])
+upgrades = Array[ExtResource("24_ap1wn")]([ExtResource("25_2oi3a"), ExtResource("26_jm8uu"), ExtResource("27_wpomh"), ExtResource("28_7h56u"), ExtResource("29_aolhs"), ExtResource("30_3k60q"), ExtResource("41_w02ha"), ExtResource("42_wstmq"), ExtResource("43_73hi8"), ExtResource("44_4xfn1"), ExtResource("45_0c6qd"), ExtResource("46_i83pe"), ExtResource("47_u086u"), ExtResource("48_ynw4v"), ExtResource("49_xwqim"), ExtResource("50_hx2mh"), ExtResource("51_sft6f"), ExtResource("52_rboy0")])
 phase_rules = ExtResource("1_m2bgv")

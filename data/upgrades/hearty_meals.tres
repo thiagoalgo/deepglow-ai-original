@@ -1,0 +1,30 @@
+[gd_resource type="Resource" script_class="UpgradeNode" format=3]
+
+[ext_resource type="Script" path="res://src/economy/resource_amount.gd" id="1_0510o"]
+[ext_resource type="Resource" path="res://data/resources/meat.tres" id="2_7txnb"]
+[ext_resource type="Resource" path="res://data/resources/fish.tres" id="3_1ekx6"]
+[ext_resource type="Texture2D" path="res://assets/sprites/icons/meat.png" id="4_ju0ya"]
+[ext_resource type="Resource" path="res://data/upgrades/unlock_spear.tres" id="5_msb5s"]
+[ext_resource type="Script" path="res://src/progression/upgrade_node.gd" id="6_4lg6q"]
+
+[sub_resource type="Resource" id="Resource_yrybs"]
+script = ExtResource("1_0510o")
+resource = ExtResource("2_7txnb")
+amount = 20
+
+[sub_resource type="Resource" id="Resource_p411i"]
+script = ExtResource("1_0510o")
+resource = ExtResource("3_1ekx6")
+amount = 30
+
+[resource]
+script = ExtResource("6_4lg6q")
+id = &"hearty_meals"
+icon = ExtResource("4_ju0ya")
+effect = 5
+value_per_level = 0.15
+max_level = 2
+base_costs = Array[ExtResource("1_0510o")]([SubResource("Resource_yrybs"), SubResource("Resource_p411i")])
+cost_growth = 2.5
+grid_position = Vector2i(2, 5)
+prerequisites = Array[Resource]([ExtResource("5_msb5s")])

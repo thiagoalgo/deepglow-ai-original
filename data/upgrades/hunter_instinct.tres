@@ -1,0 +1,29 @@
+[gd_resource type="Resource" script_class="UpgradeNode" format=3]
+
+[ext_resource type="Script" path="res://src/economy/resource_amount.gd" id="1_sp3w7"]
+[ext_resource type="Resource" path="res://data/resources/meat.tres" id="2_c6rq1"]
+[ext_resource type="Resource" path="res://data/resources/wood.tres" id="3_k7oso"]
+[ext_resource type="Texture2D" path="res://assets/sprites/icons/meat.png" id="4_lcvax"]
+[ext_resource type="Resource" path="res://data/upgrades/unlock_spear.tres" id="5_cky27"]
+[ext_resource type="Script" path="res://src/progression/upgrade_node.gd" id="6_7xaam"]
+
+[sub_resource type="Resource" id="Resource_ygkep"]
+script = ExtResource("1_sp3w7")
+resource = ExtResource("2_c6rq1")
+amount = 12
+
+[sub_resource type="Resource" id="Resource_mgi3r"]
+script = ExtResource("1_sp3w7")
+resource = ExtResource("3_k7oso")
+amount = 150
+
+[resource]
+script = ExtResource("6_7xaam")
+id = &"hunter_instinct"
+icon = ExtResource("4_lcvax")
+target = &"meat"
+max_level = 3
+base_costs = Array[ExtResource("1_sp3w7")]([SubResource("Resource_ygkep"), SubResource("Resource_mgi3r")])
+cost_growth = 2.4
+grid_position = Vector2i(1, 5)
+prerequisites = Array[Resource]([ExtResource("5_cky27")])

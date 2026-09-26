@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="SourceType" format=3]
+
+[ext_resource type="Resource" path="res://data/rarities/uncommon.tres" id="1_gy1cc"]
+[ext_resource type="Script" path="res://src/sources/source_type.gd" id="2_6lb2x"]
+[ext_resource type="Texture2D" path="res://assets/sprites/sources/rock_large.png" id="3_206bc"]
+[ext_resource type="Resource" path="res://data/tools/pickaxe.tres" id="4_5m8er"]
+[ext_resource type="Resource" path="res://data/resources/stone.tres" id="5_iwdtf"]
+
+[resource]
+script = ExtResource("2_6lb2x")
+id = &"rock_large"
+family = &"rock"
+tier = 1
+rarity = ExtResource("1_gy1cc")
+tool = ExtResource("4_5m8er")
+clicks = 9
+yield_resource = ExtResource("5_iwdtf")
+yield_amount = 6
+texture = ExtResource("3_206bc")

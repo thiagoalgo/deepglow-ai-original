@@ -1,0 +1,30 @@
+[gd_resource type="Resource" script_class="UpgradeNode" format=3]
+
+[ext_resource type="Script" path="res://src/economy/resource_amount.gd" id="1_w2rhx"]
+[ext_resource type="Resource" path="res://data/resources/wood.tres" id="2_hyj3o"]
+[ext_resource type="Resource" path="res://data/resources/fruit.tres" id="3_t7tfr"]
+[ext_resource type="Texture2D" path="res://assets/sprites/cursors/fishing_rod.png" id="4_46w6g"]
+[ext_resource type="Resource" path="res://data/upgrades/basket.tres" id="5_i8e4k"]
+[ext_resource type="Script" path="res://src/progression/upgrade_node.gd" id="6_mkx1f"]
+
+[sub_resource type="Resource" id="Resource_6eusi"]
+script = ExtResource("1_w2rhx")
+resource = ExtResource("2_hyj3o")
+amount = 220
+
+[sub_resource type="Resource" id="Resource_rbwiq"]
+script = ExtResource("1_w2rhx")
+resource = ExtResource("3_t7tfr")
+amount = 140
+
+[resource]
+script = ExtResource("6_mkx1f")
+id = &"unlock_fishing_rod"
+icon = ExtResource("4_46w6g")
+effect = 0
+target = &"fishing_rod"
+base_costs = Array[ExtResource("1_w2rhx")]([SubResource("Resource_6eusi"), SubResource("Resource_rbwiq")])
+cost_growth = 1.0
+grid_position = Vector2i(4, 2)
+required_points = 10
+prerequisites = Array[Resource]([ExtResource("5_i8e4k")])

@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="ResourceType" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/icons/fish.png" id="1_gimdn"]
+[ext_resource type="Script" path="res://src/economy/resource_type.gd" id="2_8ao4c"]
+
+[resource]
+script = ExtResource("2_8ao4c")
+id = &"fish"
+category = 1
+icon = ExtResource("1_gimdn")
+hunger_restore = 0.2
+thirst_restore = 0.05

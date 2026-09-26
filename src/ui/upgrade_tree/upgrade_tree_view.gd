@@ -10,6 +10,8 @@ signal node_pressed(upgrade: UpgradeNode)
 ## Distance between grid cells (node + level label + spacing).
 @export var cell_size: Vector2 = Vector2(28, 28)
 @export var padding: Vector2 = Vector2(10, 12)
+## Extra vertical space inserted above rows that have a gate divider.
+@export var gate_gap: float = 12.0
 @export var line_color: Color = Palette.STRUCTURE_INDIGO
 @export var active_line_color: Color = Palette.VEGETATION_MOSS
 @export var gate_color: Color = Palette.STRUCTURE_VIOLET
@@ -26,6 +28,10 @@ func build(database: GameDatabase) -> void:
 	_gates.clear()
 	var extent := Vector2i.ZERO
 	for upgrade: UpgradeNode in database.upgrades:
+		if upgrade.required_points > 0:
+			_gates[upgrade.grid_position.y] = maxi(_gates.get(upgrade.grid_position.y, 0),
+				upgrade.required_points)
+	for upgrade: UpgradeNode in database.upgrades:
 		var view := UpgradeNodeView.create(upgrade)
 		view.position = _node_position(upgrade.grid_position)
 		view.focus_entered.connect(func() -> void: node_focused.emit(upgrade))
@@ -33,10 +39,8 @@ func build(database: GameDatabase) -> void:
 		add_child(view)
 		_views[upgrade.id] = view
 		extent = extent.max(upgrade.grid_position)
-		if upgrade.required_points > 0:
-			_gates[upgrade.grid_position.y] = maxi(_gates.get(upgrade.grid_position.y, 0),
-				upgrade.required_points)
-	custom_minimum_size = padding * 2.0 + Vector2(extent + Vector2i.ONE) * cell_size
+	custom_minimum_size = padding * 2.0 + Vector2(extent + Vector2i.ONE) * cell_size \
+		+ Vector2(0, _gates_up_to(extent.y) * gate_gap)
 	queue_redraw()
 
 
@@ -65,7 +69,20 @@ func focus_first_affordable() -> void:
 
 func _node_position(cell: Vector2i) -> Vector2:
 	var offset := (cell_size - Vector2(UpgradeNodeView.FRAME_SIZE, UpgradeNodeView.FRAME_SIZE)) / 2.0
-	return (padding + Vector2(cell) * cell_size + offset).floor()
+	return (padding + Vector2(cell) * cell_size + offset + Vector2(0, _row_shift(cell.y))).floor()
+
+
+## Vertical shift of a row caused by the gate gaps above it (and its own).
+func _row_shift(row: int) -> float:
+	return _gates_up_to(row) * gate_gap
+
+
+func _gates_up_to(row: int) -> int:
+	var count := 0
+	for gate_row: int in _gates:
+		if gate_row <= row:
+			count += 1
+	return count
 
 
 func _node_center(cell: Vector2i) -> Vector2:
@@ -77,7 +94,8 @@ func _draw() -> void:
 	var font_size := get_theme_default_font_size()
 	# Gate dividers.
 	for row: int in _gates:
-		var y := floorf(padding.y + row * cell_size.y - 2.0)
+		# Middle of the gap inserted above the gated row.
+		var y := floorf(padding.y + row * cell_size.y + _row_shift(row) - gate_gap / 2.0 + 1.0)
 		var label := tr(&"UI_REQUIRED_POINTS") % _gates[row]
 		var met := _progression != null and _progression.get_total_levels() >= _gates[row]
 		var color := active_line_color if met else gate_color

@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="UpgradeNode" format=3]
+
+[ext_resource type="Script" path="res://src/economy/resource_amount.gd" id="1_y6je4"]
+[ext_resource type="Resource" path="res://data/resources/fish.tres" id="2_mg77d"]
+[ext_resource type="Texture2D" path="res://assets/sprites/icons/fish.png" id="3_bi60d"]
+[ext_resource type="Resource" path="res://data/upgrades/bait.tres" id="4_44ega"]
+[ext_resource type="Script" path="res://src/progression/upgrade_node.gd" id="5_hc6t1"]
+
+[sub_resource type="Resource" id="Resource_tlaig"]
+script = ExtResource("1_y6je4")
+resource = ExtResource("2_mg77d")
+amount = 120
+
+[resource]
+script = ExtResource("5_hc6t1")
+id = &"master_angler"
+icon = ExtResource("3_bi60d")
+target = &"fish"
+value_per_level = 2.0
+max_level = 2
+base_costs = Array[ExtResource("1_y6je4")]([SubResource("Resource_tlaig")])
+cost_growth = 3.0
+grid_position = Vector2i(4, 4)
+choice_group = &"mastery"
+required_points = 22
+prerequisites = Array[Resource]([ExtResource("4_44ega")])

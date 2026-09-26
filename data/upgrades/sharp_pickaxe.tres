@@ -1,0 +1,30 @@
+[gd_resource type="Resource" script_class="UpgradeNode" format=3]
+
+[ext_resource type="Script" path="res://src/economy/resource_amount.gd" id="1_fvevm"]
+[ext_resource type="Resource" path="res://data/resources/stone.tres" id="2_36rpy"]
+[ext_resource type="Resource" path="res://data/resources/wood.tres" id="3_60oya"]
+[ext_resource type="Texture2D" path="res://assets/sprites/cursors/pickaxe.png" id="4_t162m"]
+[ext_resource type="Resource" path="res://data/upgrades/unlock_pickaxe.tres" id="5_lo2yq"]
+[ext_resource type="Script" path="res://src/progression/upgrade_node.gd" id="6_3qhpa"]
+
+[sub_resource type="Resource" id="Resource_24vbt"]
+script = ExtResource("1_fvevm")
+resource = ExtResource("2_36rpy")
+amount = 20
+
+[sub_resource type="Resource" id="Resource_2p17v"]
+script = ExtResource("1_fvevm")
+resource = ExtResource("3_60oya")
+amount = 40
+
+[resource]
+script = ExtResource("6_3qhpa")
+id = &"sharp_pickaxe"
+icon = ExtResource("4_t162m")
+effect = 1
+target = &"pickaxe"
+max_level = 3
+base_costs = Array[ExtResource("1_fvevm")]([SubResource("Resource_24vbt"), SubResource("Resource_2p17v")])
+cost_growth = 3.2
+grid_position = Vector2i(0, 3)
+prerequisites = Array[Resource]([ExtResource("5_lo2yq")])

@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="ResourceType" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/sprites/icons/meat.png" id="1_am6jl"]
+[ext_resource type="Script" path="res://src/economy/resource_type.gd" id="2_nxds2"]
+
+[resource]
+script = ExtResource("2_nxds2")
+id = &"meat"
+category = 1
+icon = ExtResource("1_am6jl")
+hunger_restore = 0.35

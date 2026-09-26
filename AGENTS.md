@@ -23,8 +23,8 @@ Never hardcode player-facing strings in scripts or scenes: use translation keys 
 - **Engine:** Godot **4.7.x**, GDScript, **GL Compatibility** renderer.
 - **Game design:** `docs/game-design.md` (source of truth for rules, balance targets and roadmap).
   Done: **M1** prototype loop (wood/fruit/water, phase generator, contextual cursor, hunger/thirst,
-  upgrade list, programmer art), **M2** balance simulator and **M2.5** drawn upgrade tree.
-  Next: **M3** tiers 1–2 content (rocks, pond, boar).
+  upgrade list, programmer art), **M2** balance simulator, **M2.5** drawn upgrade tree and **M3**
+  tiers 1–2 (stone, fish, meat; pickaxe, fishing rod, spear). Next: **M4** final art (Pixellab).
 
 ### Directories
 
@@ -250,7 +250,10 @@ upgrade tree icons 10x10 (`assets/sprites/upgrades/<upgrade_id>.png`, set in `Up
 Each `UpgradeNode` sets `grid_position` (column, row; row 0 on top). Lines are drawn from every
 prerequisite to the node, so place children in rows below their parents. `choice_group` renders
 an octagon (mutually exclusive nodes); `required_points` renders an "N required" divider above
-that row. Cell spacing lives in `UpgradeTreeView.cell_size`; the view scrolls when the tree grows.
+that row (the view adds `gate_gap` pixels above gated rows). Cell spacing lives in
+`UpgradeTreeView.cell_size`; the view scrolls when the tree grows. Tool unlocks use
+`Effect.UNLOCK_TOOL` + a `ToolType` with `unlocked_by_default = false`; the generator only places
+sources whose tool is unlocked.
 
 ### Asset workflow
 
@@ -280,7 +283,7 @@ $GODOT --headless --path . --import                    # (re)import / check pars
 $GODOT --headless --path . -s res://tests/run_tests.gd # tests (exit 1 on failure)
 
 # Balance simulator (uses the real game code + data; exit 1 if a check fails)
-$GODOT --headless --path . -s res://tools/balance/simulate.gd -- --runs 30 --target-minutes 25
+$GODOT --headless --path . -s res://tools/balance/simulate.gd -- --runs 30 --target-minutes 90
 #   report: tools/balance/reports/latest.md (git-ignored); options in simulate.gd header
 
 # Art

@@ -1,0 +1,30 @@
+[gd_resource type="Resource" script_class="UpgradeNode" format=3]
+
+[ext_resource type="Script" path="res://src/economy/resource_amount.gd" id="1_ef4bs"]
+[ext_resource type="Resource" path="res://data/resources/meat.tres" id="2_ofdaf"]
+[ext_resource type="Resource" path="res://data/resources/stone.tres" id="3_tu832"]
+[ext_resource type="Texture2D" path="res://assets/sprites/cursors/spear.png" id="4_ks7tb"]
+[ext_resource type="Resource" path="res://data/upgrades/unlock_spear.tres" id="5_uurdp"]
+[ext_resource type="Script" path="res://src/progression/upgrade_node.gd" id="6_r8vxg"]
+
+[sub_resource type="Resource" id="Resource_vpbjx"]
+script = ExtResource("1_ef4bs")
+resource = ExtResource("2_ofdaf")
+amount = 10
+
+[sub_resource type="Resource" id="Resource_ccrk7"]
+script = ExtResource("1_ef4bs")
+resource = ExtResource("3_tu832")
+amount = 80
+
+[resource]
+script = ExtResource("6_r8vxg")
+id = &"sharp_spear"
+icon = ExtResource("4_ks7tb")
+effect = 1
+target = &"spear"
+max_level = 3
+base_costs = Array[ExtResource("1_ef4bs")]([SubResource("Resource_vpbjx"), SubResource("Resource_ccrk7")])
+cost_growth = 2.4
+grid_position = Vector2i(0, 5)
+prerequisites = Array[Resource]([ExtResource("5_uurdp")])
