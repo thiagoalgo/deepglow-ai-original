@@ -22,3 +22,4 @@ target = &"fruit"
 max_level = 3
 base_costs = Array[ExtResource("1_lrpc1")]([SubResource("Resource_ngp0w"), SubResource("Resource_x3h8g")])
 cost_growth = 2.2
+grid_position = Vector2i(3, 0)

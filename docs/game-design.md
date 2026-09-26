@@ -1,4 +1,4 @@
-# Deepglow — Game Design Document (v0.2)
+# Deepglow — Game Design Document (v0.3)
 
 > Documento vivo. Nomes técnicos (ids, classes, chaves de tradução) ficam em inglês;
 > todo texto exibido ao jogador existe em `localization/translations.csv` (en + pt_BR).
@@ -46,7 +46,10 @@ rendem mais. Ferramentas melhores reduzem os cliques (mínimo 1).
 | Épica (`epic`) | 3 | eventual; recurso especial |
 
 Os pesos são o ponto de partida; o gerador ainda filtra por desbloqueios e pelo orçamento de cliques.
-A raridade aparece no card (moldura/brilho na cor da raridade).
+
+**A raridade não é exibida no tabuleiro** (decidido): ela existe só nos dados, para o gerador
+controlar a frequência de cada fonte. Quem comunica o valor é o próprio sprite (o carvalho é maior
+que o pinheiro, a árvore luminosa brilha); o jogador aprende pela experiência.
 
 ### 3.2 Fontes (valores iniciais para o protótipo — serão ajustados pelo simulador)
 
@@ -119,6 +122,22 @@ Aberta entre as fases. Cada nó tem custo (um ou vários recursos), pré-requisi
 
 Custos crescem de forma geométrica por nível. A árvore completa terá ~50–70 nós.
 
+### 7.1 Estrutura (decidido)
+
+A árvore é **desenhada como árvore** (referência estrutural: árvores de talentos em grade), não
+como lista:
+
+- **Grade:** cada nó tem uma posição (`grid_position`: coluna, linha); a linha 0 fica no topo.
+- **Conexões:** linhas ligam cada pré-requisito ao nó dependente.
+- **Níveis:** cada nó mostra `nível/máximo` (ex.: 1/3).
+- **Nós de escolha:** nós com o mesmo `choice_group` são exclusivos — comprar um bloqueia os outros.
+- **Portões:** `required_points` exige um total de níveis investidos na árvore (ex.: "8 necessários")
+  para liberar as linhas de baixo.
+- **Estados visuais:** bloqueado, disponível, comprável, parcialmente comprado, completo.
+
+O modelo de dados já suporta tudo isso; a **tela desenhada** entra logo depois do M2 (a lista atual
+continua funcionando até lá).
+
 ## 8. Balanceamento e duração
 
 - Todos os números ficam em dados (`.tres`), nunca no código.
@@ -155,6 +174,7 @@ Estados da `StateMachine`: `Setup` → `PhaseBuild` → `Phase` → `PhaseSummar
 |---|---|
 | M1 — Protótipo do loop ✅ | madeira, fruta e água (com variações de raridade); gerador de fases; timer; cursor contextual; fome/sede; HUD; tela de evolução com ~5 nós; arte provisória |
 | M2 — Simulador | script de balanceamento + meta de 3 h verificada |
+| M2.5 — Árvore desenhada | tela da árvore em grade com conexões, níveis, escolhas e portões |
 | M3 — Camadas 1–2 | rochas, lago, javali, fogueira |
 | M4 — Arte | sprites definitivos no Pixellab (fontes por raridade + cursores + ícones) |
 | M5 — Save | salvar/carregar progresso |
@@ -172,3 +192,5 @@ Estados da `StateMachine`: `Setup` → `PhaseBuild` → `Phase` → `PhaseSummar
 | D5 | Duração mínima de 3 h para completar a árvore | decidido |
 | D6 | Fome/sede vazia: fator exato de lentidão | aberto (simulador) |
 | D7 | Estruturas (fogueira) ocupam casa do tabuleiro ou ficam fora dele? | aberto |
+| D8 | Raridade não é exibida no tabuleiro; o sprite comunica o valor | decidido |
+| D9 | Árvore de evolução desenhada em grade (conexões, níveis, escolhas, portões) | decidido |

@@ -21,6 +21,18 @@ enum Effect {
 @export var base_costs: Array[ResourceAmount] = []
 ## Cost multiplier applied per already-owned level.
 @export var cost_growth: float = 2.0
+@export_group("Tree layout")
+## Cell of the node in the upgrade tree grid (column, row). Row 0 is the top.
+## Connections are drawn from each prerequisite to this node.
+@export var grid_position: Vector2i = Vector2i.ZERO
+## Nodes sharing a non-empty choice group are mutually exclusive: once one of
+## them owns a level, the others become unavailable ("pick one" nodes).
+@export var choice_group: StringName
+## Gate: total levels invested in the whole tree required before this node
+## becomes available (like "8 points required" rows).
+@export var required_points: int = 0
+
+@export_group("Requirements")
 ## Upgrades (UpgradeNode) that must own at least one level before this one is available.
 ## Typed as Resource on purpose: a self-typed Array[UpgradeNode] creates a script
 ## reference cycle that leaks at exit.

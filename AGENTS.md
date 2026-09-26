@@ -106,7 +106,7 @@ Main (Node)                          src/main/main.tscn — swaps screens
     │   ├── PhaseBuild     — PhaseGenerator fills the board → Phase
     │   ├── Phase          — timer, clicks, needs, collection → PhaseSummary
     │   ├── PhaseSummary   — results overlay → Upgrade
-    │   └── Upgrade        — upgrade list → PhaseBuild
+    │   └── Upgrade        — upgrade list (tree screen planned, GDD §7.1) → PhaseBuild
     ├── Hud (CanvasLayer) %          src/ui/hud/ — timer, needs bars, inventory
     ├── Overlays (CanvasLayer 10)
     │   ├── PhaseSummary (Control) %

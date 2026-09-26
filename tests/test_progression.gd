@@ -91,3 +91,45 @@ func test_needs_starving_factor() -> String:
 	if needs.is_starving():
 		return "restore failed"
 	return ""
+
+
+func test_choice_group_is_exclusive() -> String:
+	var db := _db()
+	var a := UpgradeNode.new()
+	a.id = &"test_a"
+	a.choice_group = &"test_pick"
+	var b := UpgradeNode.new()
+	b.id = &"test_b"
+	b.choice_group = &"test_pick"
+	var original := db.upgrades.duplicate()
+	db.upgrades.append_array([a, b])
+	var prog := ProgressionState.new(db)
+	var inv := Inventory.new()
+	var ok := prog.buy(a, inv) and not prog.is_available(b)
+	db.upgrades.assign(original)
+	return "" if ok else "choice group should block the other node"
+
+
+func test_required_points_gate() -> String:
+	var db := _db()
+	var gated := UpgradeNode.new()
+	gated.id = &"test_gated"
+	gated.required_points = 2
+	var prog := ProgressionState.new(db)
+	if prog.is_available(gated):
+		return "gate should block with 0 points"
+	var inv := Inventory.new()
+	inv.add(&"wood", 100000)
+	var axe := db.get_upgrade(&"sharp_axe")
+	prog.buy(axe, inv)
+	prog.buy(axe, inv)
+	return "" if prog.is_available(gated) else "gate should open with 2 points"
+
+
+func test_tree_positions_are_unique() -> String:
+	var seen := {}
+	for upgrade: UpgradeNode in _db().upgrades:
+		if seen.has(upgrade.grid_position):
+			return "%s and %s share %s" % [seen[upgrade.grid_position], upgrade.id, upgrade.grid_position]
+		seen[upgrade.grid_position] = upgrade.id
+	return ""

@@ -18,3 +18,4 @@ max_level = 3
 base_costs = Array[ExtResource("1_ht2j7")]([SubResource("Resource_n6gc7")])
 cost_growth = 2.3
 prerequisites = Array[Resource]([ExtResource("4_8x1ne")])
+grid_position = Vector2i(0, 1)

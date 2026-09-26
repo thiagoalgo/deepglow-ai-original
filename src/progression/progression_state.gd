@@ -32,10 +32,32 @@ func is_maxed(upgrade: UpgradeNode) -> bool:
 func is_available(upgrade: UpgradeNode) -> bool:
 	if is_maxed(upgrade):
 		return false
+	if get_total_levels() < upgrade.required_points:
+		return false
+	if is_blocked_by_choice(upgrade):
+		return false
 	for prerequisite: UpgradeNode in upgrade.prerequisites:
 		if get_level(prerequisite.id) < 1:
 			return false
 	return true
+
+
+## Total levels bought across the whole tree (used by required_points gates).
+func get_total_levels() -> int:
+	var total := 0
+	for level: int in _levels.values():
+		total += level
+	return total
+
+
+## True when another node of the same choice group already owns a level.
+func is_blocked_by_choice(upgrade: UpgradeNode) -> bool:
+	if upgrade.choice_group.is_empty():
+		return false
+	for other: UpgradeNode in database.upgrades:
+		if other != upgrade and other.choice_group == upgrade.choice_group and get_level(other.id) > 0:
+			return true
+	return false
 
 
 func get_next_cost(upgrade: UpgradeNode) -> Array[ResourceAmount]:

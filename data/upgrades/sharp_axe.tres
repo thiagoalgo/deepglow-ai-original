@@ -17,3 +17,4 @@ target = &"axe"
 max_level = 3
 base_costs = Array[ExtResource("1_quwbt")]([SubResource("Resource_hholl")])
 cost_growth = 2.4
+grid_position = Vector2i(1, 0)

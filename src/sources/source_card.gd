@@ -1,11 +1,11 @@
 class_name SourceCard
 extends Node2D
-## A source on the board: sprite + rarity frame + progress bar.
+## A source on the board: sprite + progress bar. Rarity is intentionally not
+## shown (docs/game-design.md §3.1): the sprite itself communicates value.
 ## Holds the remaining "health" (clicks); game rules decide the damage.
 
 signal depleted
 
-const FRAME_SIZE := Vector2(18, 18)
 const BAR_WIDTH := 14.0
 
 var source: SourceType
@@ -51,9 +51,6 @@ func collect() -> void:
 func _draw() -> void:
 	if source == null:
 		return
-	var frame := Rect2(-FRAME_SIZE / 2.0, FRAME_SIZE)
-	if not source.rarity.is_baseline:
-		draw_rect(frame, source.rarity.color, false, 1.0)
 	if source.texture == null:
 		draw_rect(Rect2(-5, -5, 10, 10), source.placeholder_color)
 	if health < total_health:
