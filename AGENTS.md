@@ -24,7 +24,7 @@ Never hardcode player-facing strings in scripts or scenes: use translation keys 
 - **Game design:** `docs/game-design.md` (source of truth for rules, balance targets and roadmap).
   Done: **M1** prototype loop (wood/fruit/water, phase generator, contextual cursor, hunger/thirst,
   upgrade list, programmer art), **M2** balance simulator and **M2.5** drawn upgrade tree.
-  Next: **M3** tiers 1–2 content (rocks, pond, boar, campfire).
+  Next: **M3** tiers 1–2 content (rocks, pond, boar).
 
 ### Directories
 

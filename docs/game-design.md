@@ -1,4 +1,4 @@
-# Deepglow — Game Design Document (v0.5)
+# Deepglow — Game Design Document (v0.6)
 
 > Documento vivo. Nomes técnicos (ids, classes, chaves de tradução) ficam em inglês;
 > todo texto exibido ao jogador existe em `localization/translations.csv` (en + pt_BR).
@@ -66,7 +66,6 @@ que o pinheiro, a árvore luminosa brilha); o jogador aprende pela experiência.
 | 1 | Rocha (`rock_large`) | incomum | 9 | 6 pedra | picareta |
 | 1 | Lago raso (`pond`) | incomum | 6 | 2 peixe | vara (`fishing_rod`) |
 | 2 | Javali (`boar`) | rara | 10 | 3 carne no osso | lança (`spear`) |
-| 2 | Fogueira (`campfire`) | — | 3 | carne → carne assada | (estrutura, cozinha) |
 | 3+ | Veio de cobre/ferro/ouro (`ore_*`) | incomum → rara | 10–18 | minérios | picareta melhor |
 | 3+ | Cristal (`crystal_*`) | rara/épica | 15–25 | cristais | picareta de cristal |
 
@@ -121,7 +120,7 @@ Aberta entre as fases. Cada nó tem custo (um ou vários recursos), pré-requisi
 
 | Tipo de nó | Exemplos |
 |---|---|
-| Desbloqueio | picareta (libera rochas), vara de pesca, lança, fogueira |
+| Desbloqueio | picareta (libera rochas), vara de pesca, lança |
 | Ferramenta melhor | machado de pedra: −1 clique nas árvores; machado de ferro: −2 |
 | Tempo | +5 s por fase (poucos níveis, caros) |
 | Raridade | "olho treinado": aumenta o peso de fontes raras |
@@ -222,7 +221,7 @@ Estados da `StateMachine`: `Setup` → `PhaseBuild` → `Phase` → `PhaseSummar
 | M1 — Protótipo do loop ✅ | madeira, fruta e água (com variações de raridade); gerador de fases; timer; cursor contextual; fome/sede; HUD; tela de evolução com ~5 nós; arte provisória |
 | M2 — Simulador ✅ | script de balanceamento + meta de 3 h verificada |
 | M2.5 — Árvore desenhada ✅ | tela da árvore em grade com conexões, níveis, escolhas e portões |
-| M3 — Camadas 1–2 | rochas, lago, javali, fogueira |
+| M3 — Camadas 1–2 | rochas, lago, javali |
 | M4 — Arte | sprites definitivos no Pixellab (fontes por raridade + cursores + ícones) |
 | M5 — Save | salvar/carregar progresso |
 | M6 — Sensação | partículas, sons, ciclo dia-noite, luzes bioluminescentes |
@@ -238,6 +237,6 @@ Estados da `StateMachine`: `Setup` → `PhaseBuild` → `Phase` → `PhaseSummar
 | D4 | Timer + ciclo dia-noite visual | decidido |
 | D5 | Duração mínima de 3 h para completar a árvore | decidido |
 | D6 | Fome/sede vazia: cada clique vale 0,5; drenagem 4%/s e 4,5%/s | decidido (simulador) |
-| D7 | Estruturas (fogueira) ocupam casa do tabuleiro ou ficam fora dele? | aberto |
+| D7 | Sem estruturas nem transformação de recursos: fogueira removida; carne do javali é comida e recurso | decidido |
 | D8 | Raridade não é exibida no tabuleiro; o sprite comunica o valor | decidido |
 | D9 | Árvore de evolução desenhada em grade (conexões, níveis, escolhas, portões) | decidido |
