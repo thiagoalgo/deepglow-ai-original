@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="Achievement" format=3]
+
+[ext_resource type="Script" path="res://src/progression/achievement.gd" id="1_ach"]
+
+[resource]
+script = ExtResource("1_ach")
+id = &"ACH_ENDLESS_NIGHT"
+kind = 0
+amount = 100

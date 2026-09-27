@@ -26,7 +26,8 @@ Never hardcode player-facing strings in scripts or scenes: use translation keys 
   upgrade list, programmer art), **M2** balance simulator, **M2.5** drawn upgrade tree, **M3**
   tiers 1–2 (stone, fish, meat) and **M3.5** tiers 3–4 (ores, crystals, final node; full game
   ≈ 3h30 for the average player), **M4** final art + pixel-art UI, **M5** save/load + title menu and **M6** juice (synthesized
-  audio, particles, dusk-to-night cycle). Next: **M7** publishing.
+  audio, particles, dusk-to-night cycle). **M7** publishing: technical part done (exports,
+  controller play, optional Steam layer, achievements); account/store tasks in `docs/publishing.md`.
 
 ### Directories
 
@@ -86,14 +87,14 @@ pixelart/
 
 ```
 src/                  # code + scenes, organized by FEATURE (.tscn next to its .gd)
-  autoload/           # singletons: Settings (persisted prefs), Events (signal bus), Sound (audio playback)
+  autoload/           # singletons: Settings (prefs), Events (signal bus), Sound (audio), Platform (Steam, optional)
   core/               # generic utilities (StateMachine, Palette, GameDatabase)
   main/               # entry scene and screen flow
   game/               # run orchestration (Game) + states/ (rules per state)
   board/              # Board (view/input, generic items), BoardModel (pure state), BoardConfig
   economy/            # ResourceType, ResourceAmount (data) + Inventory (state)
   sources/            # Rarity, ToolType, SourceType (data) + SourceCard (scene)
-  progression/        # UpgradeNode (data) + ProgressionState (state, derived stats)
+  progression/        # UpgradeNode, Achievement (data) + ProgressionState (state, derived stats)
   survival/           # Needs (hunger/thirst state)
   save/               # SaveGame (run snapshot <-> JSON dict) + SaveSystem (user://save.json I/O)
   phases/             # PhaseRules (data) + PhaseGenerator/PhasePlan (pure logic)
@@ -102,10 +103,11 @@ src/                  # code + scenes, organized by FEATURE (.tscn next to its .
                       # upgrade_tree, tool_cursor, language_select, title_menu) + theme/
 localization/         # translations.csv (source of all player-facing text)
 data/                 # .tres instances: game_database.tres (root), resources/, rarities/,
-                      # tools/, sources/, upgrades/, phases/, board/
+                      # tools/, sources/, upgrades/, achievements/, phases/, board/, audio/
 assets/               # FINAL game-ready art/audio (sprites/, tilesets/, fonts/, audio/, palettes/)
 tests/                # headless tests (test_*.gd)
-tools/                # outside the game: pixellab/, art/ + audio/ (Python), balance/ (GDScript simulator)
+tools/                # outside the game: pixellab/, art/ + audio/ (Python), balance/ (GDScript simulator),
+                      # build/ (export_all.sh)
 addons/               # third-party plugins (do not edit)
 docs/                 # design and pipeline docs
 ```
@@ -234,11 +236,17 @@ saving is instant, the hold times only make it noticeable).
 
 ### Input
 
-Actions defined in `project.godot`: `select` (left mouse / space),
-`cancel` (right mouse / Esc), `toggle_crt` (F2, CRT filter on/off), `toggle_fullscreen` (F11);
+Actions defined in `project.godot`: `select` (left mouse / space / gamepad A),
+`cancel` (right mouse / Esc / gamepad B), `board_left|right|up|down` (arrows / WASD / d-pad /
+left stick: move the hovered cell, only while `Board.navigation_enabled`, i.e. during a phase;
+the software cursor jumps to that cell), `toggle_crt` (F2, CRT filter on/off), `toggle_fullscreen` (F11);
 both are also on the Settings screen. New player options = a `SettingRow` on the Settings
 screen + a value/setter/signal in the `Settings` autoload. Menus use Godot's built-in `ui_*` actions (keyboard/gamepad
-focus navigation must always work). Always use actions, never raw keys.
+focus navigation must always work); `ui_accept`/`ui_cancel` are overridden in `project.godot` to add
+gamepad A (PS Cross) / B (PS Circle) — Godot's defaults have no gamepad button to press a UI button.
+Test gamepad flows with real `InputEventJoypadButton` events, not `InputEventAction`.
+Upgrade tree with keys/gamepad: confirm on a node selects it and moves the focus to Buy (confirm
+again buys, cancel returns to the node); with the mouse, clicking a node only selects it. Always use actions, never raw keys.
 Gameplay input goes in `_unhandled_input` (UI consumes first). HUD Controls that must not
 block the board use `mouse_filter = IGNORE`.
 
@@ -368,6 +376,16 @@ Art file names: `snake_case`, no spaces, English, id equal to the data `id`
   (palette, bright → dark).
 - New gameplay moments emit an `Events` signal (e.g. `source_hit`); `GameAudio`/`GameFx` react.
 
+## 5.2 Publishing
+
+- Versions: bump `application/config/version` (shown on the title screen) for every store build.
+- `Platform` autoload: uses GodotSteam only if its `Steam` singleton exists (all calls via
+  `call()`), so builds without the extension still run. Steam App ID: project setting
+  `deepglow/steam/app_id`. Achievements are data (`data/achievements/*.tres`, `Achievement`
+  resource, ids = Steamworks API names) and are reported by `Game.report_achievements()`.
+- Full guide (Steamworks, Steam Cloud, Deck checklist, macOS notarization, store page):
+  `docs/publishing.md`.
+
 ## 6. Useful commands
 
 ```bash
@@ -382,6 +400,9 @@ $GODOT --headless --path . -s res://tests/run_tests.gd # tests (exit 1 on failur
 $GODOT --headless --path . -s res://tools/balance/simulate.gd -- --runs 12 --target-minutes 180
 #   (~3 min for the full game; use --profiles average:3.0 --runs 4 for quick iterations)
 #   report: tools/balance/reports/latest.md (git-ignored); options in simulate.gd header
+
+# Release builds (needs the export templates; output in build/, git-ignored)
+GODOT=$GODOT tools/build/export_all.sh            # Windows, macOS, Linux (or pass one preset name)
 
 # Audio (regenerate)
 python3 tools/audio/sfx.py && python3 tools/audio/music.py && python3 tools/audio/ambience.py
@@ -411,7 +432,8 @@ reference classes that depend on `Events`/`Settings` (Board, Game, UI).
   subject ≤ 72 characters, body explaining the *why* when useful.
 - **Scope:** small, focused commits — one logical change each. Run the checklist below first.
 - **What to commit:** sources, scenes, resources, `*.uid` and `*.import` files, final assets,
-  `localization/translations.csv`, `.mcp.json`. **Never:** `.env`, `.godot/`, generated
+  `localization/translations.csv`, `.mcp.json`, `export_presets.cfg` (no credentials in it: those
+  live in `.godot/export_credentials.cfg`). **Never:** `.env`, `.godot/`, generated
   `*.translation`, `.idea/`, raw/source art (that lives in the art support directory).
 
 ## 8. Checklist before finishing a task

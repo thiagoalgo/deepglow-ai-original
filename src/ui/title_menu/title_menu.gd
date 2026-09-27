@@ -21,6 +21,7 @@ var _focus_settings: bool = false
 @onready var _confirm: VBoxContainer = %Confirm
 @onready var _confirm_button: Button = %ConfirmButton
 @onready var _cancel_button: Button = %CancelButton
+@onready var _version: Label = %Version
 
 
 ## Call before adding the screen to the tree. `focus_settings`: coming back
@@ -31,6 +32,7 @@ func setup(saved_next_phase: int, focus_settings: bool = false) -> void:
 
 
 func _ready() -> void:
+	_version.text = "v%s" % ProjectSettings.get_setting("application/config/version", "")
 	_continue_button.visible = _saved_next_phase > 0
 	_continue_button.text = tr(&"UI_CONTINUE_RUN") % _saved_next_phase
 	_continue_button.pressed.connect(continue_requested.emit)

@@ -9,6 +9,8 @@ extends Resource
 @export var sources: Array[SourceType] = []
 @export var upgrades: Array[UpgradeNode] = []
 @export var phase_rules: PhaseRules
+## Platform (Steam) achievements, see Achievement and the Platform autoload.
+@export var achievements: Array[Achievement] = []
 
 
 func get_resource(id: StringName) -> ResourceType:

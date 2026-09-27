@@ -35,6 +35,7 @@ func _ready() -> void:
 	assert(database != null, "Game requires a GameDatabase.")
 	assert(card_scene != null, "Game requires card_scene.")
 	_center_board()
+	board.cell_navigated.connect(_on_board_cell_navigated)
 	if _pending_save:
 		load_run(_pending_save)
 		_pending_save = null
@@ -59,6 +60,15 @@ func load_run(save: SaveGame) -> void:
 	phase_number = save.phase_number
 	save.apply_to(inventory, progression)
 	_bind_run_state()
+
+
+## Reports every achievement the current progress meets (Platform ignores repeats).
+func report_achievements() -> void:
+	var unlocked: Array[StringName] = []
+	for achievement: Achievement in database.achievements:
+		if achievement.is_unlocked(progression):
+			unlocked.append(achievement.id)
+	Platform.unlock_achievements(unlocked)
 
 
 ## Writes the current run to the save slot and shows the save badge on the
@@ -97,6 +107,11 @@ func _center_board() -> void:
 	board.position = ((viewport_size - board_size) / 2.0).floor()
 
 
+func _on_board_cell_navigated(cell: Vector2i) -> void:
+	tool_cursor.place_at(board.position + board.cell_to_local(cell))
+
+
 func _on_upgrade_purchased(_upgrade: UpgradeNode, _new_level: int) -> void:
 	game_audio.play_purchase()
 	save_run()
+	report_achievements()

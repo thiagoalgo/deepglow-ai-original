@@ -18,6 +18,7 @@ func enter(_payload: Dictionary = {}) -> void:
 	_ending = false
 	game.needs.reset()
 	game.board.cell_clicked.connect(_on_cell_clicked)
+	game.board.navigation_enabled = true
 	game.board.cell_hovered.connect(_on_cell_hovered)
 	game.board.cell_hover_exited.connect(_on_cell_hover_exited)
 	game.phase_timer.timeout.connect(_end_phase)
@@ -29,6 +30,7 @@ func enter(_payload: Dictionary = {}) -> void:
 
 func exit() -> void:
 	game.board.cell_clicked.disconnect(_on_cell_clicked)
+	game.board.navigation_enabled = false
 	game.board.cell_hovered.disconnect(_on_cell_hovered)
 	game.board.cell_hover_exited.disconnect(_on_cell_hover_exited)
 	game.phase_timer.timeout.disconnect(_end_phase)

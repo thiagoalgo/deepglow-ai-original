@@ -45,6 +45,7 @@ func build(database: GameDatabase) -> void:
 		extent = extent.max(upgrade.grid_position)
 	custom_minimum_size = padding * 2.0 + Vector2(extent + Vector2i.ONE) * cell_size \
 		+ Vector2(0, _gates_up_to(extent.y) * gate_gap)
+	_link_focus_neighbors()
 	queue_redraw()
 
 
@@ -57,6 +58,50 @@ func refresh(progression: ProgressionState, inventory: Inventory) -> void:
 
 func get_view(upgrade_id: StringName) -> UpgradeNodeView:
 	return _views.get(upgrade_id)
+
+
+## Keyboard/gamepad navigation follows the tree's grid instead of Godot's
+## geometric guess (which skipped rows with gaps): each direction goes to the
+## closest node that way, preferring the same column/row. Nodes with nothing
+## further in a direction keep the default search (e.g. right -> Buy button).
+func _link_focus_neighbors() -> void:
+	var directions: Dictionary[Side, Vector2i] = {
+		SIDE_LEFT: Vector2i.LEFT, SIDE_RIGHT: Vector2i.RIGHT,
+		SIDE_TOP: Vector2i.UP, SIDE_BOTTOM: Vector2i.DOWN,
+	}
+	for view: UpgradeNodeView in _views.values():
+		for side: Side in directions:
+			var target := _closest_in_direction(view.upgrade.grid_position, directions[side])
+			var path := view.get_path_to(target) if target else NodePath()
+			view.set_focus_neighbor(side, path)
+
+
+func _closest_in_direction(from: Vector2i, direction: Vector2i) -> UpgradeNodeView:
+	var best: UpgradeNodeView
+	var best_score := INF
+	for view: UpgradeNodeView in _views.values():
+		var delta := view.upgrade.grid_position - from
+		var along := delta.x * direction.x + delta.y * direction.y
+		if along <= 0:
+			continue
+		var across := absi(delta.y) if direction.x != 0 else absi(delta.x)
+		var score := along + across * 2.0
+		if score < best_score:
+			best_score = score
+			best = view
+	return best
+
+
+## Focuses the top-left node (keyboard/gamepad players need a starting point).
+func focus_first() -> void:
+	var first: UpgradeNodeView
+	for view: UpgradeNodeView in _views.values():
+		var cell := view.upgrade.grid_position
+		if first == null or cell.y < first.upgrade.grid_position.y \
+				or (cell.y == first.upgrade.grid_position.y and cell.x < first.upgrade.grid_position.x):
+			first = view
+	if first:
+		first.grab_focus()
 
 
 ## Marks one node as the selected one (null clears the selection).
