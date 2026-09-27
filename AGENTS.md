@@ -27,7 +27,8 @@ Never hardcode player-facing strings in scripts or scenes: use translation keys 
   tiers 1–2 (stone, fish, meat) and **M3.5** tiers 3–4 (ores, crystals, final node; full game
   ≈ 3h30 for the average player), **M4** final art + pixel-art UI, **M5** save/load + title menu and **M6** juice (synthesized
   audio, particles, dusk-to-night cycle). **M7** publishing: technical part done (exports,
-  controller play, optional Steam layer, achievements); account/store tasks in `docs/publishing.md`.
+  controller play, optional Steam layer, achievements). Store publishing (Steam/Apple), macOS
+  signing, store art and Steam Deck testing are deferred future improvements (`docs/publishing.md` §6).
 
 ### Directories
 

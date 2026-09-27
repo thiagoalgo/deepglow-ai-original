@@ -137,11 +137,15 @@ Deepglow.
 e cronometradas, invista tudo numa árvore de evolução desenhada à mão e desbloqueie novas
 ferramentas até alcançar o Coração de Deepglow.
 
-## 6. Pendências do dono do projeto
+## 6. Melhorias futuras (adiadas)
+
+Decisão do dono do projeto (set/2026): **por enquanto não vamos publicar na Steam nem na Apple**, nem
+assinar/notarizar o app de macOS. Os builds servem para testes (ex.: zip de Windows para
+testadores). Quando houver uma publicação, retomar esta lista:
 
 - [ ] Conta Steamworks, taxa, App ID (→ `deepglow/steam/app_id`).
 - [ ] Instalar o GodotSteam e testar conquistas numa branch `beta`.
 - [ ] Configurar Auto-Cloud (tabela 3.4) e as conquistas (tabela 3.3).
-- [ ] Apple Developer + notarização (se for lançar no macOS).
+- [ ] Apple Developer + assinatura/notarização (seção 4).
 - [ ] Arte: ícone do app, capsules, ícones das conquistas, capturas e trailer.
-- [ ] Testar num Steam Deck (checklist da seção 2).
+- [ ] Testar num Steam Deck (checklist da seção 2) — não temos um aparelho no momento.
