@@ -2,7 +2,8 @@ class_name SettingRow
 extends Button
 ## One line of the Settings screen: "Name      < Value >".
 ## The whole row is a focusable button: left/right (keys, d-pad) step through
-## the options, a click/confirm advances to the next one (wrapping around).
+## the options; a mouse click on the left half of the value ("<") goes back and
+## on the right half (">") forward; confirm (Enter / gamepad A) advances.
 ## New settings (volume, ...) are new rows; values live in the Settings autoload.
 
 signal value_changed(index: int)
@@ -38,6 +39,15 @@ func set_options(options: PackedStringArray, index: int) -> void:
 
 
 func _gui_input(event: InputEvent) -> void:
+	var click := event as InputEventMouseButton
+	if click and click.button_index == MOUSE_BUTTON_LEFT:
+		# Handled here instead of the Button "pressed" (which only goes forward).
+		if click.pressed:
+			var middle := _value_label.get_global_rect().get_center().x - get_global_rect().position.x
+			_step(-1 if click.position.x < middle else 1, wrap_keys)
+			grab_focus()
+		accept_event()
+		return
 	if event.is_action_pressed(&"ui_left", true):
 		_step(-1, wrap_keys)
 		accept_event()

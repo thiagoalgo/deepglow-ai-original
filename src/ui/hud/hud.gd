@@ -54,7 +54,7 @@ func _on_phase_started(phase_number: int, duration: float) -> void:
 func _on_phase_time_changed(time_left: float) -> void:
 	_time_label.text = str(ceili(time_left))
 	var low := time_left <= LOW_TIME
-	_time_label.theme_type_variation = &"AlertLabel" if low else &"TitleLabel"
+	_time_label.theme_type_variation = &"AlertTitleLabel" if low else &"TitleLabel"
 	_clock.value = time_left / _phase_duration
 	_clock.alert = low
 

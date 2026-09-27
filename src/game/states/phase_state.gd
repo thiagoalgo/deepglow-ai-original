@@ -80,6 +80,9 @@ func _end_phase() -> void:
 	if _ending:
 		return
 	_ending = true
+	# The last per-frame update can still show 1 s; publish the real final time
+	# (0 when the timer ran out, the remaining time when the board was cleared).
+	Events.phase_time_changed.emit(game.phase_timer.time_left)
 	var elapsed := game.current_plan.duration - game.phase_timer.time_left
 	if game.phase_timer.is_stopped():
 		elapsed = game.current_plan.duration
