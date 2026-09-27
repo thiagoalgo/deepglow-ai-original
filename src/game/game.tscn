@@ -25,6 +25,7 @@
 [ext_resource type="AudioStream" path="res://assets/audio/sfx/tick_last.ogg" id="23_ticklast"]
 [ext_resource type="AudioStream" path="res://assets/audio/sfx/buy.ogg" id="24_buy"]
 [ext_resource type="Script" path="res://src/game/game_fx.gd" id="25_fx"]
+[ext_resource type="Script" path="res://src/game/game_rumble.gd" id="26_rumble"]
 [ext_resource type="Script" path="res://src/fx/night_cycle.gd" id="26_night"]
 [ext_resource type="Shader" path="res://src/fx/night_shift.gdshader" id="27_night_shader"]
 [ext_resource type="Script" path="res://src/fx/fireflies.gd" id="28_fireflies"]
@@ -114,6 +115,9 @@ buy_sound = ExtResource("24_buy")
 script = ExtResource("25_fx")
 board = NodePath("../Board")
 effects = NodePath("../Effects")
+
+[node name="GameRumble" type="Node" parent="."]
+script = ExtResource("26_rumble")
 
 [node name="NightCycle" type="Node" parent="." node_paths=PackedStringArray("scenery")]
 script = ExtResource("26_night")

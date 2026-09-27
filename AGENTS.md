@@ -150,6 +150,7 @@ App (Control)                        src/main/app.tscn — window root: integer 
                 ├── ToolCursor (CanvasLayer 100) % — software cursor showing the contextual tool
                 ├── GameAudio (Node) %           — music/SFX from Events (phase track + rush layer, hits, ticks)
                 ├── GameFx (Node)                — PixelBurst chips on hits, sparkles on collect
+                ├── GameRumble (Node)            — gamepad vibration on hits/collects (only when playing with a pad)
                 └── NightCycle (Node)            — dusk -> deep night in palette steps during a phase
 ```
 
@@ -383,7 +384,7 @@ Art file names: `snake_case`, no spaces, English, id equal to the data `id`
   A source can override them: `SourceType.hit_sound` and `SourceType.collect_sound` (played on
   the final, collecting hit instead of the hit sound) — the boar grunts on each spear hit and
   squeals when collected (`boar_grunt`/`boar_squeal`, formant "voice" synthesis in `sfx.py`).
-- New gameplay moments emit an `Events` signal (e.g. `source_hit`); `GameAudio`/`GameFx` react.
+- New gameplay moments emit an `Events` signal (e.g. `source_hit`); `GameAudio`/`GameFx`/`GameRumble` react.
 
 ## 5.2 Publishing
 
