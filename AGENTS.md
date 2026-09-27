@@ -48,8 +48,11 @@ pixelart/
 
 ## 2. Pixel art specification (mandatory)
 
-- **Base resolution:** 640x360, `stretch/mode=viewport`, `scale_mode=integer` (3x at 1080p).
-  Development window 1280x720 (2x). (Changed from 320x180 in M4: 16 px sprites could not hold
+- **Base resolution:** 640x360. The game renders into a fixed 640x360 `SubViewport` inside
+  `App` (`src/main/app.tscn`, the main scene), which shows it integer-scaled and centred (3x at
+  1080p) with black letterbox. Project stretch mode is `disabled` on purpose: the optional CRT
+  shader (`src/main/crt.gdshader`) runs at the window resolution on top of the scaled image.
+  (Changed from 320x180 in M4: 16 px sprites could not hold
   the concept art's level of detail.)
 - **Filtering:** Nearest (project default). 2D transform and vertex snapping enabled.
   Never place nodes at fractional coordinates on purpose; use `.floor()`.
@@ -108,27 +111,30 @@ docs/                 # design and pipeline docs
 ### Current scene flow
 
 ```
-Main (Node)                          src/main/main.tscn — swaps screens
-├── LanguageSelect (Control)         src/ui/language_select/  — start screen
-│
-└── Game (Node2D)                    src/game/game.tscn — run state: inventory, progression, needs
-    ├── Board (Node2D) %             src/board/board.tscn
-    │   ├── GridView (Node2D) %      — frame + cells drawn with PixelStyleBox (_draw)
-    │   └── Items (Node2D, y_sort) % — SourceCard instances (no hovered-cell highlight)
-    ├── Effects (Node2D) %           — FloatingText popups
-    ├── PhaseTimer (Timer) %
-    ├── StateMachine (Node) %
-    │   ├── Setup          → PhaseBuild
-    │   ├── PhaseBuild     — PhaseGenerator fills the board → Phase
-    │   ├── Phase          — timer, clicks, needs, collection → PhaseSummary
-    │   ├── PhaseSummary   — results overlay → Upgrade
-    │   └── Upgrade        — drawn upgrade tree (GDD §7.1) → PhaseBuild
-    ├── Hud (CanvasLayer) %          src/ui/hud/ — ClockTimer (round clock) + seconds, needs bars, inventory
-    ├── Overlays (CanvasLayer 10)
-    │   ├── PhaseSummary (Control) %
-    │   └── UpgradeTreeScreen (Control) % — UpgradeTreeView (grid, lines, gates)
-    │                                         + UpgradeNodeView per node + details panel
-    └── ToolCursor (CanvasLayer 100) % — software cursor showing the contextual tool
+App (Control)                        src/main/app.tscn — window root: integer scaling + CRT shader
+└── Screen (SubViewportContainer) %  — material = crt.gdshader (Settings.crt_enabled, F2)
+    └── GameViewport (SubViewport 640x360)
+        └── Main (Node)              src/main/main.tscn — swaps screens
+            ├── LanguageSelect (Control)         src/ui/language_select/  — start screen
+            │
+            └── Game (Node2D)                    src/game/game.tscn — run state: inventory, progression, needs
+                ├── Board (Node2D) %             src/board/board.tscn
+                │   ├── GridView (Node2D) %      — frame + cells drawn with PixelStyleBox (_draw)
+                │   └── Items (Node2D, y_sort) % — SourceCard instances (no hovered-cell highlight)
+                ├── Effects (Node2D) %           — FloatingText popups
+                ├── PhaseTimer (Timer) %
+                ├── StateMachine (Node) %
+                │   ├── Setup          → PhaseBuild
+                │   ├── PhaseBuild     — PhaseGenerator fills the board → Phase
+                │   ├── Phase          — timer, clicks, needs, collection → PhaseSummary
+                │   ├── PhaseSummary   — results overlay → Upgrade
+                │   └── Upgrade        — drawn upgrade tree (GDD §7.1) → PhaseBuild
+                ├── Hud (CanvasLayer) %          src/ui/hud/ — ClockTimer (round clock) + seconds, needs bars, inventory
+                ├── Overlays (CanvasLayer 10)
+                │   ├── PhaseSummary (Control) %
+                │   └── UpgradeTreeScreen (Control) % — UpgradeTreeView (grid, lines, gates)
+                │                                         + UpgradeNodeView per node + details panel
+                └── ToolCursor (CanvasLayer 100) % — software cursor showing the contextual tool
 ```
 
 Data flow: `GameDatabase` (all data) → `ProgressionState` computes derived stats (effective clicks,
@@ -201,7 +207,7 @@ yields, phase duration, drains, rarity weights) from upgrade levels → `PhaseGe
 ### Input
 
 Actions defined in `project.godot`: `select` (left mouse / space),
-`cancel` (right mouse / Esc). Menus use Godot's built-in `ui_*` actions (keyboard/gamepad
+`cancel` (right mouse / Esc), `toggle_crt` (F2, CRT filter on/off; also on the title screen). Menus use Godot's built-in `ui_*` actions (keyboard/gamepad
 focus navigation must always work). Always use actions, never raw keys.
 Gameplay input goes in `_unhandled_input` (UI consumes first). HUD Controls that must not
 block the board use `mouse_filter = IGNORE`.

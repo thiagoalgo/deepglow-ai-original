@@ -1,0 +1,46 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://src/main/app.gd" id="1_app"]
+[ext_resource type="Shader" path="res://src/main/crt.gdshader" id="2_crt"]
+[ext_resource type="PackedScene" path="res://src/main/main.tscn" id="3_main"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_crt"]
+shader = ExtResource("2_crt")
+
+[node name="App" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_app")
+
+[node name="Letterbox" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 1)
+
+[node name="Screen" type="SubViewportContainer" parent="."]
+unique_name_in_owner = true
+texture_filter = 1
+material = SubResource("ShaderMaterial_crt")
+layout_mode = 0
+offset_right = 640.0
+offset_bottom = 360.0
+
+[node name="GameViewport" type="SubViewport" parent="Screen"]
+unique_name_in_owner = true
+snap_2d_transforms_to_pixel = true
+snap_2d_vertices_to_pixel = true
+canvas_item_default_texture_filter = 0
+size = Vector2i(640, 360)
+render_target_update_mode = 4
+
+[node name="Main" parent="Screen/GameViewport" instance=ExtResource("3_main")]

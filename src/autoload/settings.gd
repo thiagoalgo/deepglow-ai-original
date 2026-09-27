@@ -1,11 +1,12 @@
 extends Node
 ## Player settings (autoload "Settings"), persisted to user://settings.cfg.
 ##
-## Owns the active locale. To add a language: add a column to
+## Owns the active locale and the CRT filter switch. To add a language: add a column to
 ## localization/translations.csv, register the generated .translation in
 ## Project Settings > Localization, and add an entry to SUPPORTED_LOCALES.
 
 signal locale_changed(locale: String)
+signal crt_changed(enabled: bool)
 
 const SAVE_PATH := "user://settings.cfg"
 const DEFAULT_LOCALE := "en"
@@ -16,6 +17,8 @@ const SUPPORTED_LOCALES: Dictionary[String, String] = {
 }
 
 var locale: String = DEFAULT_LOCALE
+## Soft CRT look (curved tube, scanlines). Toggle: title screen or the toggle_crt action (F2).
+var crt_enabled: bool = true
 
 var _config := ConfigFile.new()
 var _has_saved_locale: bool = false
@@ -42,6 +45,12 @@ func set_locale(new_locale: String) -> void:
 	locale_changed.emit(locale)
 
 
+func set_crt_enabled(enabled: bool) -> void:
+	crt_enabled = enabled
+	_save()
+	crt_changed.emit(crt_enabled)
+
+
 ## Best supported match for a system/locale string (e.g. "pt_PT" -> "pt_BR").
 static func match_supported_locale(requested: String) -> String:
 	if SUPPORTED_LOCALES.has(requested):
@@ -63,10 +72,13 @@ func _load() -> void:
 		_has_saved_locale = true
 	else:
 		locale = match_supported_locale(OS.get_locale())
+	crt_enabled = bool(_config.get_value("video", "crt", crt_enabled))
 
 
 func _save() -> void:
-	_config.set_value("general", "locale", locale)
+	if _has_saved_locale:
+		_config.set_value("general", "locale", locale)
+	_config.set_value("video", "crt", crt_enabled)
 	var err := _config.save(SAVE_PATH)
 	if err != OK:
 		push_error("Failed to save settings: %s" % error_string(err))

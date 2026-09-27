@@ -4,6 +4,8 @@ UI_LANGUAGE_PROMPT,Choose your language,Escolha seu idioma
 UI_CONTINUE,Continue,Continuar
 UI_BUY,Buy,Comprar
 UI_MAXED,Max,Máx
+UI_CRT_ON,CRT filter: on (F2),Filtro CRT: ligado (F2)
+UI_CRT_OFF,CRT filter: off (F2),Filtro CRT: desligado (F2)
 UI_SELECT_UPGRADE,Select an upgrade to see its details.,Selecione uma evolução para ver os detalhes.
 UI_LEVEL,%d/%d,%d/%d
 UI_UPGRADES_TITLE,Upgrades,Evoluções
