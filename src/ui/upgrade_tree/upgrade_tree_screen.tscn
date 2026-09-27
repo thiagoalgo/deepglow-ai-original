@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" path="res://src/ui/upgrade_tree/upgrade_tree_screen.gd" id="1_screen"]
 [ext_resource type="Script" path="res://src/ui/upgrade_tree/upgrade_tree_view.gd" id="2_view"]
+[ext_resource type="PackedScene" path="res://src/ui/save_indicator/save_indicator.tscn" id="3_save_indicator"]
 
 [node name="UpgradeTreeScreen" type="Control"]
 layout_mode = 3
@@ -121,7 +122,15 @@ text = "UI_BUY"
 
 [node name="Footer" type="HBoxContainer" parent="Margin/Stack"]
 layout_mode = 2
-alignment = 2
+
+[node name="SaveIndicator" parent="Margin/Stack/Footer" instance=ExtResource("3_save_indicator")]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="Spacer" type="Control" parent="Margin/Stack/Footer"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
 
 [node name="StartButton" type="Button" parent="Margin/Stack/Footer"]
 unique_name_in_owner = true

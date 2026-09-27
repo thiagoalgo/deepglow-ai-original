@@ -117,8 +117,10 @@ App (Control)                        src/main/app.tscn — window root: integer 
 └── Screen (SubViewportContainer) %  — material = crt.gdshader (Settings.crt_enabled, F2)
     └── GameViewport (SubViewport 640x360)
         └── Main (Node)              src/main/main.tscn — swaps screens (one at a time)
-            ├── LanguageSelect (Control)         src/ui/language_select/  — first launch / from the title
-            ├── TitleMenu (Control)              src/ui/title_menu/ — Continue, New game, Language, CRT, Quit
+            ├── LanguageSelect (Control)         src/ui/language_select/  — first launch only
+            ├── TitleMenu (Control)              src/ui/title_menu/ — Continue, New game, Settings, Quit
+            ├── SettingsScreen (Control)         src/ui/settings/ — SettingRow per setting (language, CRT,
+            │                                     fullscreen; volume later), applied + saved immediately
             │
             └── Game (Node2D)                    src/game/game.tscn — run state: inventory, progression, needs
                 ├── Board (Node2D) %             src/board/board.tscn
@@ -137,6 +139,7 @@ App (Control)                        src/main/app.tscn — window root: integer 
                 │   ├── PhaseSummary (Control) %
                 │   └── UpgradeTreeScreen (Control) % — UpgradeTreeView (grid, lines, gates)
                 │                                         + UpgradeNodeView per node + details panel
+                │                                         + SaveIndicator badge (src/ui/save_indicator/)
                 └── ToolCursor (CanvasLayer 100) % — software cursor showing the contextual tool
 ```
 
@@ -154,6 +157,8 @@ the save for the title menu and passes it to `Game.resume_from()` before the Gam
 `SaveGame.apply_to()` drops ids missing from the database and clamps levels to `max_level`, so data
 changes do not break old saves; bump `SaveGame.VERSION` (and migrate in `from_dict`) when the format
 changes. Player settings stay in `user://settings.cfg` (Settings autoload), separate from the run.
+Every save shows the `SaveIndicator` badge ("Saving" for 1.2 s, then "Game saved" for 1.8 s —
+saving is instant, the hold times only make it noticeable).
 `user://` is a custom user dir named `Deepglow` (`application/config/use_custom_user_dir`): macOS
 `~/Library/Application Support/Deepglow/`, Windows `%APPDATA%\Deepglow\`, Linux `~/.local/share/Deepglow/`.
 
@@ -222,7 +227,9 @@ changes. Player settings stay in `user://settings.cfg` (Settings autoload), sepa
 ### Input
 
 Actions defined in `project.godot`: `select` (left mouse / space),
-`cancel` (right mouse / Esc), `toggle_crt` (F2, CRT filter on/off; also on the title screen). Menus use Godot's built-in `ui_*` actions (keyboard/gamepad
+`cancel` (right mouse / Esc), `toggle_crt` (F2, CRT filter on/off), `toggle_fullscreen` (F11);
+both are also on the Settings screen. New player options = a `SettingRow` on the Settings
+screen + a value/setter/signal in the `Settings` autoload. Menus use Godot's built-in `ui_*` actions (keyboard/gamepad
 focus navigation must always work). Always use actions, never raw keys.
 Gameplay input goes in `_unhandled_input` (UI consumes first). HUD Controls that must not
 block the board use `mouse_filter = IGNORE`.
@@ -246,8 +253,8 @@ block the board use `mouse_filter = IGNORE`.
   - Language names are always written in their own language and never translated.
 - **Active locale:** owned by the `Settings` autoload (`Settings.set_locale()`), persisted to
   `user://settings.cfg`. On first launch it defaults to the OS locale when supported.
-  The **LanguageSelect** start screen lets the player choose; focusing an option previews
-  the screen in that language.
+  The **LanguageSelect** screen (first launch only) lets the player choose; focusing an option
+  previews the screen in that language. Later changes: the Language row of the Settings screen.
 - **Adding a language:** add a CSV column, register the new `.translation` in Project
   Settings → Localization, add the entry to `Settings.SUPPORTED_LOCALES`.
 - Keep strings short: the UI is 640x360 with a 16 px font. Check that Portuguese (usually

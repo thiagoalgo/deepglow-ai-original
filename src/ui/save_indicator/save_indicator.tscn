@@ -1,0 +1,29 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://src/ui/save_indicator/save_indicator.gd" id="1_indicator"]
+[ext_resource type="Script" path="res://src/ui/save_indicator/save_icon.gd" id="2_icon"]
+
+[node name="SaveIndicator" type="PanelContainer"]
+size_flags_vertical = 4
+mouse_filter = 2
+theme_type_variation = &"CompactPanel"
+script = ExtResource("1_indicator")
+
+[node name="Row" type="HBoxContainer" parent="."]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 6
+
+[node name="Icon" type="Control" parent="Row"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+size_flags_vertical = 4
+mouse_filter = 2
+script = ExtResource("2_icon")
+
+[node name="Label" type="Label" parent="Row"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "UI_SAVING"
+vertical_alignment = 1

@@ -60,11 +60,13 @@ func load_run(save: SaveGame) -> void:
 	_bind_run_state()
 
 
-## Writes the current run to the save slot. Only meaningful between phases.
+## Writes the current run to the save slot and shows the save badge on the
+## upgrade screen (saves only happen between phases).
 func save_run() -> void:
 	var err := SaveSystem.write(SaveGame.capture(run_seed, phase_number, inventory, progression))
 	if err != OK:
 		push_error("Failed to save the run: %s" % error_string(err))
+	upgrade_screen.show_save(err == OK)
 
 
 ## Seed for a given phase: stable per run, different per phase.

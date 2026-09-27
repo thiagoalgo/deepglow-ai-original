@@ -61,22 +61,15 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "UI_NEW_GAME"
 
-[node name="LanguageButton" type="Button" parent="Center/Panel/Layout/Menu"]
+[node name="SettingsButton" type="Button" parent="Center/Panel/Layout/Menu"]
 unique_name_in_owner = true
 layout_mode = 2
-text = "UI_LANGUAGE"
+text = "UI_SETTINGS"
 
 [node name="QuitButton" type="Button" parent="Center/Panel/Layout/Menu"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "UI_QUIT"
-
-[node name="CrtToggle" type="Button" parent="Center/Panel/Layout/Menu"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 4
-theme_type_variation = &"SmallButton"
-text = "UI_CRT_ON"
 
 [node name="Confirm" type="VBoxContainer" parent="Center/Panel/Layout"]
 unique_name_in_owner = true

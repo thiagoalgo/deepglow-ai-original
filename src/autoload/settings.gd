@@ -1,12 +1,13 @@
 extends Node
 ## Player settings (autoload "Settings"), persisted to user://settings.cfg.
 ##
-## Owns the active locale and the CRT filter switch. To add a language: add a column to
+## Owns the active locale, the CRT filter and fullscreen (edited on the Settings screen). To add a language: add a column to
 ## localization/translations.csv, register the generated .translation in
 ## Project Settings > Localization, and add an entry to SUPPORTED_LOCALES.
 
 signal locale_changed(locale: String)
 signal crt_changed(enabled: bool)
+signal fullscreen_changed(enabled: bool)
 
 const SAVE_PATH := "user://settings.cfg"
 const DEFAULT_LOCALE := "en"
@@ -19,6 +20,8 @@ const SUPPORTED_LOCALES: Dictionary[String, String] = {
 var locale: String = DEFAULT_LOCALE
 ## Soft CRT look (curved tube, scanlines). Toggle: title screen or the toggle_crt action (F2).
 var crt_enabled: bool = true
+## Toggle: Settings screen or the toggle_fullscreen action (F11).
+var fullscreen: bool = false
 
 var _config := ConfigFile.new()
 var _has_saved_locale: bool = false
@@ -27,6 +30,8 @@ var _has_saved_locale: bool = false
 func _ready() -> void:
 	_load()
 	_apply_locale()
+	if fullscreen:
+		_apply_fullscreen()
 
 
 ## True once the player has picked a language at least once.
@@ -51,6 +56,13 @@ func set_crt_enabled(enabled: bool) -> void:
 	crt_changed.emit(crt_enabled)
 
 
+func set_fullscreen(enabled: bool) -> void:
+	fullscreen = enabled
+	_apply_fullscreen()
+	_save()
+	fullscreen_changed.emit(fullscreen)
+
+
 ## Best supported match for a system/locale string (e.g. "pt_PT" -> "pt_BR").
 static func match_supported_locale(requested: String) -> String:
 	if SUPPORTED_LOCALES.has(requested):
@@ -66,6 +78,13 @@ func _apply_locale() -> void:
 	TranslationServer.set_locale(locale)
 
 
+func _apply_fullscreen() -> void:
+	if DisplayServer.get_name() == "headless":
+		return
+	var mode := DisplayServer.WINDOW_MODE_FULLSCREEN if fullscreen else DisplayServer.WINDOW_MODE_WINDOWED
+	DisplayServer.window_set_mode(mode)
+
+
 func _load() -> void:
 	if _config.load(SAVE_PATH) == OK and _config.has_section_key("general", "locale"):
 		locale = match_supported_locale(str(_config.get_value("general", "locale")))
@@ -73,12 +92,14 @@ func _load() -> void:
 	else:
 		locale = match_supported_locale(OS.get_locale())
 	crt_enabled = bool(_config.get_value("video", "crt", crt_enabled))
+	fullscreen = bool(_config.get_value("video", "fullscreen", fullscreen))
 
 
 func _save() -> void:
 	if _has_saved_locale:
 		_config.set_value("general", "locale", locale)
 	_config.set_value("video", "crt", crt_enabled)
+	_config.set_value("video", "fullscreen", fullscreen)
 	var err := _config.save(SAVE_PATH)
 	if err != OK:
 		push_error("Failed to save settings: %s" % error_string(err))

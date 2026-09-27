@@ -3,7 +3,8 @@ extends Control
 ## Start screen: pick the game language.
 ## One button per entry in Settings.SUPPORTED_LOCALES (built at runtime).
 ## Focusing/hovering a language previews the whole screen in that language;
-## confirming persists it through Settings. Shown on first launch and from the title menu.
+## confirming persists it through Settings. Shown only on first launch
+## (later changes: Settings screen).
 
 signal language_confirmed(locale: String)
 

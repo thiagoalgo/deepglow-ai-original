@@ -24,6 +24,9 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed(&"toggle_crt"):
 		Settings.set_crt_enabled(not Settings.crt_enabled)
 		get_viewport().set_input_as_handled()
+	elif event.is_action_pressed(&"toggle_fullscreen"):
+		Settings.set_fullscreen(not Settings.fullscreen)
+		get_viewport().set_input_as_handled()
 
 
 ## Largest integer scale that fits the window; the rest is black letterbox.

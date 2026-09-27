@@ -23,6 +23,7 @@ var _selected: UpgradeNode
 @onready var _buy_button: Button = %BuyButton
 @onready var _start_button: Button = %StartButton
 @onready var _menu_button: Button = %MenuButton
+@onready var _save_indicator: SaveIndicator = %SaveIndicator
 
 
 func _ready() -> void:
@@ -44,6 +45,11 @@ func open(database: GameDatabase, progression: ProgressionState, inventory: Inve
 	_tree_view.build(database)
 	_refresh()
 	show()
+
+
+## Shows the "Saving… / Game saved" badge next to the Start button.
+func show_save(ok: bool) -> void:
+	_save_indicator.show_save(ok)
 
 
 func _refresh() -> void:
@@ -122,6 +128,7 @@ func _on_menu_pressed() -> void:
 
 func _close() -> void:
 	_selected = null
+	_save_indicator.dismiss()
 	var focused := get_viewport().gui_get_focus_owner()
 	if focused:
 		focused.release_focus()

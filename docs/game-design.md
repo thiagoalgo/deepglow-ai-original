@@ -249,6 +249,7 @@ Estados da `StateMachine`: `Setup` → `PhaseBuild` → `Phase` → `PhaseSummar
 | M4 — Arte ✅ | sprites definitivos no Pixellab (fontes por raridade + cursores + ícones) |
 | M5 — Save ✅ | salvar/carregar progresso (autosave entre fases e a cada compra; menu inicial com Continuar/Novo jogo) |
 | M6 — Sensação | partículas, sons, ciclo dia-noite, luzes bioluminescentes |
+| M7 — Publicação | presets de export (Windows, macOS, Linux); integração opcional com a Steam via GodotSteam (conquistas, Steam Cloud do `save.json`), sem quebrar builds fora da Steam; ajustes para Steam Deck (1280x800, controle); assinatura/notarização no macOS; página da loja |
 
 ## 11. Decisões
 
