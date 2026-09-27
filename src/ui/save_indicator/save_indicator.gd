@@ -3,6 +3,8 @@ extends PanelContainer
 ## Small "Saving… / Game saved" badge (bottom-left of the upgrade screen).
 ## Saving itself takes a few milliseconds, so the badge holds "Saving" for
 ## SAVING_TIME and the result for RESULT_TIME, long enough to be noticed.
+## The footer that holds it reserves its height (upgrade_tree_screen.tscn), so
+## showing/hiding the badge never moves the rest of the screen.
 
 const SAVING_TIME := 1.2
 const RESULT_TIME := 1.8
