@@ -84,8 +84,18 @@ que o pinheiro, a árvore luminosa brilha); o jogador aprende pela experiência.
 
 - Duas barras, **fome** e **sede**, esvaziam durante a fase.
 - Coletar comida/bebida enche a barra correspondente (além de guardar o recurso no inventário).
-- Barra vazia **não mata**: deixa a coleta mais lenta (cada clique conta 0,5). Isso cria o
-  dilema "coletar madeira agora ou beber água primeiro" sem punição dura.
+- Barra vazia **não mata**; cada barra tem a sua punição, que faz sentido sozinha (D6, revisto
+  em set/2026):
+  - **Fome vazia → golpes fracos:** cada clique conta 0,5 (sem energia, sem força).
+  - **Sede vazia → rende metade:** cada **material** coletado rende metade (mínimo 1); comida e
+    bebida não são reduzidas, para o jogador sempre conseguir se recuperar.
+  - As duas vazias somam as duas punições (golpes fracos e materiais pela metade).
+  Isso cria o dilema "coletar madeira agora ou beber água primeiro" sem punição dura.
+- A punição é **visível**: a barra vazia pisca com a moldura rosa, o ícone treme quando ela zera
+  e o rótulo troca para "Fome: golpes fracos" / "Sede: rende metade"; o primeiro golpe fraco
+  mostra "Fraco!" e o primeiro material reduzido mostra "Com sede!" (o "+N" fica rosa); golpes
+  fracos soltam menos lascas, soam mais graves e vibram menos; o resumo da fase diz quantos
+  segundos o jogador passou com fome/sede e o efeito.
 - Valores (simulador, D6): fome cai 4%/s e sede 4,5%/s (barras cheias duram ~22–25 s). Um jogador
   atento quase nunca zera; um jogador descuidado (só madeira) passa ~10% do tempo com barra vazia e
   perde ~4% de ritmo — a pressão existe, mas não pune demais.
@@ -267,12 +277,12 @@ Estados da `StateMachine`: `Setup` → `PhaseBuild` → `Phase` → `PhaseSummar
 | # | Decisão | Status |
 |---|---|---|
 | D0 | Ferramenta pelo cursor contextual (sem menu) | decidido |
-| D1 | Fome/sede em barras; vazia = coleta mais lenta, sem morte | decidido |
+| D1 | Fome/sede em barras; vazia = punição própria de cada barra (D6), sem morte | decidido |
 | D2 | Sem derrota | decidido |
 | D3 | Todas as fontes aparecem no início da fase; tempo justo; fases geradas pelo progresso | decidido |
 | D4 | Timer + ciclo dia-noite visual: cada fase vai do anoitecer (40%) à noite profunda (75%) — o cenário escurece em degraus da paleta (o tabuleiro não escurece; halos nos itens foram testados e rejeitados) | decidido (M6) |
 | D5 | ~2h10 no simulador (jogador médio) para completar a árvore — revisto em set/2026 (era 3 h; a partida real levou ~6 h) | decidido |
-| D6 | Fome/sede vazia: cada clique vale 0,5; drenagem 4%/s e 4,5%/s | decidido (simulador) |
+| D6 | Fome vazia: cada clique vale 0,5; sede vazia: materiais rendem metade (comida/bebida não); drenagem 4%/s e 4,5%/s; punição sempre visível no HUD | decidido (revisto set/2026) |
 | D7 | Sem estruturas nem transformação de recursos: fogueira removida; carne do javali é comida e recurso | decidido |
 | D8 | Raridade não é exibida no tabuleiro; o sprite comunica o valor | decidido |
 | D9 | Árvore de evolução desenhada em grade (conexões, níveis, escolhas, portões) | decidido |

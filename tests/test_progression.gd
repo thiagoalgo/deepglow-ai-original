@@ -93,6 +93,32 @@ func test_needs_starving_factor() -> String:
 	return ""
 
 
+func test_needs_penalties_are_separate() -> String:
+	var db := _db()
+	var wood: ResourceType = null
+	var water: ResourceType = null
+	for resource: ResourceType in db.resources:
+		if resource.category == ResourceType.Category.MATERIAL and wood == null:
+			wood = resource
+		elif resource.category == ResourceType.Category.DRINK and water == null:
+			water = resource
+	var needs := Needs.new()
+	needs.drain(100.0, 0.0, 1.0)  # thirst empty only
+	if needs.get_click_factor(0.5) != 1.0:
+		return "thirst must not weaken hits"
+	if needs.apply_yield_penalty(6, wood, 0.5) != 3:
+		return "thirst should halve materials"
+	if needs.apply_yield_penalty(1, wood, 0.5) != 1:
+		return "a material yield never drops below 1"
+	if needs.apply_yield_penalty(6, water, 0.5) != 6:
+		return "thirst must not reduce drinks"
+	needs.reset()
+	needs.drain(100.0, 1.0, 0.0)  # hunger empty only
+	if needs.apply_yield_penalty(6, wood, 0.5) != 6:
+		return "hunger must not reduce yields"
+	return ""
+
+
 func test_choice_group_is_exclusive() -> String:
 	var db := _db()
 	var a := UpgradeNode.new()

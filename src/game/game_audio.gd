@@ -17,7 +17,11 @@ extends Node
 ## Countdown ticks during the last N seconds.
 @export var countdown_seconds: int = 5
 
+## Hit sounds play lower while the hunger bar is empty (weak hits).
+@export var weak_hit_pitch: float = 0.8
+
 var _last_second: int = -1
+var _hungry: bool = false
 
 
 func _ready() -> void:
@@ -26,6 +30,7 @@ func _ready() -> void:
 	Events.phase_ended.connect(_on_phase_ended)
 	Events.source_hit.connect(_on_source_hit)
 	Events.source_collected.connect(_on_source_collected)
+	Events.needs_changed.connect(_on_needs_changed)
 	Sound.play_music(camp_music)
 
 
@@ -57,9 +62,14 @@ func _on_source_hit(source: SourceType, _cell: Vector2i, depleted: bool) -> void
 	if depleted and source.collect_sound:
 		Sound.play(source.collect_sound, 0.05)
 		return
-	Sound.play(source.hit_sound if source.hit_sound else source.tool.hit_sound, 0.08)
+	Sound.play(source.hit_sound if source.hit_sound else source.tool.hit_sound, 0.08, 0.0,
+		weak_hit_pitch if _hungry else 1.0)
 
 
 func _on_source_collected(source: SourceType, _amount: int, _cell: Vector2i) -> void:
 	var rare := source.rarity != null and not source.rarity.is_baseline
 	Sound.play(collect_sound, 0.02, 0.0, 1.12 if rare else 1.0)
+
+
+func _on_needs_changed(hunger: float, _thirst: float) -> void:
+	_hungry = hunger <= 0.0

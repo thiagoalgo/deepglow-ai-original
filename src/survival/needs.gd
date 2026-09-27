@@ -26,10 +26,27 @@ func restore(hunger_amount: float, thirst_amount: float) -> void:
 	changed.emit(hunger, thirst)
 
 
+func is_hungry() -> bool:
+	return hunger <= 0.0
+
+
+func is_thirsty() -> bool:
+	return thirst <= 0.0
+
+
+## Either bar is empty (balance metric).
 func is_starving() -> bool:
-	return hunger <= 0.0 or thirst <= 0.0
+	return is_hungry() or is_thirsty()
 
 
-## Damage multiplier applied to each click.
-func get_click_factor(starving_factor: float) -> float:
-	return starving_factor if is_starving() else 1.0
+## Damage multiplier applied to each click: an empty hunger bar weakens hits.
+func get_click_factor(hungry_factor: float) -> float:
+	return hungry_factor if is_hungry() else 1.0
+
+
+## Amount actually gathered: an empty thirst bar wastes part of every material
+## (food and drink are never reduced, so the player can always recover).
+func apply_yield_penalty(amount: int, resource: ResourceType, thirsty_factor: float) -> int:
+	if not is_thirsty() or resource.category != ResourceType.Category.MATERIAL:
+		return amount
+	return maxi(1, roundi(amount * thirsty_factor))

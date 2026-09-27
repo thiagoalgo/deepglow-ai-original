@@ -59,6 +59,7 @@ layout_mode = 2
 mouse_filter = 2
 
 [node name="HungerLabel" type="Label" parent="Left/Panel/Stack"]
+unique_name_in_owner = true
 layout_mode = 2
 text = "HUD_HUNGER"
 
@@ -67,7 +68,8 @@ layout_mode = 2
 mouse_filter = 2
 theme_override_constants/separation = 6
 
-[node name="Icon" type="TextureRect" parent="Left/Panel/Stack/HungerRow"]
+[node name="HungerIcon" type="TextureRect" parent="Left/Panel/Stack/HungerRow"]
+unique_name_in_owner = true
 layout_mode = 2
 texture = ExtResource("3_fruit")
 stretch_mode = 3
@@ -82,6 +84,7 @@ mouse_filter = 2
 script = ExtResource("2_bar")
 
 [node name="ThirstLabel" type="Label" parent="Left/Panel/Stack"]
+unique_name_in_owner = true
 layout_mode = 2
 text = "HUD_THIRST"
 
@@ -90,7 +93,8 @@ layout_mode = 2
 mouse_filter = 2
 theme_override_constants/separation = 6
 
-[node name="Icon" type="TextureRect" parent="Left/Panel/Stack/ThirstRow"]
+[node name="ThirstIcon" type="TextureRect" parent="Left/Panel/Stack/ThirstRow"]
+unique_name_in_owner = true
 layout_mode = 2
 texture = ExtResource("4_water")
 stretch_mode = 3

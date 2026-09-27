@@ -6,6 +6,8 @@ signal continued
 
 @onready var _title: Label = %Title
 @onready var _cleared: Label = %Cleared
+@onready var _hungry: Label = %Hungry
+@onready var _thirsty: Label = %Thirsty
 @onready var _gathered_list: HBoxContainer = %GatheredList
 @onready var _continue_button: Button = %ContinueButton
 
@@ -16,9 +18,14 @@ func _ready() -> void:
 
 
 func open(phase_number: int, gathered: Dictionary[StringName, int], cleared: int, total: int,
-		database: GameDatabase) -> void:
+		database: GameDatabase, hungry_seconds: float = 0.0, thirsty_seconds: float = 0.0) -> void:
 	_title.text = tr(&"UI_SUMMARY_TITLE") % phase_number
 	_cleared.text = tr(&"UI_SUMMARY_CLEARED") % [cleared, total]
+	# Explain the empty-bar penalties, so they are not a hidden rule.
+	_hungry.text = tr(&"UI_SUMMARY_HUNGRY") % roundi(hungry_seconds)
+	_hungry.visible = roundi(hungry_seconds) > 0
+	_thirsty.text = tr(&"UI_SUMMARY_THIRSTY") % roundi(thirsty_seconds)
+	_thirsty.visible = roundi(thirsty_seconds) > 0
 	for child: Node in _gathered_list.get_children():
 		child.queue_free()
 	for resource: ResourceType in database.resources:

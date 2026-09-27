@@ -8,6 +8,12 @@ var _collected_sources: int = 0
 var _total_sources: int = 0
 var _gathered: Dictionary[StringName, int] = {}
 var _ending: bool = false
+## Seconds spent with each bar empty (shown on the summary).
+var _hungry_seconds: float = 0.0
+var _thirsty_seconds: float = 0.0
+## The "weak"/"thirsty" popup already showed since the bar last emptied.
+var _hunger_warned: bool = false
+var _thirst_warned: bool = false
 
 
 func enter(_payload: Dictionary = {}) -> void:
@@ -16,6 +22,10 @@ func enter(_payload: Dictionary = {}) -> void:
 	_total_sources = game.current_plan.placements.size()
 	_gathered = {}
 	_ending = false
+	_hungry_seconds = 0.0
+	_thirsty_seconds = 0.0
+	_hunger_warned = false
+	_thirst_warned = false
 	game.needs.reset()
 	game.board.cell_clicked.connect(_on_cell_clicked)
 	game.board.navigation_enabled = true
@@ -58,6 +68,14 @@ func update(delta: float) -> void:
 	if _ending:
 		return
 	game.needs.drain(delta, game.progression.get_hunger_drain(), game.progression.get_thirst_drain())
+	if game.needs.is_hungry():
+		_hungry_seconds += delta
+	else:
+		_hunger_warned = false
+	if game.needs.is_thirsty():
+		_thirsty_seconds += delta
+	else:
+		_thirst_warned = false
 	Events.phase_time_changed.emit(game.phase_timer.time_left)
 
 
@@ -69,7 +87,11 @@ func _on_cell_clicked(cell: Vector2i) -> void:
 		return
 	_clicks += 1
 	var rules := game.database.phase_rules
-	var depleted := card.hit(game.needs.get_click_factor(rules.starving_click_factor))
+	var depleted := card.hit(game.needs.get_click_factor(rules.hungry_click_factor))
+	if game.needs.is_hungry() and not _hunger_warned:
+		_hunger_warned = true
+		FloatingText.spawn(game.effects, _cell_world(cell) + Vector2(0, -16), tr(&"HUD_WEAK_POPUP"),
+			null, &"FloatingAlertLabel")
 	Events.source_hit.emit(card.source, cell, depleted)
 	if depleted:
 		_collect(card, cell)
@@ -78,13 +100,21 @@ func _on_cell_clicked(cell: Vector2i) -> void:
 func _collect(card: SourceCard, cell: Vector2i) -> void:
 	var source := card.source
 	var resource := source.yield_resource
-	var amount := game.progression.get_yield(source)
+	var full_amount := game.progression.get_yield(source)
+	var amount := game.needs.apply_yield_penalty(full_amount, resource,
+		game.database.phase_rules.thirsty_yield_factor)
 	game.inventory.add(resource.id, amount)
 	_gathered[resource.id] = _gathered.get(resource.id, 0) + amount
 	game.needs.restore(resource.hunger_restore * amount, resource.thirst_restore * amount)
 	_collected_sources += 1
-	var world_pos := game.board.position + game.board.cell_to_local(cell)
-	FloatingText.spawn(game.effects, world_pos, "+%d" % amount, resource.icon)
+	var world_pos := _cell_world(cell)
+	var reduced := amount < full_amount
+	FloatingText.spawn(game.effects, world_pos, "+%d" % amount, resource.icon,
+		&"FloatingAlertLabel" if reduced else &"FloatingLabel")
+	if reduced and not _thirst_warned:
+		_thirst_warned = true
+		FloatingText.spawn(game.effects, world_pos + Vector2(0, -16), tr(&"HUD_THIRSTY_POPUP"),
+			null, &"FloatingAlertLabel")
 	game.board.take_item(cell)
 	card.collect()
 	Events.source_collected.emit(source, amount, cell)
@@ -111,7 +141,13 @@ func _end_phase() -> void:
 		"gathered": _gathered,
 		"collected": _collected_sources,
 		"total": _total_sources,
+		"hungry_seconds": _hungry_seconds,
+		"thirsty_seconds": _thirsty_seconds,
 	})
+
+
+func _cell_world(cell: Vector2i) -> Vector2:
+	return game.board.position + game.board.cell_to_local(cell)
 
 
 func _on_cell_hovered(cell: Vector2i) -> void:

@@ -8,6 +8,8 @@ extends Node
 @export_range(0.0, 1.0) var hit_weak: float = 0.35
 @export_range(0.0, 1.0) var hit_strong: float = 0.0
 @export var hit_duration: float = 0.08
+## Weak motor while the hunger bar is empty (weak hits barely buzz).
+@export_range(0.0, 1.0) var weak_hit_weak: float = 0.15
 @export_group("Collect")
 @export_range(0.0, 1.0) var collect_weak: float = 0.5
 @export_range(0.0, 1.0) var collect_strong: float = 0.45
@@ -15,10 +17,12 @@ extends Node
 
 ## Gamepad that pressed last, or -1 when the player is on mouse/keyboard.
 var _device: int = -1
+var _hungry: bool = false
 
 
 func _ready() -> void:
 	Events.source_hit.connect(_on_source_hit)
+	Events.needs_changed.connect(_on_needs_changed)
 
 
 func _exit_tree() -> void:
@@ -41,4 +45,9 @@ func _on_source_hit(_source: SourceType, _cell: Vector2i, depleted: bool) -> voi
 	if depleted:
 		Input.start_joy_vibration(_device, collect_weak, collect_strong, collect_duration)
 	else:
-		Input.start_joy_vibration(_device, hit_weak, hit_strong, hit_duration)
+		Input.start_joy_vibration(_device, weak_hit_weak if _hungry else hit_weak, hit_strong,
+			hit_duration)
+
+
+func _on_needs_changed(hunger: float, _thirst: float) -> void:
+	_hungry = hunger <= 0.0

@@ -96,7 +96,7 @@ src/                  # code + scenes, organized by FEATURE (.tscn next to its .
   economy/            # ResourceType, ResourceAmount (data) + Inventory (state)
   sources/            # Rarity, ToolType, SourceType (data) + SourceCard (scene)
   progression/        # UpgradeNode, Achievement (data) + ProgressionState (state, derived stats)
-  survival/           # Needs (hunger/thirst state)
+  survival/           # Needs (hunger/thirst state; empty hunger = weak hits, empty thirst = half materials)
   save/               # SaveGame (run snapshot <-> JSON dict) + SaveSystem (user://save.json I/O)
   phases/             # PhaseRules (data) + PhaseGenerator/PhasePlan (pure logic)
   fx/                 # visual effects (FloatingText, PixelBurst, Fireflies, NightCycle + night_shift shader)

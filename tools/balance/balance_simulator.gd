@@ -107,7 +107,7 @@ func _play_phase(plan: PhasePlan, profile: Profile, progression: ProgressionStat
 
 	while not remaining.is_empty():
 		var source := _choose(remaining, needs, profile, progression)
-		var factor := needs.get_click_factor(rules.starving_click_factor)
+		var factor := needs.get_click_factor(rules.hungry_click_factor)
 		var clicks := ceilf(progression.get_effective_clicks(source) / factor)
 		var cost := clicks + rules.move_overhead_clicks
 		var duration := cost / profile.cps
@@ -120,8 +120,9 @@ func _play_phase(plan: PhasePlan, profile: Profile, progression: ProgressionStat
 		_drain(needs, duration, hunger_rate, thirst_rate, result)
 		time += duration
 		click_equivalents += cost
-		var amount := progression.get_yield(source)
 		var resource := source.yield_resource
+		var amount := needs.apply_yield_penalty(progression.get_yield(source), resource,
+			rules.thirsty_yield_factor)
 		inventory.add(resource.id, amount)
 		needs.restore(resource.hunger_restore * amount, resource.thirst_restore * amount)
 		income += amount

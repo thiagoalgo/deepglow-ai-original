@@ -142,3 +142,9 @@ UPGRADE_CRYSTAL_ATTUNEMENT_NAME,Attunement,Sintonia
 UPGRADE_CRYSTAL_ATTUNEMENT_DESC,+2 crystals per crystal per level.,+2 cristais por cristal por nível.
 UPGRADE_HEART_OF_DEEPGLOW_NAME,Heart of Deepglow,Coração de Deepglow
 UPGRADE_HEART_OF_DEEPGLOW_DESC,The forest glows for you: rare sources appear twice as often.,A floresta brilha para você: fontes raras aparecem o dobro.
+HUD_HUNGER_EMPTY,Hungry: weak hits,Fome: golpes fracos
+HUD_THIRST_EMPTY,Thirsty: half yield,Sede: rende metade
+HUD_WEAK_POPUP,Weak!,Fraco!
+HUD_THIRSTY_POPUP,Thirsty!,Com sede!
+UI_SUMMARY_HUNGRY,Hungry for %d s: hits at half strength,Com fome por %d s: golpes pela metade
+UI_SUMMARY_THIRSTY,Thirsty for %d s: half the materials,Com sede por %d s: metade dos materiais

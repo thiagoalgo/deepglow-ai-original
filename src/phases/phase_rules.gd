@@ -46,5 +46,8 @@ extends Resource
 ## Bar fraction lost per second (1.0 = full bar).
 @export var hunger_drain_per_second: float = 0.02
 @export var thirst_drain_per_second: float = 0.025
-## Damage per click while hunger or thirst is empty (1.0 = normal).
-@export_range(0.1, 1.0) var starving_click_factor: float = 0.5
+## Damage per click while the hunger bar is empty (1.0 = normal).
+@export_range(0.1, 1.0) var hungry_click_factor: float = 0.5
+## Materials gathered while the thirst bar is empty (1.0 = normal; food and
+## drink are not reduced).
+@export_range(0.1, 1.0) var thirsty_yield_factor: float = 0.5

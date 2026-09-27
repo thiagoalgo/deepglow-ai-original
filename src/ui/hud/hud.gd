@@ -4,6 +4,9 @@ extends CanvasLayer
 ## Configured by Game via setup(); updates come from Events.
 
 const LOW_TIME := 10.0
+## Icon shake when a bar empties: offsets in pixels, one per step.
+const SHAKE_OFFSETS: PackedFloat32Array = [-2.0, 2.0, -2.0, 2.0, -1.0, 1.0, 0.0]
+const SHAKE_STEP := 0.05
 
 var _counters: Dictionary[StringName, Label] = {}
 var _phase_duration: float = 1.0
@@ -13,6 +16,10 @@ var _phase_duration: float = 1.0
 @onready var _clock: ClockTimer = %Clock
 @onready var _hunger_bar: NeedBar = %HungerBar
 @onready var _thirst_bar: NeedBar = %ThirstBar
+@onready var _hunger_label: Label = %HungerLabel
+@onready var _thirst_label: Label = %ThirstLabel
+@onready var _hunger_icon: TextureRect = %HungerIcon
+@onready var _thirst_icon: TextureRect = %ThirstIcon
 @onready var _inventory_list: GridContainer = %InventoryList
 
 
@@ -62,6 +69,24 @@ func _on_phase_time_changed(time_left: float) -> void:
 func _on_needs_changed(hunger: float, thirst: float) -> void:
 	_hunger_bar.value = hunger
 	_thirst_bar.value = thirst
+	_show_need_state(_hunger_label, _hunger_icon, hunger <= 0.0, &"HUD_HUNGER", &"HUD_HUNGER_EMPTY")
+	_show_need_state(_thirst_label, _thirst_icon, thirst <= 0.0, &"HUD_THIRST", &"HUD_THIRST_EMPTY")
+
+
+## An empty bar's label names its penalty (alert color); the icon shakes once
+## when the bar empties.
+func _show_need_state(label: Label, icon: TextureRect, empty: bool, key: StringName,
+		empty_key: StringName) -> void:
+	var text_key := empty_key if empty else key
+	if label.text == text_key:
+		return
+	label.text = text_key
+	label.theme_type_variation = &"AlertLabel" if empty else &""
+	if empty:
+		var base_x := icon.position.x
+		var tween := icon.create_tween()
+		for offset: float in SHAKE_OFFSETS:
+			tween.tween_property(icon, ^"position:x", base_x + offset, SHAKE_STEP)
 
 
 func _on_inventory_changed(resource_id: StringName, amount: int) -> void:
