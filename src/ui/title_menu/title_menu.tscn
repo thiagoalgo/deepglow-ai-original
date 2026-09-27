@@ -1,0 +1,103 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://src/ui/title_menu/title_menu.gd" id="1_title"]
+[ext_resource type="Texture2D" path="res://assets/sprites/board/background.png" id="2_background"]
+
+[node name="TitleMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_title")
+
+[node name="Background" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("2_background")
+stretch_mode = 0
+
+[node name="Center" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="PanelContainer" parent="Center"]
+custom_minimum_size = Vector2(240, 0)
+layout_mode = 2
+theme_type_variation = &"HudPanel"
+
+[node name="Layout" type="VBoxContainer" parent="Center/Panel"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="Title" type="Label" parent="Center/Panel/Layout"]
+layout_mode = 2
+theme_type_variation = &"TitleLabel"
+text = "GAME_TITLE"
+horizontal_alignment = 1
+
+[node name="Menu" type="VBoxContainer" parent="Center/Panel/Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="ContinueButton" type="Button" parent="Center/Panel/Layout/Menu"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "UI_CONTINUE_RUN"
+
+[node name="NewGameButton" type="Button" parent="Center/Panel/Layout/Menu"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "UI_NEW_GAME"
+
+[node name="LanguageButton" type="Button" parent="Center/Panel/Layout/Menu"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "UI_LANGUAGE"
+
+[node name="QuitButton" type="Button" parent="Center/Panel/Layout/Menu"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "UI_QUIT"
+
+[node name="CrtToggle" type="Button" parent="Center/Panel/Layout/Menu"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 4
+theme_type_variation = &"SmallButton"
+text = "UI_CRT_ON"
+
+[node name="Confirm" type="VBoxContainer" parent="Center/Panel/Layout"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Question" type="Label" parent="Center/Panel/Layout/Confirm"]
+custom_minimum_size = Vector2(224, 0)
+layout_mode = 2
+theme_type_variation = &"MutedLabel"
+text = "UI_NEW_GAME_CONFIRM"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="ConfirmButton" type="Button" parent="Center/Panel/Layout/Confirm"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "UI_NEW_GAME_YES"
+
+[node name="CancelButton" type="Button" parent="Center/Panel/Layout/Confirm"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "UI_CANCEL"

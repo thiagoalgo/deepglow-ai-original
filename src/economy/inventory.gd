@@ -46,3 +46,20 @@ func spend(costs: Array[ResourceAmount]) -> bool:
 
 func to_dict() -> Dictionary[StringName, int]:
 	return _amounts.duplicate()
+
+
+## Ids of every resource ever owned.
+func get_discovered() -> Array[StringName]:
+	var ids: Array[StringName] = []
+	ids.assign(_discovered.keys())
+	return ids
+
+
+## Replaces the whole state (loading a save). Emits `changed` for every resource.
+func restore(amounts: Dictionary[StringName, int], discovered: Array[StringName]) -> void:
+	_amounts = amounts.duplicate()
+	_discovered.clear()
+	for id: StringName in discovered:
+		_discovered[id] = true
+	for id: StringName in _amounts:
+		changed.emit(id, _amounts[id])

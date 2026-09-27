@@ -25,7 +25,8 @@ Never hardcode player-facing strings in scripts or scenes: use translation keys 
   Done: **M1** prototype loop (wood/fruit/water, phase generator, contextual cursor, hunger/thirst,
   upgrade list, programmer art), **M2** balance simulator, **M2.5** drawn upgrade tree, **M3**
   tiers 1–2 (stone, fish, meat) and **M3.5** tiers 3–4 (ores, crystals, final node; full game
-  ≈ 3h30 for the average player) and **M4** final art + pixel-art UI. Next: **M5** save.
+  ≈ 3h30 for the average player), **M4** final art + pixel-art UI and **M5** save/load + title menu.
+  Next: **M6** juice (particles, sounds, day-night, lights).
 
 ### Directories
 
@@ -94,10 +95,11 @@ src/                  # code + scenes, organized by FEATURE (.tscn next to its .
   sources/            # Rarity, ToolType, SourceType (data) + SourceCard (scene)
   progression/        # UpgradeNode (data) + ProgressionState (state, derived stats)
   survival/           # Needs (hunger/thirst state)
+  save/               # SaveGame (run snapshot <-> JSON dict) + SaveSystem (user://save.json I/O)
   phases/             # PhaseRules (data) + PhaseGenerator/PhasePlan (pure logic)
   fx/                 # visual effects (FloatingText)
   ui/                 # one subfolder per screen/component (hud, phase_summary,
-                      # upgrade_tree, tool_cursor, language_select) + theme/
+                      # upgrade_tree, tool_cursor, language_select, title_menu) + theme/
 localization/         # translations.csv (source of all player-facing text)
 data/                 # .tres instances: game_database.tres (root), resources/, rarities/,
                       # tools/, sources/, upgrades/, phases/, board/
@@ -114,8 +116,9 @@ docs/                 # design and pipeline docs
 App (Control)                        src/main/app.tscn — window root: integer scaling + CRT shader
 └── Screen (SubViewportContainer) %  — material = crt.gdshader (Settings.crt_enabled, F2)
     └── GameViewport (SubViewport 640x360)
-        └── Main (Node)              src/main/main.tscn — swaps screens
-            ├── LanguageSelect (Control)         src/ui/language_select/  — start screen
+        └── Main (Node)              src/main/main.tscn — swaps screens (one at a time)
+            ├── LanguageSelect (Control)         src/ui/language_select/  — first launch / from the title
+            ├── TitleMenu (Control)              src/ui/title_menu/ — Continue, New game, Language, CRT, Quit
             │
             └── Game (Node2D)                    src/game/game.tscn — run state: inventory, progression, needs
                 ├── Board (Node2D) %             src/board/board.tscn
@@ -124,11 +127,11 @@ App (Control)                        src/main/app.tscn — window root: integer 
                 ├── Effects (Node2D) %           — FloatingText popups
                 ├── PhaseTimer (Timer) %
                 ├── StateMachine (Node) %
-                │   ├── Setup          → PhaseBuild
+                │   ├── Setup          → PhaseBuild (new run) / Upgrade (loaded run)
                 │   ├── PhaseBuild     — PhaseGenerator fills the board → Phase
                 │   ├── Phase          — timer, clicks, needs, collection → PhaseSummary
                 │   ├── PhaseSummary   — results overlay → Upgrade
-                │   └── Upgrade        — drawn upgrade tree (GDD §7.1) → PhaseBuild
+                │   └── Upgrade        — autosave + drawn upgrade tree (GDD §7.1) → PhaseBuild / Menu → title
                 ├── Hud (CanvasLayer) %          src/ui/hud/ — ClockTimer (round clock) + seconds, needs bars, inventory
                 ├── Overlays (CanvasLayer 10)
                 │   ├── PhaseSummary (Control) %
@@ -141,6 +144,18 @@ Data flow: `GameDatabase` (all data) → `ProgressionState` computes derived sta
 yields, phase duration, drains, rarity weights) from upgrade levels → `PhaseGenerator` builds a
 `PhasePlan` from progression + seed → states apply it. Game relays `Inventory.changed` and
 `Needs.changed` to `Events` for the HUD.
+
+**Save (M5):** one slot, `user://save.json` (versioned JSON, written to a `.tmp` file and renamed).
+Saved only **between phases**: when the `Upgrade` state starts and after every purchase
+(`ProgressionState.upgrade_purchased`). Contents: run seed, completed phases, inventory amounts +
+discovered, upgrade levels, `phases_played`, `measured_cps` — nothing from inside a phase, so a
+loaded run resumes at the upgrade screen (quitting mid-phase loses only that phase). `Main` reads
+the save for the title menu and passes it to `Game.resume_from()` before the Game enters the tree.
+`SaveGame.apply_to()` drops ids missing from the database and clamps levels to `max_level`, so data
+changes do not break old saves; bump `SaveGame.VERSION` (and migrate in `from_dict`) when the format
+changes. Player settings stay in `user://settings.cfg` (Settings autoload), separate from the run.
+`user://` is a custom user dir named `Deepglow` (`application/config/use_custom_user_dir`): macOS
+`~/Library/Application Support/Deepglow/`, Windows `%APPDATA%\Deepglow\`, Linux `~/.local/share/Deepglow/`.
 
 ### Principles
 
@@ -337,7 +352,7 @@ python3 tools/art/palette.py png --swatch 8 --out /tmp/palette.png
 Tests: `tests/test_*.gd` files extending `RefCounted`, with `test_*()` methods returning
 `""` (pass) or a failure message. Scripts run with `-s` are compiled before autoloads exist:
 tests must cover pure logic (`BoardModel`, `Inventory`, `ProgressionState`, `Needs`,
-`PhaseGenerator`, Resources) using the real `data/game_database.tres`, and must not statically
+`PhaseGenerator`, `SaveGame`/`SaveSystem`, Resources) using the real `data/game_database.tres`, and must not statically
 reference classes that depend on `Events`/`Settings` (Board, Game, UI).
 
 ## 7. Git workflow

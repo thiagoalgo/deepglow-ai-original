@@ -5,6 +5,8 @@ extends Control
 ## always an explicit press of the Buy button. The screen opens with nothing selected.
 
 signal start_requested
+## "Menu" pressed: back to the title menu (the run is saved on every change).
+signal menu_requested
 
 var _database: GameDatabase
 var _progression: ProgressionState
@@ -20,6 +22,7 @@ var _selected: UpgradeNode
 @onready var _status_label: Label = %StatusLabel
 @onready var _buy_button: Button = %BuyButton
 @onready var _start_button: Button = %StartButton
+@onready var _menu_button: Button = %MenuButton
 
 
 func _ready() -> void:
@@ -28,6 +31,7 @@ func _ready() -> void:
 	_tree_view.node_pressed.connect(_select)
 	_buy_button.pressed.connect(_buy_selected)
 	_start_button.pressed.connect(_on_start_pressed)
+	_menu_button.pressed.connect(_on_menu_pressed)
 
 
 func open(database: GameDatabase, progression: ProgressionState, inventory: Inventory,
@@ -107,9 +111,18 @@ func _buy_selected() -> void:
 
 
 func _on_start_pressed() -> void:
+	_close()
+	start_requested.emit()
+
+
+func _on_menu_pressed() -> void:
+	_close()
+	menu_requested.emit()
+
+
+func _close() -> void:
 	_selected = null
 	var focused := get_viewport().gui_get_focus_owner()
 	if focused:
 		focused.release_focus()
 	hide()
-	start_requested.emit()

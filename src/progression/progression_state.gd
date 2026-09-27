@@ -76,6 +76,20 @@ func buy(upgrade: UpgradeNode, inventory: Inventory) -> bool:
 	return true
 
 
+## Copy of the bought levels (upgrade id -> level), for saving.
+func get_levels() -> Dictionary[StringName, int]:
+	return _levels.duplicate()
+
+
+## Replaces the long-term progress (loading a save). Values are trusted:
+## SaveGame.apply_to() validates them against the database first.
+func restore(levels: Dictionary[StringName, int], p_phases_played: int, p_measured_cps: float) -> void:
+	_levels = levels.duplicate()
+	phases_played = p_phases_played
+	if p_measured_cps > 0.0:
+		measured_cps = p_measured_cps
+
+
 # --- Derived stats ------------------------------------------------------------
 
 func is_tool_unlocked(tool: ToolType) -> bool:

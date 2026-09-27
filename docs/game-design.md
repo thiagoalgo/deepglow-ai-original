@@ -246,8 +246,8 @@ Estados da `StateMachine`: `Setup` → `PhaseBuild` → `Phase` → `PhaseSummar
 | M2.5 — Árvore desenhada ✅ | tela da árvore em grade com conexões, níveis, escolhas e portões |
 | M3 — Camadas 1–2 ✅ | rochas, lago, javali |
 | M3.5 — Camadas 3+ ✅ | minérios (cobre, ferro, ouro), cristais e o nó final; meta de 3 h atingida |
-| M4 — Arte ✅ | 640x360; fontes do tabuleiro via Pixellab (image-to-pixelart) + paleta; ícones, cursores e ícones de upgrades desenhados à mão; cenário do concept 4; fonte m5x7; UI em pixel art (cantos em degrau, relógio redondo) |
-| M5 — Save | salvar/carregar progresso |
+| M4 — Arte ✅ | sprites definitivos no Pixellab (fontes por raridade + cursores + ícones) |
+| M5 — Save ✅ | salvar/carregar progresso (autosave entre fases e a cada compra; menu inicial com Continuar/Novo jogo) |
 | M6 — Sensação | partículas, sons, ciclo dia-noite, luzes bioluminescentes |
 
 ## 11. Decisões

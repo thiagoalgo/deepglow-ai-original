@@ -2,6 +2,14 @@ keys,en,pt_BR
 GAME_TITLE,Deepglow,Deepglow
 UI_LANGUAGE_PROMPT,Choose your language,Escolha seu idioma
 UI_CONTINUE,Continue,Continuar
+UI_CONTINUE_RUN,Continue (phase %d),Continuar (fase %d)
+UI_NEW_GAME,New game,Novo jogo
+UI_NEW_GAME_CONFIRM,Start a new game? Your saved progress will be lost.,Começar um novo jogo? O progresso salvo será perdido.
+UI_NEW_GAME_YES,Start over,Recomeçar
+UI_CANCEL,Cancel,Cancelar
+UI_LANGUAGE,Language,Idioma
+UI_QUIT,Quit,Sair
+UI_MAIN_MENU,Menu,Menu
 UI_BUY,Buy,Comprar
 UI_MAXED,Max,Máx
 UI_CRT_ON,CRT filter: on (F2),Filtro CRT: ligado (F2)

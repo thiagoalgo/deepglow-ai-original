@@ -3,19 +3,15 @@ extends Control
 ## Start screen: pick the game language.
 ## One button per entry in Settings.SUPPORTED_LOCALES (built at runtime).
 ## Focusing/hovering a language previews the whole screen in that language;
-## confirming persists it through Settings. Also hosts the CRT filter switch.
+## confirming persists it through Settings. Shown on first launch and from the title menu.
 
 signal language_confirmed(locale: String)
 
 @onready var _options: VBoxContainer = %Options
-@onready var _crt_toggle: Button = %CrtToggle
 
 
 func _ready() -> void:
 	_build_options()
-	_crt_toggle.pressed.connect(func() -> void: Settings.set_crt_enabled(not Settings.crt_enabled))
-	Settings.crt_changed.connect(_update_crt_label)
-	_update_crt_label(Settings.crt_enabled)
 
 
 func _build_options() -> void:
@@ -46,7 +42,3 @@ func _on_option_focused(locale: String) -> void:
 func _on_option_pressed(locale: String) -> void:
 	Settings.set_locale(locale)
 	language_confirmed.emit(locale)
-
-
-func _update_crt_label(enabled: bool) -> void:
-	_crt_toggle.text = tr(&"UI_CRT_ON") if enabled else tr(&"UI_CRT_OFF")
