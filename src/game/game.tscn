@@ -28,6 +28,7 @@
 [ext_resource type="Script" path="res://src/fx/night_cycle.gd" id="26_night"]
 [ext_resource type="Shader" path="res://src/fx/night_shift.gdshader" id="27_night_shader"]
 [ext_resource type="Script" path="res://src/fx/fireflies.gd" id="28_fireflies"]
+[ext_resource type="PackedScene" path="res://src/ui/pause_menu/pause_menu.tscn" id="29_pause"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_night"]
 shader = ExtResource("27_night_shader")
@@ -90,8 +91,12 @@ unique_name_in_owner = true
 [node name="UpgradeTreeScreen" parent="Overlays" instance=ExtResource("13_upgrade_ui")]
 unique_name_in_owner = true
 
+[node name="PauseMenu" parent="Overlays" instance=ExtResource("29_pause")]
+unique_name_in_owner = true
+
 [node name="ToolCursor" parent="." instance=ExtResource("14_cursor")]
 unique_name_in_owner = true
+process_mode = 3
 
 [node name="GameAudio" type="Node" parent="."]
 unique_name_in_owner = true

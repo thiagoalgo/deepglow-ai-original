@@ -142,9 +142,11 @@ App (Control)                        src/main/app.tscn — window root: integer 
                 ├── Hud (CanvasLayer) %          src/ui/hud/ — ClockTimer (round clock) + seconds, needs bars, inventory
                 ├── Overlays (CanvasLayer 10)
                 │   ├── PhaseSummary (Control) %
-                │   └── UpgradeTreeScreen (Control) % — UpgradeTreeView (grid, lines, gates)
-                │                                         + UpgradeNodeView per node + details panel
-                │                                         + SaveIndicator badge (src/ui/save_indicator/)
+                │   ├── UpgradeTreeScreen (Control) % — UpgradeTreeView (grid, lines, gates)
+                │   │                                     + UpgradeNodeView per node + details panel
+                │   │                                     + SaveIndicator badge (src/ui/save_indicator/)
+                │   └── PauseMenu (Control) %    src/ui/pause_menu/ — pauses the tree (timer, needs, board stop);
+                │                                  Resume / Main menu (phase progress is lost, confirmed)
                 ├── ToolCursor (CanvasLayer 100) % — software cursor showing the contextual tool
                 ├── GameAudio (Node) %           — music/SFX from Events (phase track + rush layer, hits, ticks)
                 ├── GameFx (Node)                — PixelBurst chips on hits, sparkles on collect
@@ -240,7 +242,8 @@ saving is instant, the hold times only make it noticeable).
 Actions defined in `project.godot`: `select` (left mouse / space / gamepad A),
 `cancel` (right mouse / Esc / gamepad B), `board_left|right|up|down` (arrows / WASD / d-pad /
 left stick: move the hovered cell, only while `Board.navigation_enabled`, i.e. during a phase;
-the software cursor jumps to that cell), `toggle_crt` (F2, CRT filter on/off), `toggle_fullscreen` (F11);
+the software cursor jumps to that cell), `pause` (Esc / P / gamepad Start: pause menu during a
+phase), `toggle_crt` (F2, CRT filter on/off), `toggle_fullscreen` (F11);
 both are also on the Settings screen. New player options = a `SettingRow` on the Settings
 screen + a value/setter/signal in the `Settings` autoload. Menus use Godot's built-in `ui_*` actions (keyboard/gamepad
 focus navigation must always work); `ui_accept`/`ui_cancel` are overridden in `project.godot` to add
@@ -248,6 +251,8 @@ gamepad A (PS Cross) / B (PS Circle) — Godot's defaults have no gamepad button
 Test gamepad flows with real `InputEventJoypadButton` events, not `InputEventAction`.
 Upgrade tree with keys/gamepad: confirm on a node selects it and moves the focus to Buy (confirm
 again buys, cancel returns to the node); with the mouse, clicking a node only selects it. Always use actions, never raw keys.
+Pausing uses `get_tree().paused`: `App` is `PROCESS_MODE_ALWAYS` (so input still reaches the
+SubViewport) and `Main` is set back to `PAUSABLE`; `PauseMenu` and `ToolCursor` are `ALWAYS`.
 Gameplay input goes in `_unhandled_input` (UI consumes first). HUD Controls that must not
 block the board use `mouse_filter = IGNORE`.
 

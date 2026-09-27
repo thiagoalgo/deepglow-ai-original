@@ -22,6 +22,7 @@ func enter(_payload: Dictionary = {}) -> void:
 	game.board.cell_hovered.connect(_on_cell_hovered)
 	game.board.cell_hover_exited.connect(_on_cell_hover_exited)
 	game.phase_timer.timeout.connect(_end_phase)
+	game.pause_menu.quit_requested.connect(_on_quit_requested)
 	game.phase_timer.start(game.current_plan.duration)
 	Events.phase_started.emit(game.phase_number, game.current_plan.duration)
 	if game.board.hovered_cell != Board.INVALID_CELL:
@@ -34,8 +35,23 @@ func exit() -> void:
 	game.board.cell_hovered.disconnect(_on_cell_hovered)
 	game.board.cell_hover_exited.disconnect(_on_cell_hover_exited)
 	game.phase_timer.timeout.disconnect(_end_phase)
+	game.pause_menu.quit_requested.disconnect(_on_quit_requested)
 	game.phase_timer.stop()
 	game.tool_cursor.show_pointer()
+
+
+func handle_input(event: InputEvent) -> void:
+	if not _ending and event.is_action_pressed(&"pause"):
+		game.get_viewport().set_input_as_handled()
+		game.tool_cursor.show_pointer()
+		game.pause_menu.open()
+
+
+## "Main menu" from the pause screen: the phase is abandoned (nothing from it
+## is saved; the save is the one from before the phase).
+func _on_quit_requested() -> void:
+	_ending = true
+	game.exit_requested.emit()
 
 
 func update(delta: float) -> void:

@@ -4,6 +4,8 @@ extends Control
 ## shown integer-scaled and centred. Drawing it through a SubViewportContainer
 ## lets the optional CRT shader (crt.gdshader) run at the window resolution,
 ## so the curvature and scanlines stay smooth while the game pixels stay crisp.
+## App (and so the viewport) always processes, so input keeps reaching the pause
+## menu while the tree is paused; Main is set back to "pausable" in app.tscn.
 
 ## Game resolution (the pixel-art canvas).
 const BASE_SIZE := Vector2i(640, 360)

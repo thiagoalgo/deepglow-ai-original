@@ -29,6 +29,7 @@ var _pending_save: SaveGame
 @onready var upgrade_screen: UpgradeTreeScreen = %UpgradeTreeScreen
 @onready var tool_cursor: ToolCursor = %ToolCursor
 @onready var game_audio: GameAudio = %GameAudio
+@onready var pause_menu: PauseMenu = %PauseMenu
 
 
 func _ready() -> void:

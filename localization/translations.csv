@@ -22,6 +22,11 @@ UI_SAVE_FAILED,Save failed,Falha ao salvar
 UI_SETTING_MUSIC,Music,Música
 UI_SETTING_SFX,Effects,Efeitos
 UI_SETTING_AMBIENCE,Ambience,Ambiente
+UI_PAUSED,Paused,Pausado
+UI_RESUME,Resume,Continuar
+UI_MAIN_MENU_FULL,Main menu,Menu principal
+UI_LEAVE_PHASE_CONFIRM,Leave the phase? What you collected in it will be lost.,Sair da fase? O que você coletou nela será perdido.
+UI_LEAVE,Leave,Sair
 UI_BUY,Buy,Comprar
 UI_MAXED,Max,Máx
 UI_SELECT_UPGRADE,Select an upgrade to see its details.,Selecione uma evolução para ver os detalhes.
