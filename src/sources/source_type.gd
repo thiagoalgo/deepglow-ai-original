@@ -17,6 +17,11 @@ extends Resource
 ## 16x16 sprite. Null while prototyping (placeholder drawing is used).
 @export var texture: Texture2D
 @export var placeholder_color: Color = Palette.LIGHT_BLUE_WHITE
+## Optional hit sound for this source (overrides the tool's hit_sound), e.g. the boar's grunt.
+@export var hit_sound: AudioStream
+## Optional sound for the final hit that collects the source (replaces that
+## hit's sound), e.g. the boar's squeal.
+@export var collect_sound: AudioStream
 
 
 func get_name_key() -> StringName:

@@ -25,7 +25,7 @@ Never hardcode player-facing strings in scripts or scenes: use translation keys 
   Done: **M1** prototype loop (wood/fruit/water, phase generator, contextual cursor, hunger/thirst,
   upgrade list, programmer art), **M2** balance simulator, **M2.5** drawn upgrade tree, **M3**
   tiers 1–2 (stone, fish, meat) and **M3.5** tiers 3–4 (ores, crystals, final node; full game
-  ≈ 3h30 for the average player), **M4** final art + pixel-art UI, **M5** save/load + title menu and **M6** juice (synthesized
+  ≈ 2h10 for the simulated average player since the D10 rebalance), **M4** final art + pixel-art UI, **M5** save/load + title menu and **M6** juice (synthesized
   audio, particles, dusk-to-night cycle). **M7** publishing: technical part done (exports,
   controller play, optional Steam layer, achievements). Store publishing (Steam/Apple), macOS
   signing, store art and Steam Deck testing are deferred future improvements (`docs/publishing.md` §6).
@@ -375,6 +375,9 @@ Art file names: `snake_case`, no spaces, English, id equal to the data `id`
   bring back): a continuous stream/wind noise bed (sounded like hiss) and occasional water swells.
 - **Material sounds/particles are data:** `ToolType.hit_sound` + `ToolType.particle_colors`
   (palette, bright → dark).
+  A source can override them: `SourceType.hit_sound` and `SourceType.collect_sound` (played on
+  the final, collecting hit instead of the hit sound) — the boar grunts on each spear hit and
+  squeals when collected (`boar_grunt`/`boar_squeal`, formant "voice" synthesis in `sfx.py`).
 - New gameplay moments emit an `Events` signal (e.g. `source_hit`); `GameAudio`/`GameFx` react.
 
 ## 5.2 Publishing
@@ -398,8 +401,8 @@ $GODOT --headless --path . --import                    # (re)import / check pars
 $GODOT --headless --path . -s res://tests/run_tests.gd # tests (exit 1 on failure)
 
 # Balance simulator (uses the real game code + data; exit 1 if a check fails)
-$GODOT --headless --path . -s res://tools/balance/simulate.gd -- --runs 12 --target-minutes 180
-#   (~3 min for the full game; use --profiles average:3.0 --runs 4 for quick iterations)
+$GODOT --headless --path . -s res://tools/balance/simulate.gd -- --runs 12   # default target 120 min
+#   (~1–2 min for the full game; use --profiles average:3.0 --runs 4 for quick iterations)
 #   report: tools/balance/reports/latest.md (git-ignored); options in simulate.gd header
 
 # Release builds (needs the export templates; output in build/, git-ignored)

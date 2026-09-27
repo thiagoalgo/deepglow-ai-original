@@ -53,8 +53,11 @@ func _on_phase_ended(_phase_number: int) -> void:
 	Sound.play_music(camp_music)
 
 
-func _on_source_hit(source: SourceType, _cell: Vector2i) -> void:
-	Sound.play(source.tool.hit_sound, 0.08)
+func _on_source_hit(source: SourceType, _cell: Vector2i, depleted: bool) -> void:
+	if depleted and source.collect_sound:
+		Sound.play(source.collect_sound, 0.05)
+		return
+	Sound.play(source.hit_sound if source.hit_sound else source.tool.hit_sound, 0.08)
 
 
 func _on_source_collected(source: SourceType, _amount: int, _cell: Vector2i) -> void:

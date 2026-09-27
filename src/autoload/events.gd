@@ -16,8 +16,8 @@ signal cell_selected(cell: Vector2i)
 signal phase_started(phase_number: int, duration: float)
 signal phase_time_changed(time_left: float)
 signal phase_ended(phase_number: int)
-## Every valid click on a source (before it may be collected).
-signal source_hit(source: SourceType, cell: Vector2i)
+## Every valid click on a source; `depleted` = this hit collects it.
+signal source_hit(source: SourceType, cell: Vector2i, depleted: bool)
 signal source_collected(source: SourceType, amount: int, cell: Vector2i)
 
 # --- Player state ---

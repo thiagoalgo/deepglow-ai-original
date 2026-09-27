@@ -63,6 +63,62 @@ def hit_plant():
     return rustle + pop
 
 
+# --- Boar (formant "voice": buzzy pulse source through mouth/nose resonators) ---
+
+def _resonator(x, freq, bw):
+    """2-pole resonator (a formant) whose centre frequency can glide."""
+    out = np.zeros_like(x)
+    y1 = y2 = 0.0
+    freq = np.broadcast_to(freq, x.shape)
+    r = np.exp(-np.pi * bw / SR)
+    for i in range(len(x)):
+        c = 2 * r * np.cos(2 * np.pi * freq[i] / SR)
+        y = (1 - r) * x[i] + c * y1 - r * r * y2
+        y2, y1 = y1, y
+        out[i] = y
+    return out
+
+
+def _contour(points, seconds):
+    xs = np.linspace(0, 1, int(seconds * SR))
+    return np.interp(xs, [p[0] for p in points], [p[1] for p in points])
+
+
+def _voice(seconds, f0_pts, formants, rough=0.0, rough_hz=30, breath=0.15, env=None):
+    n = int(seconds * SR)
+    f0 = _contour(f0_pts, seconds)
+    f0 = f0 * (1 + 0.06 * lowpass(RNG.standard_normal(n), 40))       # jitter
+    src = (np.cumsum(f0) / SR % 1.0) ** 3 * 2 - 1                     # buzzy pulse
+    if rough:                                                         # growl
+        src *= 1 - rough * (0.5 + 0.5 * np.sin(2 * np.pi * rough_hz * np.arange(n) / SR))
+    src += breath * noise(seconds)
+    out = sum(_resonator(src, _contour(pts, seconds), bw) * gain for pts, bw, gain in formants)
+    return out * (env if env is not None else env_adsr(seconds, 0.01, 0.05, 0.8, seconds * 0.35))
+
+
+def boar_grunt():
+    """Spear hit on the boar: a nose snort + low, rough "hrrnk"."""
+    d = 0.26
+    snort = bandpass(noise(0.07), 600, 2500) * env_exp(0.07, 0.02) * 0.6
+    body = _voice(d, [(0, 115), (0.3, 130), (1, 85)],
+                  [([(0, 350), (1, 300)], 90, 1.0), ([(0, 900), (1, 750)], 120, 0.6),
+                   ([(0, 2300), (1, 2200)], 200, 0.2)],
+                  rough=0.7, rough_hz=28, breath=0.25)
+    out = np.zeros(int((d + 0.05) * SR))
+    mix_into(out, 0.0, snort, wrap=False)
+    mix_into(out, 0.04, body, wrap=False)
+    return out
+
+
+def boar_squeal():
+    """Final spear hit (boar collected): a short, comic high squeal."""
+    d = 0.34
+    return _voice(d, [(0, 700), (0.3, 1150), (1, 800)],
+                  [([(0, 1000), (1, 900)], 180, 0.8), ([(0, 2200), (1, 2000)], 220, 1.0),
+                   ([(0, 3300), (1, 3100)], 300, 0.4)],
+                  rough=0.35, rough_hz=60, breath=0.2, env=env_adsr(d, 0.02, 0.08, 0.75, 0.12))
+
+
 def blip(midi, d, duty=0.25, decay=None, cutoff=5000):
     x = square(note_hz(midi), d, duty) * env_exp(d, decay or d / 3, 0.001)
     return lowpass(x, cutoff)
@@ -127,10 +183,13 @@ SOUNDS = {
     "hit_plant": hit_plant, "collect": collect, "buy": buy,
     "phase_start": phase_start, "phase_end": phase_end, "tick": tick,
     "tick_last": tick_last, "ui_move": ui_move, "ui_click": ui_click,
+    # Added later: kept last so the noise of the older sounds stays identical.
+    "boar_grunt": boar_grunt, "boar_squeal": boar_squeal,
 }
 
 # Peak level per sound (dBFS): frequent/UI sounds sit lower than rewards.
-PEAK_DB = {"ui_move": -14.0, "ui_click": -10.0, "tick": -9.0, "tick_last": -6.0,
+PEAK_DB = {"boar_grunt": -4.0, "boar_squeal": -3.0,
+           "ui_move": -14.0, "ui_click": -10.0, "tick": -9.0, "tick_last": -6.0,
            "collect": -7.0, "buy": -5.0, "phase_start": -5.0, "phase_end": -5.0}
 
 if __name__ == "__main__":

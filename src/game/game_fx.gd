@@ -27,7 +27,7 @@ func _cell_world(cell: Vector2i) -> Vector2:
 	return board.position + board.cell_to_local(cell)
 
 
-func _on_source_hit(source: SourceType, cell: Vector2i) -> void:
+func _on_source_hit(source: SourceType, cell: Vector2i, _depleted: bool) -> void:
 	var colors := source.tool.particle_colors
 	if colors.is_empty():
 		return
