@@ -248,7 +248,7 @@ Estados da `StateMachine`: `Setup` → `PhaseBuild` → `Phase` → `PhaseSummar
 | M3.5 — Camadas 3+ ✅ | minérios (cobre, ferro, ouro), cristais e o nó final; meta de 3 h atingida |
 | M4 — Arte ✅ | sprites definitivos no Pixellab (fontes por raridade + cursores + ícones) |
 | M5 — Save ✅ | salvar/carregar progresso (autosave entre fases e a cada compra; menu inicial com Continuar/Novo jogo) |
-| M6 — Sensação | partículas, sons, ciclo dia-noite, luzes bioluminescentes |
+| M6 — Sensação ✅ | áudio sintetizado (efeitos por material, música techno em camadas com "rush" nos últimos 10 s, ambiente noturno), partículas em pixel e ciclo anoitecer → noite profunda |
 | M7 — Publicação | presets de export (Windows, macOS, Linux); integração opcional com a Steam via GodotSteam (conquistas, Steam Cloud do `save.json`), sem quebrar builds fora da Steam; ajustes para Steam Deck (1280x800, controle); assinatura/notarização no macOS; página da loja |
 
 ## 11. Decisões
@@ -259,7 +259,7 @@ Estados da `StateMachine`: `Setup` → `PhaseBuild` → `Phase` → `PhaseSummar
 | D1 | Fome/sede em barras; vazia = coleta mais lenta, sem morte | decidido |
 | D2 | Sem derrota | decidido |
 | D3 | Todas as fontes aparecem no início da fase; tempo justo; fases geradas pelo progresso | decidido |
-| D4 | Timer + ciclo dia-noite visual | decidido |
+| D4 | Timer + ciclo dia-noite visual: cada fase vai do anoitecer (40%) à noite profunda (75%) — o cenário escurece em degraus da paleta (o tabuleiro não escurece; halos nos itens foram testados e rejeitados) | decidido (M6) |
 | D5 | Duração mínima de 3 h para completar a árvore | decidido |
 | D6 | Fome/sede vazia: cada clique vale 0,5; drenagem 4%/s e 4,5%/s | decidido (simulador) |
 | D7 | Sem estruturas nem transformação de recursos: fogueira removida; carne do javali é comida e recurso | decidido |

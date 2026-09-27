@@ -25,8 +25,8 @@ Never hardcode player-facing strings in scripts or scenes: use translation keys 
   Done: **M1** prototype loop (wood/fruit/water, phase generator, contextual cursor, hunger/thirst,
   upgrade list, programmer art), **M2** balance simulator, **M2.5** drawn upgrade tree, **M3**
   tiers 1–2 (stone, fish, meat) and **M3.5** tiers 3–4 (ores, crystals, final node; full game
-  ≈ 3h30 for the average player), **M4** final art + pixel-art UI and **M5** save/load + title menu.
-  Next: **M6** juice (particles, sounds, day-night, lights).
+  ≈ 3h30 for the average player), **M4** final art + pixel-art UI, **M5** save/load + title menu and **M6** juice (synthesized
+  audio, particles, dusk-to-night cycle). Next: **M7** publishing.
 
 ### Directories
 
@@ -86,7 +86,7 @@ pixelart/
 
 ```
 src/                  # code + scenes, organized by FEATURE (.tscn next to its .gd)
-  autoload/           # singletons: Settings (persisted prefs), Events (signal bus)
+  autoload/           # singletons: Settings (persisted prefs), Events (signal bus), Sound (audio playback)
   core/               # generic utilities (StateMachine, Palette, GameDatabase)
   main/               # entry scene and screen flow
   game/               # run orchestration (Game) + states/ (rules per state)
@@ -97,7 +97,7 @@ src/                  # code + scenes, organized by FEATURE (.tscn next to its .
   survival/           # Needs (hunger/thirst state)
   save/               # SaveGame (run snapshot <-> JSON dict) + SaveSystem (user://save.json I/O)
   phases/             # PhaseRules (data) + PhaseGenerator/PhasePlan (pure logic)
-  fx/                 # visual effects (FloatingText)
+  fx/                 # visual effects (FloatingText, PixelBurst, Fireflies, NightCycle + night_shift shader)
   ui/                 # one subfolder per screen/component (hud, phase_summary,
                       # upgrade_tree, tool_cursor, language_select, title_menu) + theme/
 localization/         # translations.csv (source of all player-facing text)
@@ -105,7 +105,7 @@ data/                 # .tres instances: game_database.tres (root), resources/, 
                       # tools/, sources/, upgrades/, phases/, board/
 assets/               # FINAL game-ready art/audio (sprites/, tilesets/, fonts/, audio/, palettes/)
 tests/                # headless tests (test_*.gd)
-tools/                # outside the game: pixellab/, art/ (Python), balance/ (GDScript simulator)
+tools/                # outside the game: pixellab/, art/ + audio/ (Python), balance/ (GDScript simulator)
 addons/               # third-party plugins (do not edit)
 docs/                 # design and pipeline docs
 ```
@@ -123,6 +123,8 @@ App (Control)                        src/main/app.tscn — window root: integer 
             │                                     fullscreen; volume later), applied + saved immediately
             │
             └── Game (Node2D)                    src/game/game.tscn — run state: inventory, progression, needs
+                ├── Background (Sprite2D)        — night_shift.gdshader (darkened by NightCycle)
+                ├── Fireflies (Node2D)           — ambient palette-stepped fireflies
                 ├── Board (Node2D) %             src/board/board.tscn
                 │   ├── GridView (Node2D) %      — frame + cells drawn with PixelStyleBox (_draw)
                 │   └── Items (Node2D, y_sort) % — SourceCard instances (no hovered-cell highlight)
@@ -140,7 +142,10 @@ App (Control)                        src/main/app.tscn — window root: integer 
                 │   └── UpgradeTreeScreen (Control) % — UpgradeTreeView (grid, lines, gates)
                 │                                         + UpgradeNodeView per node + details panel
                 │                                         + SaveIndicator badge (src/ui/save_indicator/)
-                └── ToolCursor (CanvasLayer 100) % — software cursor showing the contextual tool
+                ├── ToolCursor (CanvasLayer 100) % — software cursor showing the contextual tool
+                ├── GameAudio (Node) %           — music/SFX from Events (phase track + rush layer, hits, ticks)
+                ├── GameFx (Node)                — PixelBurst chips on hits, sparkles on collect
+                └── NightCycle (Node)            — dusk -> deep night in palette steps during a phase
 ```
 
 Data flow: `GameDatabase` (all data) → `ProgressionState` computes derived stats (effective clicks,
@@ -192,12 +197,15 @@ saving is instant, the hold times only make it noticeable).
    (fireflies, glow), `PointLight2D` + `CanvasModulate` (bioluminescent lighting),
    `AudioStreamPlayer` (audio), `Timer`, `Marker2D`. `Autoload` only when truly global.
 8. **No magic layout numbers in scenes/code**: they come from `BoardConfig`/exports.
-9. **Boxes are pixel art:** every rectangle (panels, buttons, board cells, tree nodes, bars) uses
+9. **Effects stay pixel art:** particles, fireflies and the night cycle use whole pixels and
+   palette colors only — they change color in palette steps (or ordered dither) instead of fading
+   with alpha. No `PointLight2D`/`CanvasModulate` gradients.
+10. **Boxes are pixel art:** every rectangle (panels, buttons, board cells, tree nodes, bars) uses
    `PixelStyleBox` (`src/ui/pixel_style_box.gd`): flat fill, 2 px border, stepped corners, whole
    pixels only. Theme styles are `PixelStyleBox` resources; custom `_draw` code calls
    `PixelStyleBox.create(...).draw(get_canvas_item(), rect)`. Never use antialiased shapes or
    diagonal `draw_line` (upgrade tree links are right-angle elbows).
-10. **UI styling comes from the project theme** (`src/ui/theme/main_theme.tres`, set as
+11. **UI styling comes from the project theme** (`src/ui/theme/main_theme.tres`, set as
    `gui/theme/custom`). Use `theme_type_variation` (`TitleLabel`, `MutedLabel`, …) instead of
    per-node overrides; add new variations to the theme.
 
@@ -336,6 +344,30 @@ sources whose tool is unlocked.
 Art file names: `snake_case`, no spaces, English, id equal to the data `id`
 (e.g. `tree_oak.png` ↔ `data/sources/tree_oak.tres` ↔ `SOURCE_TREE_OAK_NAME`).
 
+## 5.1 Audio
+
+- **Everything is synthesized** by Python scripts in `tools/audio/` (numpy/scipy + ffmpeg for Ogg
+  Vorbis): no samples, no licenses to track. Edit the recipe, re-run, commit the `.ogg`:
+  `python3 tools/audio/sfx.py` (effects), `music.py` (loops), `ambience.py` (night ambience).
+  Outputs: `assets/audio/{sfx,music,ambience}/`.
+- **Buses** (`default_bus_layout.tres`): Master (hard limiter, -1 dB) ← Music, SFX, Ambience.
+  Volumes are `Settings` values in steps 0–10 (Settings screen rows).
+- **`Sound` autoload** (`src/autoload/sound.gd`): `play(stream, pitch_jitter)` (pooled one-shots),
+  `play_music(stream)` (crossfade), `set_rush(bool)` (fades layer 1 of an `AudioStreamSynchronized`),
+  `play_ambience(stream)`. Every `BaseButton` gets `ui_click`/`ui_move` automatically.
+  Call `Sound.stop_all()` and wait a few frames before quitting (`Main._quit()`), or the audio
+  server reports leaked playbacks.
+- **Music:** `data/audio/phase_music.tres` = `phase_base.ogg` + `phase_rush.ogg` (132 BPM acid
+  techno, 32 bars / ~58 s in four 8-bar sections that change key: Am → Cm → Dm → Am; same length,
+  the rush layer fades in during the last 10 s); `camp.ogg` (112 BPM, 16 bars, second half one
+  tone up) for menus and between phases. `play_music` crossfades in linear amplitude (out 2 s,
+  in 2.5 s, new track starts 0.6 s later). Loops are imported with `loop=true` (edit the `.ogg.import`).
+- **Ambience:** `night.ogg` = crickets in bouts with long rests. Rejected by the owner (don't
+  bring back): a continuous stream/wind noise bed (sounded like hiss) and occasional water swells.
+- **Material sounds/particles are data:** `ToolType.hit_sound` + `ToolType.particle_colors`
+  (palette, bright → dark).
+- New gameplay moments emit an `Events` signal (e.g. `source_hit`); `GameAudio`/`GameFx` react.
+
 ## 6. Useful commands
 
 ```bash
@@ -350,6 +382,9 @@ $GODOT --headless --path . -s res://tests/run_tests.gd # tests (exit 1 on failur
 $GODOT --headless --path . -s res://tools/balance/simulate.gd -- --runs 12 --target-minutes 180
 #   (~3 min for the full game; use --profiles average:3.0 --runs 4 for quick iterations)
 #   report: tools/balance/reports/latest.md (git-ignored); options in simulate.gd header
+
+# Audio (regenerate)
+python3 tools/audio/sfx.py && python3 tools/audio/music.py && python3 tools/audio/ambience.py
 
 # Art
 python3 tools/art/palette.py check assets/sprites/**/*.png

@@ -1,6 +1,7 @@
 [gd_resource type="Resource" script_class="ToolType" format=3]
 
 [ext_resource type="Texture2D" path="res://assets/sprites/cursors/crystal_pick.png" id="1_j1ahk"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/hit_crystal.ogg" id="3_hit"]
 [ext_resource type="Script" path="res://src/sources/tool_type.gd" id="2_6g2rn"]
 
 [resource]
@@ -8,3 +9,5 @@ script = ExtResource("2_6g2rn")
 id = &"crystal_pick"
 cursor_texture = ExtResource("1_j1ahk")
 cursor_hotspot = Vector2i(4, 5)
+hit_sound = ExtResource("3_hit")
+particle_colors = PackedColorArray(0.8510, 0.9608, 0.9490, 1, 0.2157, 0.9490, 0.7608, 1, 0.6039, 0.4196, 0.8706, 1, 0.3373, 0.2000, 0.6588, 1)

@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://src/ui/settings/setting_row.gd" id="1_row"]
 
 [node name="SettingRow" type="Button"]
-custom_minimum_size = Vector2(320, 28)
+custom_minimum_size = Vector2(320, 26)
 script = ExtResource("1_row")
 
 [node name="Layout" type="HBoxContainer" parent="."]

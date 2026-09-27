@@ -1,6 +1,7 @@
 [gd_resource type="Resource" script_class="ToolType" format=3]
 
 [ext_resource type="Texture2D" path="res://assets/sprites/cursors/axe.png" id="1_aahbs"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/hit_wood.ogg" id="3_hit"]
 [ext_resource type="Script" path="res://src/sources/tool_type.gd" id="2_ewmie"]
 
 [resource]
@@ -9,3 +10,5 @@ id = &"axe"
 cursor_texture = ExtResource("1_aahbs")
 cursor_hotspot = Vector2i(22, 7)
 unlocked_by_default = true
+hit_sound = ExtResource("3_hit")
+particle_colors = PackedColorArray(0.9569, 0.8431, 0.6471, 1, 0.7765, 0.4235, 0.6118, 1, 0.3373, 0.2000, 0.6588, 1, 0.1647, 0.1294, 0.2784, 1)

@@ -50,6 +50,7 @@ func _on_cell_clicked(cell: Vector2i) -> void:
 	if not game.progression.is_tool_unlocked(card.source.tool):
 		return
 	_clicks += 1
+	Events.source_hit.emit(card.source, cell)
 	var rules := game.database.phase_rules
 	if card.hit(game.needs.get_click_factor(rules.starving_click_factor)):
 		_collect(card, cell)

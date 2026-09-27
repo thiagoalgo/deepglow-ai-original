@@ -1,6 +1,7 @@
 [gd_resource type="Resource" script_class="ToolType" format=3]
 
 [ext_resource type="Texture2D" path="res://assets/sprites/cursors/spear.png" id="1_tr8qn"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/hit_flesh.ogg" id="3_hit"]
 [ext_resource type="Script" path="res://src/sources/tool_type.gd" id="2_pinfw"]
 
 [resource]
@@ -8,3 +9,5 @@ script = ExtResource("2_pinfw")
 id = &"spear"
 cursor_texture = ExtResource("1_tr8qn")
 cursor_hotspot = Vector2i(22, 1)
+hit_sound = ExtResource("3_hit")
+particle_colors = PackedColorArray(0.9569, 0.8431, 0.6471, 1, 0.9294, 0.4706, 0.7176, 1, 0.7765, 0.4235, 0.6118, 1, 0.1647, 0.1294, 0.2784, 1)

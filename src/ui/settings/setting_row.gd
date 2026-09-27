@@ -9,6 +9,9 @@ signal value_changed(index: int)
 
 ## Translation key of the setting name.
 @export var label_key: StringName
+## Left/right wrap from the last option to the first (off for volumes).
+## A click always advances and wraps.
+@export var wrap_keys: bool = true
 
 var _options: PackedStringArray = []
 var _index: int = 0
@@ -19,7 +22,7 @@ var _index: int = 0
 
 func _ready() -> void:
 	_name_label.text = label_key
-	pressed.connect(_step.bind(1))
+	pressed.connect(_step.bind(1, true))
 	focus_entered.connect(_update_colors)
 	focus_exited.connect(_update_colors)
 	mouse_entered.connect(_update_colors)
@@ -35,18 +38,22 @@ func set_options(options: PackedStringArray, index: int) -> void:
 
 
 func _gui_input(event: InputEvent) -> void:
-	if event.is_action_pressed(&"ui_left"):
-		_step(-1)
+	if event.is_action_pressed(&"ui_left", true):
+		_step(-1, wrap_keys)
 		accept_event()
-	elif event.is_action_pressed(&"ui_right"):
-		_step(1)
+	elif event.is_action_pressed(&"ui_right", true):
+		_step(1, wrap_keys)
 		accept_event()
 
 
-func _step(direction: int) -> void:
+func _step(direction: int, wrap: bool) -> void:
 	if _options.size() < 2:
 		return
-	_index = posmod(_index + direction, _options.size())
+	var next := _index + direction
+	if not wrap and (next < 0 or next >= _options.size()):
+		return
+	_index = posmod(next, _options.size())
+	Sound.play_ui(&"ui_click")
 	_update_value()
 	value_changed.emit(_index)
 

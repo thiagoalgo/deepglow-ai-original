@@ -19,6 +19,9 @@ UI_BACK,Back,Voltar
 UI_SAVING,Saving,Salvando
 UI_SAVED,Game saved,Jogo salvo
 UI_SAVE_FAILED,Save failed,Falha ao salvar
+UI_SETTING_MUSIC,Music,Música
+UI_SETTING_SFX,Effects,Efeitos
+UI_SETTING_AMBIENCE,Ambience,Ambiente
 UI_BUY,Buy,Comprar
 UI_MAXED,Max,Máx
 UI_SELECT_UPGRADE,Select an upgrade to see its details.,Selecione uma evolução para ver os detalhes.

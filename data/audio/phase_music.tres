@@ -1,0 +1,11 @@
+[gd_resource type="AudioStreamSynchronized" format=3]
+
+[ext_resource type="AudioStream" path="res://assets/audio/music/phase_base.ogg" id="1_base"]
+[ext_resource type="AudioStream" path="res://assets/audio/music/phase_rush.ogg" id="2_rush"]
+
+[resource]
+stream_count = 2
+stream_0/stream = ExtResource("1_base")
+stream_0/volume = 0.0
+stream_1/stream = ExtResource("2_rush")
+stream_1/volume = -60.0

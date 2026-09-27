@@ -1,6 +1,7 @@
 [gd_resource type="Resource" script_class="ToolType" format=3]
 
 [ext_resource type="Texture2D" path="res://assets/sprites/cursors/fishing_rod.png" id="1_imyi2"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/hit_water.ogg" id="3_hit"]
 [ext_resource type="Script" path="res://src/sources/tool_type.gd" id="2_1vt5p"]
 
 [resource]
@@ -8,3 +9,5 @@ script = ExtResource("2_1vt5p")
 id = &"fishing_rod"
 cursor_texture = ExtResource("1_imyi2")
 cursor_hotspot = Vector2i(21, 2)
+hit_sound = ExtResource("3_hit")
+particle_colors = PackedColorArray(0.8510, 0.9608, 0.9490, 1, 0.1294, 0.7843, 0.8510, 1, 0.1529, 0.4549, 0.9020, 1, 0.0706, 0.3451, 0.6196, 1)

@@ -22,6 +22,7 @@ config/custom_user_dir_name="Deepglow"
 
 Events="*res://src/autoload/events.gd"
 Settings="*res://src/autoload/settings.gd"
+Sound="*res://src/autoload/sound.gd"
 
 [debug]
 

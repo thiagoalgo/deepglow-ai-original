@@ -28,6 +28,7 @@ var _pending_save: SaveGame
 @onready var phase_summary: PhaseSummary = %PhaseSummary
 @onready var upgrade_screen: UpgradeTreeScreen = %UpgradeTreeScreen
 @onready var tool_cursor: ToolCursor = %ToolCursor
+@onready var game_audio: GameAudio = %GameAudio
 
 
 func _ready() -> void:
@@ -97,4 +98,5 @@ func _center_board() -> void:
 
 
 func _on_upgrade_purchased(_upgrade: UpgradeNode, _new_level: int) -> void:
+	game_audio.play_purchase()
 	save_run()

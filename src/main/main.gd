@@ -9,11 +9,18 @@ extends Node
 @export var title_menu_scene: PackedScene
 @export var settings_scene: PackedScene
 @export var game_scene: PackedScene
+## Music for the menus (the Game switches tracks itself, see GameAudio).
+@export var menu_music: AudioStream
+## Night ambience, playing under every screen.
+@export var ambience: AudioStream
 
 var _current_screen: Node
 
 
 func _ready() -> void:
+	# Closing the window goes through _quit() too (audio must stop first).
+	get_tree().set_auto_accept_quit(false)
+	Sound.play_ambience(ambience)
 	if Settings.has_saved_locale():
 		_show_title_menu()
 	else:
@@ -27,13 +34,14 @@ func _show_language_select() -> void:
 
 
 func _show_title_menu(from_settings: bool = false) -> void:
+	Sound.play_music(menu_music)
 	var save := SaveSystem.read()
 	var screen := title_menu_scene.instantiate() as TitleMenu
 	screen.setup(save.phase_number + 1 if save else 0, from_settings)
 	screen.continue_requested.connect(_start_game.bind(save), CONNECT_ONE_SHOT)
 	screen.new_game_requested.connect(_on_new_game_requested, CONNECT_ONE_SHOT)
 	screen.settings_requested.connect(_show_settings, CONNECT_ONE_SHOT)
-	screen.quit_requested.connect(get_tree().quit, CONNECT_ONE_SHOT)
+	screen.quit_requested.connect(_quit, CONNECT_ONE_SHOT)
 	_switch_to(screen)
 
 
@@ -50,6 +58,20 @@ func _start_game(save: SaveGame) -> void:
 		game.resume_from(save)
 	game.exit_requested.connect(_show_title_menu, CONNECT_ONE_SHOT)
 	_switch_to(game)
+
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_WM_CLOSE_REQUEST:
+		_quit()
+
+
+## Stops the audio and waits a few frames so the audio server can release its
+## playbacks before the engine shuts down.
+func _quit() -> void:
+	Sound.stop_all()
+	for i: int in 3:
+		await get_tree().process_frame
+	get_tree().quit()
 
 
 func _switch_to(screen: Node) -> void:

@@ -1,6 +1,7 @@
 [gd_resource type="Resource" script_class="ToolType" format=3]
 
 [ext_resource type="Texture2D" path="res://assets/sprites/cursors/hand.png" id="1_ywbsy"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/hit_plant.ogg" id="3_hit"]
 [ext_resource type="Script" path="res://src/sources/tool_type.gd" id="2_s0era"]
 
 [resource]
@@ -9,3 +10,5 @@ id = &"hand"
 cursor_texture = ExtResource("1_ywbsy")
 cursor_hotspot = Vector2i(9, 2)
 unlocked_by_default = true
+hit_sound = ExtResource("3_hit")
+particle_colors = PackedColorArray(0.4549, 0.9098, 0.3608, 1, 0.0980, 0.3647, 0.3137, 1, 0.0549, 0.1882, 0.2118, 1, 0.9294, 0.4706, 0.7176, 1)

@@ -15,6 +15,22 @@
 [ext_resource type="PackedScene" path="res://src/ui/upgrade_tree/upgrade_tree_screen.tscn" id="13_upgrade_ui"]
 [ext_resource type="PackedScene" path="res://src/ui/tool_cursor/tool_cursor.tscn" id="14_cursor"]
 [ext_resource type="Texture2D" path="res://assets/sprites/board/background.png" id="15_background"]
+[ext_resource type="Script" path="res://src/game/game_audio.gd" id="16_script"]
+[ext_resource type="AudioStream" path="res://data/audio/phase_music.tres" id="17_phase"]
+[ext_resource type="AudioStream" path="res://assets/audio/music/camp.ogg" id="18_camp"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/collect.ogg" id="19_collect"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/phase_start.ogg" id="20_pstart"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/phase_end.ogg" id="21_pend"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/tick.ogg" id="22_tick"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/tick_last.ogg" id="23_ticklast"]
+[ext_resource type="AudioStream" path="res://assets/audio/sfx/buy.ogg" id="24_buy"]
+[ext_resource type="Script" path="res://src/game/game_fx.gd" id="25_fx"]
+[ext_resource type="Script" path="res://src/fx/night_cycle.gd" id="26_night"]
+[ext_resource type="Shader" path="res://src/fx/night_shift.gdshader" id="27_night_shader"]
+[ext_resource type="Script" path="res://src/fx/fireflies.gd" id="28_fireflies"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_night"]
+shader = ExtResource("27_night_shader")
 
 [node name="Game" type="Node2D"]
 script = ExtResource("1_game")
@@ -23,8 +39,13 @@ card_scene = ExtResource("3_card")
 
 [node name="Background" type="Sprite2D" parent="."]
 z_index = -10
+material = SubResource("ShaderMaterial_night")
 texture = ExtResource("15_background")
 centered = false
+
+[node name="Fireflies" type="Node2D" parent="."]
+z_index = -9
+script = ExtResource("28_fireflies")
 
 [node name="Board" parent="." instance=ExtResource("4_board")]
 unique_name_in_owner = true
@@ -71,3 +92,24 @@ unique_name_in_owner = true
 
 [node name="ToolCursor" parent="." instance=ExtResource("14_cursor")]
 unique_name_in_owner = true
+
+[node name="GameAudio" type="Node" parent="."]
+unique_name_in_owner = true
+script = ExtResource("16_script")
+phase_music = ExtResource("17_phase")
+camp_music = ExtResource("18_camp")
+collect_sound = ExtResource("19_collect")
+phase_start_sound = ExtResource("20_pstart")
+phase_end_sound = ExtResource("21_pend")
+tick_sound = ExtResource("22_tick")
+tick_last_sound = ExtResource("23_ticklast")
+buy_sound = ExtResource("24_buy")
+
+[node name="GameFx" type="Node" parent="." node_paths=PackedStringArray("board", "effects")]
+script = ExtResource("25_fx")
+board = NodePath("../Board")
+effects = NodePath("../Effects")
+
+[node name="NightCycle" type="Node" parent="." node_paths=PackedStringArray("scenery")]
+script = ExtResource("26_night")
+scenery = NodePath("../Background")

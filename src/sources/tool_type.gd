@@ -9,3 +9,8 @@ extends Resource
 @export var cursor_hotspot: Vector2i = Vector2i(1, 1)
 ## Available from the start. Otherwise an UNLOCK_TOOL upgrade targeting this id is required.
 @export var unlocked_by_default: bool = false
+## Played on every click on a source that uses this tool (the material's sound).
+@export var hit_sound: AudioStream
+## Chips thrown on each hit, bright to dark (palette colors; a particle steps
+## through them as it ages instead of fading).
+@export var particle_colors: PackedColorArray = []

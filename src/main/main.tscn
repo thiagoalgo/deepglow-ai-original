@@ -5,6 +5,8 @@
 [ext_resource type="PackedScene" path="res://src/game/game.tscn" id="3_game"]
 [ext_resource type="PackedScene" path="res://src/ui/title_menu/title_menu.tscn" id="4_title"]
 [ext_resource type="PackedScene" path="res://src/ui/settings/settings_screen.tscn" id="5_settings"]
+[ext_resource type="AudioStream" path="res://assets/audio/music/camp.ogg" id="6_menu_music"]
+[ext_resource type="AudioStream" path="res://assets/audio/ambience/night.ogg" id="7_ambience"]
 
 [node name="Main" type="Node"]
 script = ExtResource("1_main")
@@ -12,3 +14,5 @@ language_select_scene = ExtResource("2_lang")
 title_menu_scene = ExtResource("4_title")
 settings_scene = ExtResource("5_settings")
 game_scene = ExtResource("3_game")
+menu_music = ExtResource("6_menu_music")
+ambience = ExtResource("7_ambience")
