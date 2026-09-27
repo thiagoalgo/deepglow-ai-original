@@ -19,12 +19,27 @@ const NAV_ACTIONS: Dictionary[StringName, Vector2i] = {
 }
 
 @export var config: BoardConfig
+@export_group("Key/gamepad navigation")
+## Seconds a direction must stay held before the cursor starts repeating.
+@export var repeat_delay: float = 0.4
+## Seconds between repeated steps while a direction stays held.
+@export var repeat_interval: float = 0.16
+## Analog stick: tilt needed to press a direction, and tilt below which it is
+## released again (hysteresis, so a stick resting near the edge does not flicker).
+@export_range(0.0, 1.0) var stick_press: float = 0.6
+@export_range(0.0, 1.0) var stick_release: float = 0.35
 
 var model: BoardModel
 var hovered_cell: Vector2i = INVALID_CELL
 ## Keys/gamepad move the hovered cell only while enabled (set by the Phase state),
 ## so menus drawn over the board keep those inputs.
-var navigation_enabled: bool = false
+var navigation_enabled: bool = false:
+	set(value):
+		navigation_enabled = value
+		_held.clear()
+
+## Directions currently held (action -> seconds until the next repeated step).
+var _held: Dictionary[StringName, float] = {}
 
 @onready var _grid_view: BoardGridView = %GridView
 @onready var _items_root: Node2D = %Items
@@ -82,15 +97,38 @@ func clear_items() -> void:
 
 # --- Input -------------------------------------------------------------------
 
+## Directions are polled (not read from events): an analog stick sends a stream
+## of motion events while tilted, which would move the cursor many cells at once.
+## One step per press, then a timed repeat, the same for keys, d-pad and stick.
+func _process(delta: float) -> void:
+	if not navigation_enabled:
+		return
+	var step := Vector2i.ZERO
+	for action: StringName in NAV_ACTIONS:
+		var strength := Input.get_action_raw_strength(action)
+		if _held.has(action):
+			if strength < stick_release:
+				_held.erase(action)
+				continue
+			_held[action] -= delta
+			if _held[action] <= 0.0:
+				_held[action] += repeat_interval
+				step += NAV_ACTIONS[action]
+		elif strength >= stick_press:
+			_held[action] = repeat_delay
+			step += NAV_ACTIONS[action]
+	if step != Vector2i.ZERO:
+		_navigate(step)
+
+
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion:
 		_update_hover(local_to_cell(get_local_mouse_position()))
 		return
 	if navigation_enabled:
 		for action: StringName in NAV_ACTIONS:
-			if event.is_action_pressed(action, true):
-				_navigate(NAV_ACTIONS[action])
-				get_viewport().set_input_as_handled()
+			if event.is_action(action):
+				get_viewport().set_input_as_handled()  # moved in _process
 				return
 	if event.is_action_pressed(&"select") and hovered_cell != INVALID_CELL:
 		cell_clicked.emit(hovered_cell)
@@ -101,7 +139,8 @@ func _unhandled_input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 
 
-## Moves the hovered cell one step (the first press starts from the centre).
+## Moves the hovered cell one step, diagonals included (the first press starts
+## from the centre).
 func _navigate(direction: Vector2i) -> void:
 	var cell := hovered_cell
 	if cell == INVALID_CELL:

@@ -242,7 +242,7 @@ saving is instant, the hold times only make it noticeable).
 Actions defined in `project.godot`: `select` (left mouse / space / gamepad A),
 `cancel` (right mouse / Esc / gamepad B), `board_left|right|up|down` (arrows / WASD / d-pad /
 left stick: move the hovered cell, only while `Board.navigation_enabled`, i.e. during a phase;
-the software cursor jumps to that cell), `pause` (Esc / P / gamepad Start: pause menu during a
+the software cursor jumps to that cell; `Board` polls them in `_process` — one step per press, then a timed repeat (`repeat_delay`/`repeat_interval`), and the stick uses press/release thresholds — because a tilted stick sends a stream of motion events), `pause` (Esc / P / gamepad Start: pause menu during a
 phase), `toggle_crt` (F2, CRT filter on/off), `toggle_fullscreen` (F11);
 both are also on the Settings screen. New player options = a `SettingRow` on the Settings
 screen + a value/setter/signal in the `Settings` autoload. Menus use Godot's built-in `ui_*` actions (keyboard/gamepad
