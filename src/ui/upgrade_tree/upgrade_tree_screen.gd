@@ -33,6 +33,7 @@ var _pointer_input: bool = true
 @onready var _description: Label = %Description
 @onready var _costs: HBoxContainer = %Costs
 @onready var _status_label: Label = %StatusLabel
+@onready var _choice_label: Label = %ChoiceLabel
 @onready var _buy_button: Button = %BuyButton
 @onready var _start_button: Button = %StartButton
 @onready var _menu_button: Button = %MenuButton
@@ -188,11 +189,14 @@ func _select(upgrade: UpgradeNode) -> void:
 	for child: Node in _costs.get_children():
 		child.queue_free()
 	_status_label.text = ""
+	_update_choice_label(upgrade)
 	if _progression.is_maxed(upgrade):
 		_buy_button.text = tr(&"UI_MAXED")
 		_buy_button.disabled = true
 		return
-	_buy_button.text = tr(&"UI_BUY")
+	# The first level of a choice node is a decision, not just a purchase.
+	var choosing := not upgrade.choice_group.is_empty() and _progression.get_level(upgrade.id) == 0
+	_buy_button.text = tr(&"UI_CHOOSE") if choosing else tr(&"UI_BUY")
 	for cost: ResourceAmount in _progression.get_next_cost(upgrade):
 		var missing := _inventory.get_amount(cost.resource.id) < cost.amount
 		_costs.add_child(ResourceAmountView.create(cost.resource, NumberFormat.compact(cost.amount), missing))
@@ -200,9 +204,33 @@ func _select(upgrade: UpgradeNode) -> void:
 	_buy_button.disabled = not _progression.can_buy(upgrade, _inventory)
 
 
+## Amber line for mutually exclusive nodes: what buying blocks, or what was blocked.
+## (A node blocked by the other choice explains it in the status line instead.)
+func _update_choice_label(upgrade: UpgradeNode) -> void:
+	_choice_label.visible = false
+	if upgrade.choice_group.is_empty() or _progression.is_blocked_by_choice(upgrade):
+		return
+	var rivals := ", ".join(_choice_rival_names(upgrade, false))
+	var owned := _progression.get_level(upgrade.id) > 0
+	_choice_label.text = (tr(&"UI_CHOICE_MADE") if owned else tr(&"UI_CHOICE_WARNING")) % rivals
+	_choice_label.visible = true
+
+
+## Names of the other nodes in the same choice group (only owned ones if `owned_only`).
+func _choice_rival_names(upgrade: UpgradeNode, owned_only: bool) -> PackedStringArray:
+	var names: PackedStringArray = []
+	for other: UpgradeNode in _database.upgrades:
+		if other == upgrade or other.choice_group != upgrade.choice_group:
+			continue
+		if owned_only and _progression.get_level(other.id) == 0:
+			continue
+		names.append(tr(other.get_name_key()))
+	return names
+
+
 func _lock_reason(upgrade: UpgradeNode) -> String:
 	if _progression.is_blocked_by_choice(upgrade):
-		return tr(&"UI_CHOICE_TAKEN")
+		return tr(&"UI_CHOICE_TAKEN") % ", ".join(_choice_rival_names(upgrade, true))
 	if _progression.get_total_levels() < upgrade.required_points:
 		return tr(&"UI_REQUIRES_POINTS") % upgrade.required_points
 	var missing: PackedStringArray = []
@@ -221,6 +249,7 @@ func _clear_details() -> void:
 	for child: Node in _costs.get_children():
 		child.queue_free()
 	_status_label.text = ""
+	_choice_label.visible = false
 	_buy_button.disabled = true
 
 

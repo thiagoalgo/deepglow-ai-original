@@ -66,7 +66,10 @@ UPGRADE_KEEN_EYE_DESC,Uncommon and rarer sources appear 25% more often per level
 UI_REQUIRED_POINTS,%d required,%d necessários
 UI_REQUIRES,Requires: %s,Requer: %s
 UI_REQUIRES_POINTS,Requires %d points in the tree,Requer %d pontos na árvore
-UI_CHOICE_TAKEN,Another option was chosen,Outra opção já foi escolhida
+UI_CHOICE_TAKEN,Blocked: you chose %s.,Bloqueado: você escolheu %s.
+UI_CHOICE_WARNING,"One choice only: buying this blocks %s for this run.","Escolha única: comprar bloqueia %s nesta partida."
+UI_CHOICE_MADE,Chosen: %s is blocked.,Escolhido: %s ficou bloqueado.
+UI_CHOOSE,Choose,Escolher
 RESOURCE_STONE_NAME,Stone,Pedra
 RESOURCE_FISH_NAME,Fish,Peixe
 RESOURCE_MEAT_NAME,Meat,Carne
@@ -92,9 +95,9 @@ UPGRADE_STEADY_HANDS_DESC,Ponds need 1 fewer click per level.,Lagos precisam de 
 UPGRADE_UNLOCK_SPEAR_NAME,Spear,Lança
 UPGRADE_UNLOCK_SPEAR_DESC,Unlocks hunting: boars start appearing.,Libera a caça: javalis passam a aparecer.
 UPGRADE_MASTER_MASON_NAME,Master Mason,Mestre Pedreiro
-UPGRADE_MASTER_MASON_DESC,+2 stone per rock per level. Excludes Master Angler.,+2 pedras por rocha por nível. Exclui Mestre Pescador.
+UPGRADE_MASTER_MASON_DESC,+2 stone per rock per level.,+2 pedras por rocha por nível.
 UPGRADE_MASTER_ANGLER_NAME,Master Angler,Mestre Pescador
-UPGRADE_MASTER_ANGLER_DESC,+2 fish per pond per level. Excludes Master Mason.,+2 peixes por lago por nível. Exclui Mestre Pedreiro.
+UPGRADE_MASTER_ANGLER_DESC,+2 fish per pond per level.,+2 peixes por lago por nível.
 UPGRADE_SHARP_SPEAR_NAME,Sharp Spear,Lança Afiada
 UPGRADE_SHARP_SPEAR_DESC,Boars need 1 fewer click per level.,Javalis precisam de 1 clique a menos por nível.
 UPGRADE_HUNTER_INSTINCT_NAME,Hunter Instinct,Instinto de Caçador
@@ -123,9 +126,9 @@ UPGRADE_IRON_SENSE_DESC,+1 iron from every vein per level.,+1 ferro em cada veio
 UPGRADE_COPPER_FLASK_NAME,Copper Flask,Cantil de Cobre
 UPGRADE_COPPER_FLASK_DESC,Thirst drops 15% slower per level.,A sede cai 15% mais devagar por nível.
 UPGRADE_GOLD_RUSH_NAME,Gold Rush,Febre do Ouro
-UPGRADE_GOLD_RUSH_DESC,+2 gold per vein per level. Excludes Deep Focus.,+2 ouro por veio por nível. Exclui Foco Profundo.
+UPGRADE_GOLD_RUSH_DESC,+2 gold per vein per level.,+2 ouro por veio por nível.
 UPGRADE_DEEP_FOCUS_NAME,Deep Focus,Foco Profundo
-UPGRADE_DEEP_FOCUS_DESC,Rarer sources appear 50% more often per level. Excludes Gold Rush.,Fontes mais raras aparecem 50% mais por nível. Exclui Febre do Ouro.
+UPGRADE_DEEP_FOCUS_DESC,Rarer sources appear 50% more often per level.,Fontes mais raras aparecem 50% mais por nível.
 UPGRADE_UNLOCK_CRYSTAL_PICK_NAME,Crystal Pickaxe,Picareta de Cristal
 UPGRADE_UNLOCK_CRYSTAL_PICK_DESC,Unlocks the glowing crystals of the deep.,Libera os cristais luminosos das profundezas.
 UPGRADE_CRYSTAL_EDGE_NAME,Crystal Edge,Fio de Cristal

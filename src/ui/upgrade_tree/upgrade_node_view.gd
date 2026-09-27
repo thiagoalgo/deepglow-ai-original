@@ -17,6 +17,8 @@ const STATE_COLORS := {
 var upgrade: UpgradeNode
 var state: NodeState = NodeState.LOCKED
 var level: int = 0
+## Mutually exclusive node whose rival was bought: drawn with a cross.
+var blocked: bool = false
 ## Shown with the highlight ring (independent of keyboard focus).
 var selected: bool = false:
 	set(v):
@@ -46,6 +48,7 @@ func _ready() -> void:
 
 func refresh(progression: ProgressionState, inventory: Inventory) -> void:
 	level = progression.get_level(upgrade.id)
+	blocked = progression.is_blocked_by_choice(upgrade)
 	if progression.is_maxed(upgrade):
 		state = NodeState.MAXED
 	elif progression.can_buy(upgrade, inventory):
@@ -74,6 +77,8 @@ func _draw() -> void:
 		var icon_pos := ((size - upgrade.icon.get_size()) / 2.0).floor()
 		var tint := Color(1, 1, 1, 0.35) if state == NodeState.LOCKED else Color.WHITE
 		draw_texture(upgrade.icon, icon_pos, tint)
+	if blocked:
+		_draw_cross(rect.grow(-6), Palette.LIGHT_PINK)
 	if selected or has_focus():
 		var ring := PixelStyleBox.create(Color.TRANSPARENT, Palette.LIGHT_BLUE_WHITE, 2, steps)
 		ring.draw_center = false
@@ -85,3 +90,12 @@ func _draw() -> void:
 	# Backdrop so connection lines never cross the text.
 	draw_rect(Rect2(baseline.x - 2, size.y + 2, text_width + 4, _font_size - 2), Palette.SHADOW_BLUEBLACK)
 	draw_string(_font, baseline, text, HORIZONTAL_ALIGNMENT_LEFT, -1, _font_size, color)
+
+
+## Pixel "X" of 2x2 blocks (no antialiased diagonal lines) over a blocked node.
+func _draw_cross(area: Rect2, color: Color) -> void:
+	var steps := int(area.size.x / 2.0)
+	for i: int in steps:
+		var offset := Vector2(i * 2, i * 2)
+		draw_rect(Rect2(area.position + offset, Vector2(2, 2)), color)
+		draw_rect(Rect2(Vector2(area.end.x - 2 - i * 2, area.position.y + i * 2), Vector2(2, 2)), color)

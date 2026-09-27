@@ -104,6 +104,14 @@ size_flags_vertical = 3
 theme_type_variation = &"MutedLabel"
 autowrap_mode = 3
 
+[node name="ChoiceLabel" type="Label" parent="Margin/Stack/Body/Details/Info"]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(192, 0)
+layout_mode = 2
+theme_type_variation = &"ChoiceLabel"
+autowrap_mode = 3
+
 [node name="StatusLabel" type="Label" parent="Margin/Stack/Body/Details/Info"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(192, 0)
