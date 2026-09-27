@@ -37,6 +37,8 @@ class RunResult:
 	var phases_cleared: int = 0
 	var sources_per_phase: Array[int] = []
 	var income_per_phase: Array[int] = []
+	## Share (0..1) of each phase's income that the remaining upgrades still needed.
+	var useful_share_per_phase: Array[float] = []
 	var starving_seconds: float = 0.0
 	## Phase number of the first purchase.
 	var first_upgrade_phase: int = -1
@@ -63,8 +65,19 @@ func run(profile: Profile, run_seed: int) -> RunResult:
 
 	while result.phases < MAX_PHASES:
 		result.phases += 1
-		var plan := PhaseGenerator.generate(progression, board_size, hash([run_seed, result.phases]))
+		var plan := PhaseGenerator.generate(progression, board_size, hash([run_seed, result.phases]), inventory)
+		var need := progression.get_remaining_need(inventory)
+		var before: Dictionary[StringName, int] = {}
+		for resource: ResourceType in database.resources:
+			before[resource.id] = inventory.get_amount(resource.id)
 		var phase := _play_phase(plan, profile, progression, inventory, needs, result)
+		var gained := 0
+		var useful := 0
+		for resource: ResourceType in database.resources:
+			var delta := inventory.get_amount(resource.id) - before[resource.id]
+			gained += delta
+			useful += mini(delta, need.get(resource.id, 0))
+		result.useful_share_per_phase.append(float(useful) / maxf(1.0, float(gained)))
 		progression.record_phase(phase["click_equivalents"], phase["elapsed"])
 		result.seconds += phase["elapsed"] + profile.between_phases
 		result.sources_per_phase.append(plan.placements.size())

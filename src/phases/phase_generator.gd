@@ -7,7 +7,10 @@ extends RefCounted
 const MAX_PICK_ATTEMPTS := 12
 
 
-static func generate(progression: ProgressionState, board_size: Vector2i, phase_seed: int) -> PhasePlan:
+## `inventory` (optional) enables demand weighting: sources of resources the
+## remaining upgrades still need appear more, useless ones less.
+static func generate(progression: ProgressionState, board_size: Vector2i, phase_seed: int,
+		inventory: Inventory = null) -> PhasePlan:
 	var database := progression.database
 	var rules := database.phase_rules
 	var rng := RandomNumberGenerator.new()
@@ -30,17 +33,18 @@ static func generate(progression: ProgressionState, board_size: Vector2i, phase_
 	# pricier (rarer) ones: progress shows up as better sources, not an
 	# emptier or overflowing board (docs/game-design.md §6).
 	var target_cost := plan.budget_clicks / max_sources
+	var demand := _demand_factors(progression, inventory)
 	var picked: Array[SourceType] = []
 
 	# 1. Guarantees: minimum food and drink so the needs bars can be refilled.
-	_pick_guaranteed(picked, available, ResourceType.Category.FOOD, rules.min_food_sources, progression, rng, target_cost)
-	_pick_guaranteed(picked, available, ResourceType.Category.DRINK, rules.min_drink_sources, progression, rng, target_cost)
+	_pick_guaranteed(picked, available, ResourceType.Category.FOOD, rules.min_food_sources, progression, rng, target_cost, demand)
+	_pick_guaranteed(picked, available, ResourceType.Category.DRINK, rules.min_drink_sources, progression, rng, target_cost, demand)
 	for source: SourceType in picked:
 		plan.planned_clicks += _cost(source, progression)
 
 	# 2. Fill the click budget by rarity weight.
 	while picked.size() < max_sources:
-		var source := _pick_within_budget(available, plan.budget_clicks - plan.planned_clicks, progression, rng, target_cost)
+		var source := _pick_within_budget(available, plan.budget_clicks - plan.planned_clicks, progression, rng, target_cost, demand)
 		if source == null:
 			break
 		picked.append(source)
@@ -75,23 +79,45 @@ static func _available_sources(progression: ProgressionState) -> Array[SourceTyp
 	return result
 
 
+## Resource id -> weight multiplier (empty = no demand weighting).
+static func _demand_factors(progression: ProgressionState, inventory: Inventory) -> Dictionary[StringName, float]:
+	var factors: Dictionary[StringName, float] = {}
+	if inventory == null:
+		return factors
+	var rules := progression.database.phase_rules
+	var need := progression.get_remaining_need(inventory)
+	var max_need := 0
+	for amount: int in need.values():
+		max_need = maxi(max_need, amount)
+	for resource: ResourceType in progression.database.resources:
+		var missing: int = need.get(resource.id, 0)
+		if missing <= 0:
+			# Food and drink always keep their value: they refill hunger/thirst.
+			var consumable := resource.category != ResourceType.Category.MATERIAL
+			factors[resource.id] = 1.0 if consumable else rules.surplus_weight
+		else:
+			factors[resource.id] = 1.0 + rules.demand_boost * float(missing) / float(max_need)
+	return factors
+
+
 static func _pick_guaranteed(picked: Array[SourceType], available: Array[SourceType],
 		category: ResourceType.Category, count: int, progression: ProgressionState,
-		rng: RandomNumberGenerator, target_cost: float) -> void:
+		rng: RandomNumberGenerator, target_cost: float, demand: Dictionary[StringName, float]) -> void:
 	var candidates := available.filter(
 		func(s: SourceType) -> bool: return s.yield_resource.category == category)
 	var typed: Array[SourceType] = []
 	typed.assign(candidates)
 	for i: int in count:
-		var source := _weighted_pick(typed, progression, rng, target_cost)
+		var source := _weighted_pick(typed, progression, rng, target_cost, demand)
 		if source:
 			picked.append(source)
 
 
 static func _pick_within_budget(available: Array[SourceType], remaining: float,
-		progression: ProgressionState, rng: RandomNumberGenerator, target_cost: float) -> SourceType:
+		progression: ProgressionState, rng: RandomNumberGenerator, target_cost: float,
+		demand: Dictionary[StringName, float]) -> SourceType:
 	for attempt: int in MAX_PICK_ATTEMPTS:
-		var source := _weighted_pick(available, progression, rng, target_cost)
+		var source := _weighted_pick(available, progression, rng, target_cost, demand)
 		if source and _cost(source, progression) <= remaining:
 			return source
 	# Last resort: cheapest source that still fits (keeps phases tight).
@@ -104,24 +130,25 @@ static func _pick_within_budget(available: Array[SourceType], remaining: float,
 
 
 static func _weighted_pick(sources: Array[SourceType], progression: ProgressionState,
-		rng: RandomNumberGenerator, target_cost: float) -> SourceType:
+		rng: RandomNumberGenerator, target_cost: float, demand: Dictionary[StringName, float]) -> SourceType:
 	var total := 0.0
 	for source: SourceType in sources:
-		total += _pick_weight(source, progression, target_cost)
+		total += _pick_weight(source, progression, target_cost, demand)
 	if total <= 0.0:
 		return null
 	var roll := rng.randf() * total
 	for source: SourceType in sources:
-		roll -= _pick_weight(source, progression, target_cost)
+		roll -= _pick_weight(source, progression, target_cost, demand)
 		if roll <= 0.0:
 			return source
 	return sources.back()
 
 
-## Rarity weight, reduced for sources cheaper than the average cost the
-## board needs to absorb the whole budget.
-static func _pick_weight(source: SourceType, progression: ProgressionState, target_cost: float) -> float:
-	var weight := progression.get_rarity_weight(source.rarity)
+## Rarity weight × demand factor, reduced for sources cheaper than the average
+## cost the board needs to absorb the whole budget.
+static func _pick_weight(source: SourceType, progression: ProgressionState, target_cost: float,
+		demand: Dictionary[StringName, float]) -> float:
+	var weight: float = progression.get_rarity_weight(source.rarity) * demand.get(source.yield_resource.id, 1.0)
 	var cost := _cost(source, progression)
 	if cost < target_cost:
 		weight *= pow(cost / target_cost, progression.database.phase_rules.cheap_source_penalty)

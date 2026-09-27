@@ -76,6 +76,26 @@ func buy(upgrade: UpgradeNode, inventory: Inventory) -> bool:
 	return true
 
 
+## How much of each resource the upgrades still to buy will cost in total,
+## minus what the inventory already holds (only resources still missing are
+## listed). Blocked choice nodes are ignored. Used by PhaseGenerator to favour
+## the sources the player actually needs.
+func get_remaining_need(inventory: Inventory) -> Dictionary[StringName, int]:
+	var totals: Dictionary[StringName, int] = {}
+	for upgrade: UpgradeNode in database.upgrades:
+		if is_blocked_by_choice(upgrade):
+			continue
+		for level: int in range(get_level(upgrade.id), upgrade.max_level):
+			for cost: ResourceAmount in upgrade.get_cost(level):
+				totals[cost.resource.id] = totals.get(cost.resource.id, 0) + cost.amount
+	var need: Dictionary[StringName, int] = {}
+	for id: StringName in totals:
+		var missing := totals[id] - (inventory.get_amount(id) if inventory else 0)
+		if missing > 0:
+			need[id] = missing
+	return need
+
+
 ## Copy of the bought levels (upgrade id -> level), for saving.
 func get_levels() -> Dictionary[StringName, int]:
 	return _levels.duplicate()

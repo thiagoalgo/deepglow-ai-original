@@ -10,12 +10,12 @@
 [sub_resource type="Resource" id="Resource_rd6bi"]
 script = ExtResource("1_mccqu")
 resource = ExtResource("2_dxnui")
-amount = 30
+amount = 35
 
 [sub_resource type="Resource" id="Resource_ou28c"]
 script = ExtResource("1_mccqu")
 resource = ExtResource("3_il11x")
-amount = 60
+amount = 65
 
 [resource]
 script = ExtResource("6_2tw8q")

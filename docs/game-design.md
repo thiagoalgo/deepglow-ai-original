@@ -9,7 +9,7 @@
 - **Fantasia:** sobreviver e prosperar numa floresta noturna e bioluminescente: derrubar árvores,
   colher frutas, beber de nascentes, minerar, pescar, caçar e, no fim, alcançar os cristais
   luminosos das profundezas ("Deepglow").
-- **Duração-alvo:** **no mínimo 3 horas** de jogo para completar a árvore de evolução.
+- **Duração-alvo:** ~**2h10** para o jogador médio do simulador completar a árvore (revisto em set/2026, D5: a primeira partida real do dono levou quase 6 h com a meta antiga de 3h30).
 - **Sem derrota:** o jogador sempre progride, só mais rápido ou mais devagar.
 - **Plataforma inicial:** desktop (mouse). Teclado/gamepad depois (cursor andando casa a casa).
 - **Idiomas:** inglês e português (Brasil), escolhidos na tela inicial.
@@ -101,8 +101,12 @@ impedir progressão absurda.
    tempo aumenta a duração base), nunca da velocidade do jogador.
 2. **Sorteio das fontes:** entre as fontes desbloqueadas, sorteia por peso de raridade e soma o custo
    em cliques (já com o desconto das ferramentas) até atingir o orçamento ou encher o tabuleiro
-   (75% das casas). Garante um mínimo de comida e água. Quando fontes baratas encheriam o tabuleiro
-   antes do orçamento, o sorteio **favorece fontes mais caras/raras** (`cheap_source_penalty`).
+   (75% das casas). Garante um mínimo de comida e água (3 + 3). Quando fontes baratas encheriam o
+   tabuleiro antes do orçamento, o sorteio **favorece fontes mais caras/raras** (`cheap_source_penalty`).
+   **Demanda (D10):** o peso também considera o que o jogador ainda precisa — soma o custo de todas as
+   evoluções que faltam, desconta o inventário, e multiplica o peso das fontes desses recursos por até
+   `1 + demand_boost` (6; o recurso mais em falta recebe o máximo). Recursos que nenhuma evolução pede
+   mais ficam raros (`surplus_weight` 0,15); comida e água nunca perdem valor (fome/sede).
 3. **Timer ajustado ao jogador:** `timer = trabalho_da_fase / (cps_medido × aperto)`, com `aperto`
    sorteado entre **0,95 e 1,10** (acima de 1 falta um pouco de tempo; abaixo sobra). O cps medido é
    uma média móvel das últimas fases (limitada entre 2 e 5), já contando o deslocamento do mouse.
@@ -174,7 +178,7 @@ pode comprar, âmbar = parcialmente comprado, amarelo = completo.
 ## 8. Balanceamento e duração
 
 - Todos os números ficam em dados (`.tres`), nunca no código.
-- **Ritmo:** fase de ~45–60 s + ~15–30 s entre fases ⇒ 3 h ≈ **120–145 fases** no jogo completo.
+- **Ritmo:** fase de ~45–60 s + ~15–30 s entre fases ⇒ ~2h10 ≈ **110 fases** no jogo completo.
 - **Marcos-alvo:** 1ª melhoria após 1–2 fases; camada 0 completa (conteúdo do M1) em ~25–35 min;
   camada 1 por volta de 20–30 min; 1ª automação ~45 min; camada 2 ~1h15; cristais 2h30+.
 
@@ -201,23 +205,30 @@ Relatório em `tools/balance/reports/latest.md` (não versionado). Perfis padrã
 | Critério | Meta |
 |---|---|
 | Médio completa a árvore | em todas as execuções |
-| Duração do médio | ≥ alvo (`--target-minutes`: 25 no M1, 180 no jogo completo) |
+| Duração do médio | ≥ alvo (`--target-minutes`: 25 no M1, 120 no jogo completo; padrão 120) |
 | 1ª melhoria | até a fase 2 |
 | Fases justas | 15–60% das fases totalmente limpas |
 | Rápido vs médio | no máximo 40% mais rápido **e** mesmo nº de fases (±10%) — sem bola de neve |
+| Fim do jogo útil | ≥ 50% do que o médio coleta no último quarto ainda serve para alguma evolução |
 
-### 8.2 Resultado atual (M3.5: jogo completo, 29 nós, 12 execuções por perfil)
+### 8.2 Resultado atual (gerador com demanda + custos graduais; 29 nós, 12 execuções por perfil)
 
-| Perfil | Minutos (médio) | Fases | Fases limpas | Barra vazia |
-|---|---|---|---|---|
-| Lento (2,2) | 279,5 | 180 | 31% | 3,7% |
-| Médio (3,0) | **209,2** (~3h30) | 173 | 39% | 1,5% |
-| Rápido (4,5) | 149,9 | 168 | 47% | 0,1% |
+Antes da demanda, no último quarto do jogo só **11%** do que se coletava ainda servia (sobravam
+madeira, pedra e frutas; faltavam cobre, ouro e cristal) e o médio levava ~3h30 no simulador — na
+primeira partida real, quase 6 h. Agora a meta é ~2h10 no simulador, e os custos sobem de forma
+**gradual** pela linha da árvore: `custo × (1 + 0,4 × linha/10)` — linha 0 igual a antes, a última
+linha +40% (arredondados).
 
-Marcos do jogador médio (minutos): picareta ~22 · vara de pesca ~24 · lança ~67 · picareta
-reforçada (minérios) ~109 · picareta de cristal ~152 · Coração de Deepglow (fim) ~210.
+| Perfil | Minutos (médio) | Fases | Fases limpas | Barra vazia | Coleta útil (último quarto) |
+|---|---|---|---|---|---|
+| Lento (2,2) | 176,3 | 116 | 21% | 11,2% | 48% |
+| Médio (3,0) | **130,9** (~2h10) | 110 | 31% | 5,4% | 56% |
+| Rápido (4,5) | 93,9 | 107 | 44% | 0,8% | 60% |
 
-Comando: `--runs 12 --target-minutes 180` (leva ~3 min; o jogo completo tem ~170 fases por execução).
+Marcos do jogador médio (minutos): picareta ~13 · vara de pesca ~20 · lança ~51 · picareta
+reforçada (minérios) ~67 · picareta de cristal ~107 · Coração de Deepglow (fim) ~130.
+
+Comando: `--runs 12` (alvo padrão 120 min; leva ~1–2 min; o jogo completo tem ~110 fases por execução).
 
 ## 9. Modelo de dados (técnico)
 
@@ -260,8 +271,9 @@ Estados da `StateMachine`: `Setup` → `PhaseBuild` → `Phase` → `PhaseSummar
 | D2 | Sem derrota | decidido |
 | D3 | Todas as fontes aparecem no início da fase; tempo justo; fases geradas pelo progresso | decidido |
 | D4 | Timer + ciclo dia-noite visual: cada fase vai do anoitecer (40%) à noite profunda (75%) — o cenário escurece em degraus da paleta (o tabuleiro não escurece; halos nos itens foram testados e rejeitados) | decidido (M6) |
-| D5 | Duração mínima de 3 h para completar a árvore | decidido |
+| D5 | ~2h10 no simulador (jogador médio) para completar a árvore — revisto em set/2026 (era 3 h; a partida real levou ~6 h) | decidido |
 | D6 | Fome/sede vazia: cada clique vale 0,5; drenagem 4%/s e 4,5%/s | decidido (simulador) |
 | D7 | Sem estruturas nem transformação de recursos: fogueira removida; carne do javali é comida e recurso | decidido |
 | D8 | Raridade não é exibida no tabuleiro; o sprite comunica o valor | decidido |
 | D9 | Árvore de evolução desenhada em grade (conexões, níveis, escolhas, portões) | decidido |
+| D10 | Gerador ciente da demanda: fontes dos recursos que faltam aparecem mais, as inúteis ficam raras; custos sobem gradualmente pela árvore (+0% no topo, +40% na última linha) | decidido (simulador) |

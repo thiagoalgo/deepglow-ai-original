@@ -6,7 +6,7 @@ extends SceneTree
 ## Options:
 ##   --runs N              runs per profile (default 20)
 ##   --target-minutes M    minimum minutes for the "average" profile to finish the tree
-##                         (default 180 = full game; use the milestone target while content grows)
+##                         (default 120 = full game; use the milestone target while content grows)
 ##   --profiles a:3,b:4    name:clicks-per-second[:needs-threshold] list
 ##                         (default slow:2.2,average:3.0,fast:4.5; threshold 0 = ignores hunger/thirst)
 ##   --out PATH            markdown report path (default res://tools/balance/reports/latest.md)
@@ -24,9 +24,12 @@ const MAX_FIRST_UPGRADE_PHASE := 2
 const MAX_FAST_SPEEDUP := 1.40
 const MAX_PHASE_COUNT_GAP := 0.10
 const CLEARED_RATIO_RANGE := Vector2(0.15, 0.6)
+## In the last quarter of the game, at least this share of what the player
+## collects must still be needed by some upgrade (otherwise the end drags).
+const MIN_LATE_USEFUL_SHARE := 0.5
 
 var _runs: int = 20
-var _target_minutes: float = 180.0
+var _target_minutes: float = 120.0
 var _profiles: Array = [["slow", 2.2], ["average", 3.0], ["fast", 4.5]]
 var _out: String = "res://tools/balance/reports/latest.md"
 
@@ -44,8 +47,8 @@ func _initialize() -> void:
 	lines.append("Generated %s — %d runs/profile, target (average) ≥ %d min." % [
 		Time.get_datetime_string_from_system(), _runs, int(_target_minutes)])
 	lines.append("")
-	lines.append("| Profile | CPS | Done | Minutes (min / avg / max) | Phases (avg) | 1st upgrade (phase) | Cleared % | Sources/phase (first → last) | Income/phase (first → last) | Starving % |")
-	lines.append("|---|---|---|---|---|---|---|---|---|---|")
+	lines.append("| Profile | CPS | Done | Minutes (min / avg / max) | Phases (avg) | 1st upgrade (phase) | Cleared % | Sources/phase (first → last) | Income/phase (first → last) | Starving % | Useful income (last quarter) |")
+	lines.append("|---|---|---|---|---|---|---|---|---|---|---|")
 
 	for entry: Array in _profiles:
 		var profile := Simulator.Profile.new(entry[0], entry[1])
@@ -56,14 +59,14 @@ func _initialize() -> void:
 			results.append(simulator.run(profile, 1000 + i))
 		var summary := _summarize(results)
 		summaries[profile.name] = summary
-		lines.append("| %s | %.1f | %d/%d | %.1f / %.1f / %.1f | %.0f | %.1f | %.0f%% | %.0f → %.0f | %.0f → %.0f | %.1f%% |" % [
+		lines.append("| %s | %.1f | %d/%d | %.1f / %.1f / %.1f | %.0f | %.1f | %.0f%% | %.0f → %.0f | %.0f → %.0f | %.1f%% | %.0f%% |" % [
 			profile.name, profile.cps, summary["completed"], _runs,
 			summary["min_minutes"], summary["avg_minutes"], summary["max_minutes"],
 			summary["avg_phases"], summary["avg_first_upgrade_phase"],
 			summary["cleared_ratio"] * 100.0,
 			summary["first_sources"], summary["last_sources"],
 			summary["first_income"], summary["last_income"],
-			summary["starving_ratio"] * 100.0])
+			summary["starving_ratio"] * 100.0, summary["late_useful_share"] * 100.0])
 		if profile.name == "average":
 			lines.append_array(_milestones(results, database))
 
@@ -99,7 +102,14 @@ func _summarize(results: Array) -> Dictionary:
 	var seconds := 0.0
 	var first_income := 0.0
 	var last_income := 0.0
+	var late_useful := 0.0
 	for r: Object in results:
+		var shares: Array[float] = r.get("useful_share_per_phase")
+		var start := int(shares.size() * 0.75)
+		var sum := 0.0
+		for i: int in range(start, shares.size()):
+			sum += shares[i]
+		late_useful += sum / maxf(1.0, float(shares.size() - start))
 		minutes.append(r.get("seconds") / 60.0)
 		phases += r.get("phases")
 		completed += 1 if r.get("completed") else 0
@@ -132,6 +142,7 @@ func _summarize(results: Array) -> Dictionary:
 		"starving_ratio": starving / seconds,
 		"first_income": first_income / n,
 		"last_income": last_income / n,
+		"late_useful_share": late_useful / n,
 	}
 
 
@@ -176,6 +187,9 @@ func _checks(summaries: Dictionary) -> Array:
 		checks.append(["phases are tight: cleared %d–%d%% (got %.0f%%)" % [
 			int(CLEARED_RATIO_RANGE.x * 100), int(CLEARED_RATIO_RANGE.y * 100), avg["cleared_ratio"] * 100],
 			avg["cleared_ratio"] >= CLEARED_RATIO_RANGE.x and avg["cleared_ratio"] <= CLEARED_RATIO_RANGE.y])
+		checks.append(["end game stays useful: ≥ %d%% of last-quarter income still needed (got %.0f%%)" % [
+			roundi(MIN_LATE_USEFUL_SHARE * 100), avg["late_useful_share"] * 100],
+			avg["late_useful_share"] >= MIN_LATE_USEFUL_SHARE])
 		if summaries.has("fast"):
 			var speedup: float = avg["avg_minutes"] / summaries["fast"]["avg_minutes"]
 			checks.append(["fast is ≤ %d%% faster than average (got %.0f%%)" % [

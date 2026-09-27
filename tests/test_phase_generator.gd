@@ -88,3 +88,34 @@ func test_respects_board_fill_limit() -> String:
 	if plan.placements.size() > limit:
 		return "%d sources > limit %d" % [plan.placements.size(), limit]
 	return ""
+
+
+func test_remaining_need_counts_missing_resources() -> String:
+	var db := load(DATABASE_PATH) as GameDatabase
+	var prog := ProgressionState.new(db)
+	var inv := Inventory.new()
+	var need := prog.get_remaining_need(inv)
+	if need.get(&"wood", 0) <= 0 or need.get(&"crystal", 0) <= 0:
+		return "a fresh run should need wood and crystal"
+	inv.add(&"wood", need[&"wood"])
+	if prog.get_remaining_need(inv).has(&"wood"):
+		return "wood covered by the inventory should not be needed"
+	return ""
+
+
+func test_demand_favours_needed_resources() -> String:
+	var db := load(DATABASE_PATH) as GameDatabase
+	var prog := ProgressionState.new(db)
+	var starved := Inventory.new()
+	var rich := Inventory.new()
+	rich.add(&"wood", prog.get_remaining_need(rich)[&"wood"])  # wood no longer needed
+	var trees_needed := 0
+	var trees_surplus := 0
+	for s: int in 40:
+		for source: SourceType in PhaseGenerator.generate(prog, BOARD, s, starved).placements.values():
+			trees_needed += 1 if source.yield_resource.id == &"wood" else 0
+		for source: SourceType in PhaseGenerator.generate(prog, BOARD, s, rich).placements.values():
+			trees_surplus += 1 if source.yield_resource.id == &"wood" else 0
+	if trees_surplus * 2 >= trees_needed:
+		return "trees should become much rarer once wood is no longer needed (%d vs %d)" % [trees_surplus, trees_needed]
+	return ""

@@ -6,7 +6,7 @@ func enter(_payload: Dictionary = {}) -> void:
 	game.phase_number += 1
 	game.board.clear_items()
 	var plan := PhaseGenerator.generate(game.progression, game.board.config.size,
-		game.get_phase_seed(game.phase_number))
+		game.get_phase_seed(game.phase_number), game.inventory)
 	for cell: Vector2i in plan.placements:
 		var source: SourceType = plan.placements[cell]
 		var card := game.card_scene.instantiate() as SourceCard

@@ -34,6 +34,13 @@ extends Resource
 ## How strongly cheap sources are avoided once they would overflow the board
 ## (0 = never, higher = prefer pricier/rarer sources more aggressively).
 @export_range(0.0, 8.0) var cheap_source_penalty: float = 2.0
+## Demand: sources whose resource the remaining upgrades still need get their
+## weight multiplied by up to (1 + demand_boost) — the most needed resource gets
+## the full boost, the others in proportion to how much of them is missing.
+@export_range(0.0, 20.0) var demand_boost: float = 3.0
+## Weight multiplier for sources whose resource no upgrade needs any more
+## (food/drink guarantees still apply, so hunger and thirst stay manageable).
+@export_range(0.0, 1.0) var surplus_weight: float = 0.15
 
 @export_group("Needs")
 ## Bar fraction lost per second (1.0 = full bar).
