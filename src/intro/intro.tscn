@@ -1,0 +1,122 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://src/intro/intro.gd" id="1_intro"]
+[ext_resource type="Resource" path="res://data/intro/intro.tres" id="2_seq"]
+[ext_resource type="Shader" path="res://src/fx/night_shift.gdshader" id="3_shader"]
+[ext_resource type="Shader" path="res://src/fx/pixel_dissolve.gdshader" id="4_dissolve"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_intro"]
+shader = ExtResource("3_shader")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_dissolve"]
+shader = ExtResource("4_dissolve")
+
+[node name="Intro" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_intro")
+sequence = ExtResource("2_seq")
+
+[node name="Black" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.0196, 0.0196, 0.0353, 1)
+
+[node name="Stage" type="Control" parent="."]
+clip_contents = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Picture" type="TextureRect" parent="Stage"]
+unique_name_in_owner = true
+material = SubResource("ShaderMaterial_intro")
+layout_mode = 0
+offset_right = 640.0
+offset_bottom = 360.0
+mouse_filter = 2
+expand_mode = 1
+
+[node name="Incoming" type="TextureRect" parent="Stage"]
+unique_name_in_owner = true
+visible = false
+material = SubResource("ShaderMaterial_dissolve")
+layout_mode = 0
+offset_right = 640.0
+offset_bottom = 360.0
+mouse_filter = 2
+expand_mode = 1
+
+[node name="Caption" type="PanelContainer" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -268.0
+offset_top = -62.0
+offset_right = 268.0
+offset_bottom = -12.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 2
+theme_type_variation = &"HudPanel"
+
+[node name="Text" type="Label" parent="Caption"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(500, 34)
+layout_mode = 2
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+max_lines_visible = 2
+
+[node name="SkipHint" type="HBoxContainer" parent="."]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -200.0
+offset_top = 8.0
+offset_right = -12.0
+offset_bottom = 24.0
+grow_horizontal = 0
+mouse_filter = 2
+theme_override_constants/separation = 6
+alignment = 2
+
+[node name="Label" type="Label" parent="SkipHint"]
+layout_mode = 2
+theme_type_variation = &"MutedLabel"
+text = "UI_INTRO_SKIP_HINT"
+
+[node name="SkipTrack" type="ColorRect" parent="SkipHint"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(32, 4)
+layout_mode = 2
+size_flags_vertical = 4
+mouse_filter = 2
+color = Color(0.0745, 0.1020, 0.2706, 1)
+
+[node name="SkipFill" type="ColorRect" parent="SkipHint/SkipTrack"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_bottom = 4.0
+mouse_filter = 2
+color = Color(0.2157, 0.9490, 0.7608, 1)

@@ -1,0 +1,79 @@
+[gd_resource type="Resource" script_class="IntroSequence" format=3]
+
+[ext_resource type="Script" path="res://src/intro/intro_sequence.gd" id="1_seq"]
+[ext_resource type="Script" path="res://src/intro/intro_shot.gd" id="2_shot"]
+[ext_resource type="Texture2D" path="res://assets/sprites/board/background.png" id="10_forest"]
+[ext_resource type="Texture2D" path="res://assets/sprites/board/biomes/glow_swamp.png" id="11_swamp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/board/biomes/crystal_caves.png" id="12_caves"]
+[ext_resource type="Texture2D" path="res://assets/sprites/board/biomes/ash_forest.png" id="13_ash"]
+[ext_resource type="Texture2D" path="res://assets/sprites/board/biomes/frozen_moon_vale.png" id="14_vale"]
+[ext_resource type="Texture2D" path="res://assets/sprites/board/biomes/sunken_ruins.png" id="15_ruins"]
+
+[sub_resource type="Resource" id="Shot_1"]
+script = ExtResource("2_shot")
+text_key = &"INTRO_01"
+duration = 8.6
+motion = 0
+backgrounds = Array[Texture2D]([ExtResource("10_forest"), ExtResource("12_caves")])
+
+[sub_resource type="Resource" id="Shot_2"]
+script = ExtResource("2_shot")
+text_key = &"INTRO_02"
+duration = 7.8
+motion = 0
+backgrounds = Array[Texture2D]([ExtResource("12_caves")])
+
+[sub_resource type="Resource" id="Shot_3"]
+script = ExtResource("2_shot")
+text_key = &"INTRO_03"
+duration = 6.9
+motion = 0
+backgrounds = Array[Texture2D]([ExtResource("12_caves")])
+
+[sub_resource type="Resource" id="Shot_4"]
+script = ExtResource("2_shot")
+text_key = &"INTRO_04"
+duration = 9.1
+motion = 0
+backgrounds = Array[Texture2D]([ExtResource("15_ruins")])
+
+[sub_resource type="Resource" id="Shot_5"]
+script = ExtResource("2_shot")
+text_key = &"INTRO_05"
+duration = 5.6
+motion = 0
+backgrounds = Array[Texture2D]([ExtResource("10_forest")])
+
+[sub_resource type="Resource" id="Shot_6"]
+script = ExtResource("2_shot")
+text_key = &"INTRO_06"
+duration = 7.8
+motion = 0
+backgrounds = Array[Texture2D]([ExtResource("10_forest")])
+close_up = Rect2i(320, 60, 320, 180)
+
+[sub_resource type="Resource" id="Shot_7"]
+script = ExtResource("2_shot")
+text_key = &"INTRO_07"
+duration = 8.6
+motion = 0
+backgrounds = Array[Texture2D]([ExtResource("10_forest"), ExtResource("11_swamp"), ExtResource("12_caves"), ExtResource("13_ash"), ExtResource("14_vale"), ExtResource("15_ruins")])
+
+[sub_resource type="Resource" id="Shot_8"]
+script = ExtResource("2_shot")
+text_key = &"INTRO_08"
+duration = 4.3
+motion = 0
+backgrounds = Array[Texture2D]([ExtResource("15_ruins")])
+
+[sub_resource type="Resource" id="Shot_9"]
+script = ExtResource("2_shot")
+text_key = &"INTRO_09"
+duration = 4.3
+motion = 1
+backgrounds = Array[Texture2D]([ExtResource("10_forest")])
+close_up = Rect2i(320, 60, 320, 180)
+
+[resource]
+script = ExtResource("1_seq")
+shots = Array[ExtResource("2_shot")]([SubResource("Shot_1"), SubResource("Shot_2"), SubResource("Shot_3"), SubResource("Shot_4"), SubResource("Shot_5"), SubResource("Shot_6"), SubResource("Shot_7"), SubResource("Shot_8"), SubResource("Shot_9")])

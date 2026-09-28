@@ -79,6 +79,11 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "UI_NEW_GAME"
 
+[node name="IntroButton" type="Button" parent="Center/Panel/Layout/Menu"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "UI_WATCH_INTRO"
+
 [node name="SettingsButton" type="Button" parent="Center/Panel/Layout/Menu"]
 unique_name_in_owner = true
 layout_mode = 2

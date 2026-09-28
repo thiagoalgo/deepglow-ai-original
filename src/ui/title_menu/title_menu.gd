@@ -1,12 +1,14 @@
 class_name TitleMenu
 extends Control
 ## Title screen: Continue (only when a save exists), New game (asks for
-## confirmation before overwriting a save), Settings and Quit.
+## confirmation before overwriting a save; the intro plays first), Watch intro,
+## Settings and Quit.
 ## Main decides what each choice does; this screen only reports it.
 
 signal continue_requested
 signal new_game_requested
 signal settings_requested
+signal intro_requested
 signal quit_requested
 
 ## Next phase of the saved run; 0 when there is no save.
@@ -16,6 +18,7 @@ var _focus_settings: bool = false
 @onready var _menu: VBoxContainer = %Menu
 @onready var _continue_button: Button = %ContinueButton
 @onready var _new_game_button: Button = %NewGameButton
+@onready var _intro_button: Button = %IntroButton
 @onready var _settings_button: Button = %SettingsButton
 @onready var _quit_button: Button = %QuitButton
 @onready var _confirm: VBoxContainer = %Confirm
@@ -37,6 +40,7 @@ func _ready() -> void:
 	_continue_button.text = tr(&"UI_CONTINUE_RUN") % _saved_next_phase
 	_continue_button.pressed.connect(continue_requested.emit)
 	_new_game_button.pressed.connect(_on_new_game_pressed)
+	_intro_button.pressed.connect(intro_requested.emit)
 	_settings_button.pressed.connect(settings_requested.emit)
 	_quit_button.pressed.connect(quit_requested.emit)
 	# Quitting makes no sense in a browser build.

@@ -100,12 +100,14 @@ src/                  # code + scenes, organized by FEATURE (.tscn next to its .
   survival/           # Needs (hunger/thirst state; empty hunger = weak hits, empty thirst = half materials)
   save/               # SaveGame (run snapshot <-> JSON dict) + SaveSystem (user://save.json I/O)
   phases/             # PhaseRules (data) + PhaseGenerator/PhasePlan (pure logic)
-  fx/                 # visual effects (FloatingText, PixelBurst, Fireflies, NightCycle + night_shift shader)
+  fx/                 # visual effects (FloatingText, PixelBurst, Fireflies, NightCycle + night_shift shader,
+                      # PaletteShift = palette "darker" table shared with the intro)
+  intro/              # Intro screen + IntroShot/IntroSequence (data: motion, background(s), text key, duration)
   ui/                 # one subfolder per screen/component (hud, phase_summary,
                       # upgrade_tree, tool_cursor, language_select, title_menu) + theme/
 localization/         # translations.csv (source of all player-facing text)
 data/                 # .tres instances: game_database.tres (root), resources/, rarities/,
-                      # tools/, sources/, upgrades/, achievements/, phases/, board/, audio/, biomes/
+                      # tools/, sources/, upgrades/, achievements/, phases/, board/, audio/, biomes/, intro/
 assets/               # FINAL game-ready art/audio (sprites/, tilesets/, fonts/, audio/, palettes/)
 tests/                # headless tests (test_*.gd)
 tools/                # outside the game: pixellab/, art/ + audio/ (Python), balance/ (GDScript simulator),
@@ -122,7 +124,11 @@ App (Control)                        src/main/app.tscn — window root: integer 
     └── GameViewport (SubViewport 640x360)
         └── Main (Node)              src/main/main.tscn — swaps screens (one at a time)
             ├── LanguageSelect (Control)         src/ui/language_select/  — first launch only
-            ├── TitleMenu (Control)              src/ui/title_menu/ — Continue, New game, Settings, Quit
+            ├── TitleMenu (Control)              src/ui/title_menu/ — Continue, New game, Watch intro, Settings, Quit
+            ├── Intro (Control)                  src/intro/ — animated intro (IntroSequence data, data/intro/intro.tres):
+            │                                     plays before a new game and from "Watch intro"; tap advances,
+            │                                     hold (0.6 s) skips; every picture change is a pixel dissolve
+            │                                     (src/fx/pixel_dissolve.gdshader, ordered dither, no alpha)
             ├── SettingsScreen (Control)         src/ui/settings/ — SettingRow per setting (language, CRT,
             │                                     fullscreen; volume later), applied + saved immediately
             │
