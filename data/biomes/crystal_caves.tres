@@ -7,5 +7,6 @@
 script = ExtResource("1_biome")
 id = &"crystal_caves"
 background = ExtResource("2_bg")
+color = Color(0.6039, 0.4196, 0.8706, 1)
 required_points = 18
 tree_row = 4

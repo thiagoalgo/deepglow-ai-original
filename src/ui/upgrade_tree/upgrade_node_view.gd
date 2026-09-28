@@ -1,11 +1,16 @@
 class_name UpgradeNodeView
 extends BaseButton
-## One node of the drawn upgrade tree: icon in a frame whose color shows the
-## node state, plus "level/max" underneath. Choice nodes are octagons.
+## One node of the drawn upgrade tree: icon (20x20, never scaled) in a frame
+## whose color shows the node state, plus one pip per level underneath (filled
+## = bought). Choice nodes are octagons.
 
 enum NodeState { LOCKED, AVAILABLE, AFFORDABLE, PARTIAL, MAXED }
 
-const FRAME_SIZE := 32
+const FRAME_SIZE := 28
+## Frame and selection ring line width.
+const BORDER := 1
+const PIP := 4
+const PIP_GAP := 2
 const STATE_COLORS := {
 	NodeState.LOCKED: Palette.SHADOW_LIFTED,
 	NodeState.AVAILABLE: Palette.STRUCTURE_MID_BLUE,
@@ -25,8 +30,6 @@ var selected: bool = false:
 		selected = v
 		queue_redraw()
 
-var _font: Font
-var _font_size: int = 16
 
 
 static func create(p_upgrade: UpgradeNode) -> UpgradeNodeView:
@@ -40,8 +43,6 @@ static func create(p_upgrade: UpgradeNode) -> UpgradeNodeView:
 
 
 func _ready() -> void:
-	_font = get_theme_default_font()
-	_font_size = get_theme_default_font_size()
 	focus_entered.connect(queue_redraw)
 	focus_exited.connect(queue_redraw)
 
@@ -71,8 +72,9 @@ func _draw() -> void:
 	var color := get_state_color()
 	var fill := Palette.SHADOW_DEEP if state != NodeState.LOCKED else Palette.SHADOW_BLUEBLACK
 	# Choice nodes (mutually exclusive) get deeper stepped corners, a pixel "octagon".
-	var steps := PackedInt32Array([2]) if upgrade.choice_group.is_empty() else PackedInt32Array([8, 6, 4, 2])
-	PixelStyleBox.create(fill, color, 2, steps).draw(get_canvas_item(), rect)
+	var steps := PackedInt32Array([2, 1]) if upgrade.choice_group.is_empty() \
+		else PackedInt32Array([6, 5, 4, 3, 2, 1])
+	PixelStyleBox.create(fill, color, BORDER, steps, 1).draw(get_canvas_item(), rect)
 	if upgrade.icon:
 		var icon_pos := ((size - upgrade.icon.get_size()) / 2.0).floor()
 		var tint := Color(1, 1, 1, 0.35) if state == NodeState.LOCKED else Color.WHITE
@@ -80,16 +82,16 @@ func _draw() -> void:
 	if blocked:
 		_draw_cross(rect.grow(-6), Palette.LIGHT_PINK)
 	if selected or has_focus():
-		var ring := PixelStyleBox.create(Color.TRANSPARENT, Palette.LIGHT_BLUE_WHITE, 2, steps)
+		var ring := PixelStyleBox.create(Color.TRANSPARENT, Palette.LIGHT_BLUE_WHITE, BORDER, steps, 1)
 		ring.draw_center = false
-		ring.draw(get_canvas_item(), rect.grow(4))
-	# Level "n/max" under the node.
-	var text := "%d/%d" % [level, upgrade.max_level]
-	var text_width := _font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, _font_size).x
-	var baseline := Vector2(floorf((size.x - text_width) / 2.0), size.y + _font_size - 2)
-	# Backdrop so connection lines never cross the text.
-	draw_rect(Rect2(baseline.x - 2, size.y + 2, text_width + 4, _font_size - 2), Palette.SHADOW_BLUEBLACK)
-	draw_string(_font, baseline, text, HORIZONTAL_ALIGNMENT_LEFT, -1, _font_size, color)
+		ring.draw(get_canvas_item(), rect.grow(3))
+	# One pip per level under the node: filled = bought.
+	var total := upgrade.max_level * PIP + (upgrade.max_level - 1) * PIP_GAP
+	var x := floorf((size.x - total) / 2.0)
+	for i: int in upgrade.max_level:
+		var pip := Rect2(x + i * (PIP + PIP_GAP), size.y + 3, PIP, PIP)
+		draw_rect(pip.grow(1), Palette.SHADOW_ABSOLUTE)
+		draw_rect(pip, color if i < level else Palette.SHADOW_LIFTED)
 
 
 ## Pixel "X" of 2x2 blocks (no antialiased diagonal lines) over a blocked node.

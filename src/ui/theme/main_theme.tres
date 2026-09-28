@@ -146,6 +146,8 @@ border_width = 2
 corner_steps = PackedInt32Array(4, 2)
 step = 2
 
+[sub_resource type="StyleBoxEmpty" id="StyleBox_plain"]
+
 [resource]
 default_font = ExtResource("1_font")
 default_font_size = 16
@@ -185,6 +187,8 @@ CompactPanel/base_type = &"PanelContainer"
 CompactPanel/styles/panel = SubResource("StyleBox_compact_panel")
 SmallButton/base_type = &"Button"
 SmallButton/colors/font_color = Color(0.6039, 0.4196, 0.8706, 1)
+PlainPanel/base_type = &"PanelContainer"
+PlainPanel/styles/panel = SubResource("StyleBox_plain")
 HudPanel/base_type = &"PanelContainer"
 HudPanel/styles/panel = SubResource("StyleBox_hud_panel")
 HScrollBar/styles/grabber = SubResource("StyleBox_grabber")

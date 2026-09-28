@@ -176,13 +176,17 @@ menos uma vez) e usa números compactos (1.2k) para caber em 640x360.
 A árvore é **desenhada como árvore** (referência estrutural: árvores de talentos em grade), não
 como lista:
 
-- **Grade:** cada nó tem uma posição (`grid_position`: coluna, linha); a linha 0 fica no topo.
-- **Conexões:** linhas ligam cada pré-requisito ao nó dependente.
-- **Níveis:** cada nó mostra `nível/máximo` (ex.: 1/3).
+- **Grade (horizontal, set/2026):** cada nó tem uma posição (`grid_position`: faixa x, profundidade
+  y); a árvore cresce da esquerda para a direita (profundidade = coluna na tela, faixa = uma das 6
+  linhas). Cada bioma é um grupo de colunas, separado do próximo por uma linha pontilhada.
+- **Conexões:** linhas de 1 px (molduras dos nós também em 1 px) ligam cada pré-requisito ao nó dependente, em ângulos de 0°/45°/90°
+  (diagonais em degraus de pixel, sem antialiasing), nunca passando por trás de outro nó. Com o
+  pré-requisito comprado, a linha ganha a cor do bioma do nó dependente.
+- **Níveis:** cada nó (28 px, ícone 20x20 sem escala) mostra os níveis como quadradinhos abaixo dele.
 - **Nós de escolha:** nós com o mesmo `choice_group` são exclusivos — comprar um bloqueia os outros.
 - **Portões = biomas:** cada bioma (§7.2) exige um total de níveis investidos na árvore para
-  liberar as suas linhas; a divisória mostra o nome do bioma e os pontos ("Pântano Luminescente ·
-  10 necessários"). Um nó ainda pode ter `required_points` próprio (vale o maior).
+  liberar as suas linhas; o cabeçalho (só texto, na cor do bioma, `Biome.color`) mostra o nome e
+  os pontos ("Pântano Luminescente / Libera com 10 pontos"); bioma ainda não alcançado fica apagado. Um nó ainda pode ter `required_points` próprio (vale o maior).
 - **Estados visuais:** bloqueado, disponível, comprável, parcialmente comprado, completo.
 
 ### 7.2 Biomas (decidido, set/2026)
@@ -208,10 +212,11 @@ um bioma com os pontos do portão **e** ao menos um nível comprado nas linhas d
 assim não dá para "pular" um bioma só maximizando os nós anteriores (ex.: chegar às Ruínas sem a
 lança).
 
-**Tela (M2.5):** a árvore ocupa a área principal (com rolagem quando crescer) e um painel lateral
-mostra nome, nível, descrição, custo e o motivo do bloqueio (pré-requisito, pontos ou escolha já
-feita). Passar o mouse/foco num nó mostra os detalhes; clicar no nó selecionado (ou em "Comprar")
-compra um nível. Cores da moldura: cinza = bloqueado, azul = disponível sem recursos, turquesa =
+**Tela:** a árvore ocupa a tela toda (rolagem horizontal; a roda do mouse rola para os lados).
+Clicar num nó (ou confirmar com Enter/Espaço/A) abre um popup ao lado dele com nome, nível,
+descrição, custo, o motivo do bloqueio (pré-requisito, pontos ou escolha já feita) e o botão
+"Comprar"; só mover o foco não abre. Esc/B, clique direito ou clique num espaço vazio fecham. Após
+uma compra o popup fica no mesmo lugar e tamanho. Comprar é sempre o botão. Cores da moldura: cinza = bloqueado, azul = disponível sem recursos, turquesa =
 pode comprar, âmbar = parcialmente comprado, amarelo = completo.
 
 ## 8. Balanceamento e duração

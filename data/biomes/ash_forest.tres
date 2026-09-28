@@ -7,5 +7,6 @@
 script = ExtResource("1_biome")
 id = &"ash_forest"
 background = ExtResource("2_bg")
+color = Color(0.9647, 0.6588, 0.2902, 1)
 required_points = 31
 tree_row = 7

@@ -7,6 +7,8 @@ extends Resource
 @export var id: StringName
 ## Phase background (640x360, palette only).
 @export var background: Texture2D
+## Accent color of the biome in the upgrade tree (band header, palette color).
+@export var color: Color = Palette.STRUCTURE_HIGHLIGHT
 ## Levels invested in the tree needed to reach this biome (0 = starting biome).
 ## Also gates every upgrade node from `tree_row` down.
 @export var required_points: int = 0

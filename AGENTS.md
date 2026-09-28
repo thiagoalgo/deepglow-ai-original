@@ -151,8 +151,8 @@ App (Control)                        src/main/app.tscn — window root: integer 
                 │                                  "New biome" banner
                 ├── Overlays (CanvasLayer 10)
                 │   ├── PhaseSummary (Control) %
-                │   ├── UpgradeTreeScreen (Control) % — UpgradeTreeView (grid, lines, gates)
-                │   │                                     + UpgradeNodeView per node + details panel
+                │   ├── UpgradeTreeScreen (Control) % — UpgradeTreeView (biome bands, lines)
+                │   │                                     + UpgradeNodeView per node + details popup
                 │   │                                     + SaveIndicator badge (src/ui/save_indicator/)
                 │   └── PauseMenu (Control) %    src/ui/pause_menu/ — pauses the tree (timer, needs, board stop);
                 │                                  Resume / Main menu (phase progress is lost, confirmed)
@@ -165,7 +165,7 @@ App (Control)                        src/main/app.tscn — window root: integer 
 
 **Biomes:** six `Biome` resources (`GameDatabase.biomes`, in order) split the upgrade tree into
 stages: a biome's `required_points` gates every node from its `tree_row` down
-(`ProgressionState.get_required_points()`), the tree draws "Biome · N required" dividers, and the
+(`ProgressionState.get_required_points()`), the tree draws one column per biome (header text in `Biome.color`), and the
 current biome (`ProgressionState.get_biome()`, from levels bought — not saved; a biome also needs
 a level bought in the previous biome's rows, so points alone never skip one) sets the phase
 background; `PhaseBuild` shows a banner on the first phase of a new biome. Each biome's content
@@ -227,7 +227,7 @@ saving is instant, the hold times only make it noticeable).
    `PixelStyleBox` (`src/ui/pixel_style_box.gd`): flat fill, 2 px border, stepped corners, whole
    pixels only. Theme styles are `PixelStyleBox` resources; custom `_draw` code calls
    `PixelStyleBox.create(...).draw(get_canvas_item(), rect)`. Never use antialiased shapes or
-   diagonal `draw_line` (upgrade tree links are right-angle elbows).
+   diagonal `draw_line` (upgrade tree links are 1 px octilinear paths stamped pixel by pixel; tree node frames use 1 px borders).
 11. **UI styling comes from the project theme** (`src/ui/theme/main_theme.tres`, set as
    `gui/theme/custom`). Use `theme_type_variation` (`TitleLabel`, `MutedLabel`, …) instead of
    per-node overrides; add new variations to the theme.
@@ -267,8 +267,9 @@ screen + a value/setter/signal in the `Settings` autoload. Menus use Godot's bui
 focus navigation must always work); `ui_accept`/`ui_cancel` are overridden in `project.godot` to add
 gamepad A (PS Cross) / B (PS Circle) — Godot's defaults have no gamepad button to press a UI button.
 Test gamepad flows with real `InputEventJoypadButton` events, not `InputEventAction`.
-Upgrade tree with keys/gamepad: confirm on a node selects it and moves the focus to Buy (confirm
-again buys, cancel returns to the node); with the mouse, clicking a node only selects it. Always use actions, never raw keys.
+Upgrade tree with keys/gamepad: moving the focus only highlights a node; confirm opens its details
+popup and moves the focus to Buy (confirm again buys); cancel (Esc / B / right click) closes the
+popup and returns to the node; with the mouse, clicking a node only opens the popup. Always use actions, never raw keys.
 Pausing uses `get_tree().paused`: `App` is `PROCESS_MODE_ALWAYS` (so input still reaches the
 SubViewport) and `Main` is set back to `PAUSABLE`; `PauseMenu` and `ToolCursor` are `ALWAYS`.
 Gameplay input goes in `_unhandled_input` (UI consumes first). HUD Controls that must not
@@ -338,11 +339,14 @@ final art is authored at full size) (`assets/sprites/upgrades/<upgrade_id>.png`,
 
 ### Upgrade tree layout
 
-Each `UpgradeNode` sets `grid_position` (column, row; row 0 on top). Lines are drawn from every
-prerequisite to the node, so place children in rows below their parents. `choice_group` renders
-an octagon (mutually exclusive nodes); `required_points` renders an "N required" divider above
-that row (the view adds `gate_gap` pixels above gated rows). Cell spacing lives in
-`UpgradeTreeView.cell_size`; the view scrolls when the tree grows. Tool unlocks use
+The tree is horizontal: each `UpgradeNode` sets `grid_position` (x = lane 0–5, top to bottom;
+y = depth, drawn as a column left to right). Lines go from every prerequisite to the node (0°/45°/90°
+segments), so place children at a greater depth than their parents. `choice_group` renders an
+octagon (mutually exclusive nodes). Each biome is a band of columns (from its `tree_row`) with a
+text header (name + "Unlocks at N points", `Biome.color`) and a dotted separator; links whose
+parent is owned take the child's biome color, and a link's diagonal moves to either end of the gap
+when the middle route would pass behind another node. Cell spacing is `UpgradeTreeView.CELL`; the
+screen scrolls horizontally and shows the details as a popup (opened only by click/confirm). Tool unlocks use
 `Effect.UNLOCK_TOOL` + a `ToolType` with `unlocked_by_default = false`; the generator only places
 sources whose tool is unlocked.
 

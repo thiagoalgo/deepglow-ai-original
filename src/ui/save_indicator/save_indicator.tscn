@@ -6,7 +6,7 @@
 [node name="SaveIndicator" type="PanelContainer"]
 size_flags_vertical = 4
 mouse_filter = 2
-theme_type_variation = &"CompactPanel"
+theme_type_variation = &"PlainPanel"
 script = ExtResource("1_indicator")
 
 [node name="Row" type="HBoxContainer" parent="."]

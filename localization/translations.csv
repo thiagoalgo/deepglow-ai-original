@@ -29,9 +29,8 @@ UI_LEAVE_PHASE_CONFIRM,Leave the phase? What you collected in it will be lost.,S
 UI_LEAVE,Leave,Sair
 UI_BUY,Buy,Comprar
 UI_MAXED,Max,Máx
-UI_SELECT_UPGRADE,Select an upgrade to see its details.,Selecione uma evolução para ver os detalhes.
+UI_BIOME_UNLOCK,Unlocks at %d points,Libera com %d pontos
 UI_LEVEL,%d/%d,%d/%d
-UI_UPGRADES_TITLE,Upgrades,Evoluções
 UI_START_PHASE,Start phase %d,Iniciar fase %d
 UI_SUMMARY_TITLE,Phase %d complete,Fase %d concluída
 UI_SUMMARY_CLEARED,Collected %d of %d sources,Coletou %d de %d fontes
@@ -147,7 +146,6 @@ HUD_WEAK_POPUP,Weak!,Fraco!
 HUD_THIRSTY_POPUP,Thirsty!,Com sede!
 UI_SUMMARY_HUNGRY,Hungry for %d s: hits at half strength,Com fome por %d s: golpes pela metade
 UI_SUMMARY_THIRSTY,Thirsty for %d s: half the materials,Com sede por %d s: metade dos materiais
-UI_BIOME_GATE,%s · %d required,%s · %d necessários
 UI_NEW_BIOME,New biome,Novo bioma
 BIOME_NIGHT_FOREST_NAME,Night Forest,Bosque Noturno
 BIOME_GLOW_SWAMP_NAME,Glowing Swamp,Pântano Luminescente

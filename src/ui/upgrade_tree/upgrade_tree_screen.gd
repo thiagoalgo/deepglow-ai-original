@@ -1,16 +1,21 @@
 class_name UpgradeTreeScreen
 extends Control
-## Between-phase upgrade tree (docs/game-design.md §7.1). Clicking (or focusing
-## with the keyboard) a node only selects it and shows its details; buying is
-## always an explicit press of the Buy button. The screen opens with nothing selected.
-## Keyboard/gamepad: confirming a node selects it and moves the focus to Buy
-## (confirm again to buy, cancel to go back to the node).
+## Between-phase upgrade tree (docs/game-design.md §7.1), laid out left to right
+## (one band per biome). Clicking a node (or confirming it with the keyboard/
+## gamepad) selects it and opens its details popup next to it; moving the focus
+## alone never opens it. Buying is always an explicit press of the Buy button.
+## The popup keeps its place and never shrinks while it stays on the same node.
+## It closes with cancel (Esc / B / right click) or a click on an empty spot.
+## Keyboard/gamepad: confirming a node moves the focus to Buy (confirm again to
+## buy); cancel closes the popup and gives the focus back to the node.
 
 ## Mouse wheel: pixels scrolled per notch (smoothly tweened, whole pixels).
 const WHEEL_STEP := 48
 const SCROLL_TIME := 0.15
-## Space kept above/below a node scrolled into view by keyboard/gamepad focus.
+## Space kept left/right of a node scrolled into view by keyboard/gamepad focus.
 const FOCUS_MARGIN := 24
+## Gap between the selected node and its details popup.
+const POPUP_GAP := 10
 
 signal start_requested
 ## "Menu" pressed: back to the title menu (the run is saved on every change).
@@ -20,6 +25,8 @@ var _database: GameDatabase
 var _progression: ProgressionState
 var _inventory: Inventory
 var _selected: UpgradeNode
+## Popup position relative to the selected node (kept while scrolling/buying).
+var _popup_offset: Vector2 = Vector2.ZERO
 var _scroll_tween: Tween
 var _scroll_target: Vector2i = Vector2i.ZERO
 ## Last input came from the mouse (then pressing a node never moves the focus).
@@ -28,6 +35,7 @@ var _pointer_input: bool = true
 @onready var _inventory_bar: HFlowContainer = %InventoryBar
 @onready var _tree_view: UpgradeTreeView = %TreeView
 @onready var _scroll: ScrollContainer = %Scroll
+@onready var _details: PanelContainer = %Details
 @onready var _name_label: Label = %NameLabel
 @onready var _level_label: Label = %LevelLabel
 @onready var _description: Label = %Description
@@ -45,6 +53,8 @@ func _ready() -> void:
 	_tree_view.node_focused.connect(_on_node_focused)
 	_scroll.gui_input.connect(_on_scroll_input)
 	_tree_view.node_pressed.connect(_on_node_pressed)
+	_tree_view.background_pressed.connect(_on_background_pressed)
+	_scroll.get_h_scroll_bar().value_changed.connect(_on_scrolled.unbind(1))
 	_buy_button.pressed.connect(_buy_selected)
 	_start_button.pressed.connect(_on_start_pressed)
 	_menu_button.pressed.connect(_on_menu_pressed)
@@ -58,7 +68,7 @@ func open(database: GameDatabase, progression: ProgressionState, inventory: Inve
 	_start_button.text = tr(&"UI_START_PHASE") % next_phase
 	_selected = null
 	_tree_view.build(database)
-	_scroll_target = Vector2i(_scroll.scroll_horizontal, _scroll.scroll_vertical)
+	_scroll_target = Vector2i(_scroll.scroll_horizontal, 0)
 	_refresh()
 	show()
 
@@ -78,10 +88,15 @@ func _input(event: InputEvent) -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if not visible:
 		return
-	# Cancel on the Buy button goes back to the node it belongs to.
-	if _buy_button.has_focus() and _selected \
-			and (event.is_action_pressed(&"ui_cancel") or event.is_action_pressed(&"cancel")):
-		_focus_selected_node()
+	# Cancel closes the popup; the focus goes back to the node it belongs to.
+	if _selected and (event.is_action_pressed(&"ui_cancel") or event.is_action_pressed(&"cancel")):
+		var had_focus := get_viewport().gui_get_focus_owner() != null
+		var node := _selected
+		_close_details()
+		if had_focus:
+			var view := _tree_view.get_view(node.id)
+			if view:
+				view.grab_focus()
 		get_viewport().set_input_as_handled()
 		return
 	# Nothing is focused when the screen opens (so nothing gets bought by
@@ -103,7 +118,7 @@ func _refresh() -> void:
 			_inventory_bar.add_child(ResourceAmountView.create(resource, NumberFormat.compact(_inventory.get_amount(resource.id))))
 	_tree_view.refresh(_progression, _inventory)
 	if _selected:
-		_select(_selected)
+		_show_details(_selected)
 	else:
 		_tree_view.set_selected(null)
 		_clear_details()
@@ -111,7 +126,7 @@ func _refresh() -> void:
 
 func _on_node_pressed(upgrade: UpgradeNode) -> void:
 	_select(upgrade)
-	if not _pointer_input and not _buy_button.disabled:
+	if not _pointer_input and not _buy_button.disabled and _details.visible:
 		var view := _tree_view.get_view(upgrade.id)
 		_buy_button.focus_neighbor_left = _buy_button.get_path_to(view)
 		_buy_button.focus_neighbor_top = _buy_button.get_path_to(view)
@@ -124,8 +139,11 @@ func _focus_selected_node() -> void:
 		view.grab_focus()
 
 
+## Moving the focus only highlights the node (and scrolls to it); leaving the
+## node whose popup is open closes the popup.
 func _on_node_focused(upgrade: UpgradeNode) -> void:
-	_select(upgrade)
+	if _selected and upgrade != _selected:
+		_close_details()
 	_scroll_into_view(_tree_view.get_view(upgrade.id))
 
 
@@ -136,10 +154,6 @@ func _scroll_into_view(control: Control) -> void:
 	var rect := Rect2(control.position, control.size).grow(FOCUS_MARGIN)
 	var view_size := _scroll.size
 	var target := _scroll_target
-	if rect.position.y < target.y:
-		target.y = int(rect.position.y)
-	elif rect.end.y > target.y + view_size.y:
-		target.y = int(rect.end.y - view_size.y)
 	if rect.position.x < target.x:
 		target.x = int(rect.position.x)
 	elif rect.end.x > target.x + view_size.x:
@@ -153,7 +167,6 @@ func _scroll_to(target: Vector2i) -> void:
 	if _scroll_tween:
 		_scroll_tween.kill()
 	_scroll_tween = create_tween().set_parallel().set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
-	_scroll_tween.tween_property(_scroll, ^"scroll_vertical", _scroll_target.y, SCROLL_TIME)
 	_scroll_tween.tween_property(_scroll, ^"scroll_horizontal", _scroll_target.x, SCROLL_TIME)
 
 
@@ -162,34 +175,41 @@ func _on_scroll_input(event: InputEvent) -> void:
 	var button := event as InputEventMouseButton
 	if button == null or not button.pressed:
 		return
-	var step := Vector2i.ZERO
+	# The tree only scrolls sideways: every wheel direction moves it left/right.
+	var step := 0
 	match button.button_index:
-		MOUSE_BUTTON_WHEEL_UP:
-			step.y = -WHEEL_STEP
-		MOUSE_BUTTON_WHEEL_DOWN:
-			step.y = WHEEL_STEP
-		MOUSE_BUTTON_WHEEL_LEFT:
-			step.x = -WHEEL_STEP
-		MOUSE_BUTTON_WHEEL_RIGHT:
-			step.x = WHEEL_STEP
+		MOUSE_BUTTON_WHEEL_UP, MOUSE_BUTTON_WHEEL_LEFT:
+			step = -WHEEL_STEP
+		MOUSE_BUTTON_WHEEL_DOWN, MOUSE_BUTTON_WHEEL_RIGHT:
+			step = WHEEL_STEP
 		_:
 			return
-	if button.shift_pressed:
-		step = Vector2i(step.y, step.x)
-	_scroll_to(_scroll_target + step)
+	_scroll_to(_scroll_target + Vector2i(step, 0))
 	_scroll.accept_event()
 
 
+## Opens the popup for `upgrade`, placed beside its node.
 func _select(upgrade: UpgradeNode) -> void:
 	_selected = upgrade
 	_tree_view.set_selected(upgrade)
+	_details.custom_minimum_size.y = 0
+	_details.size = Vector2.ZERO
+	_show_details(upgrade)
+	_details.show()
+	_place_details.call_deferred()
+
+
+## Fills the popup. Its size only grows, so buying never makes it jump.
+func _show_details(upgrade: UpgradeNode) -> void:
 	_name_label.text = tr(upgrade.get_name_key())
 	_level_label.text = tr(&"UI_LEVEL") % [_progression.get_level(upgrade.id), upgrade.max_level]
 	_description.text = tr(upgrade.get_desc_key())
 	for child: Node in _costs.get_children():
+		_costs.remove_child(child)
 		child.queue_free()
 	_status_label.text = ""
 	_update_choice_label(upgrade)
+	_details.custom_minimum_size.y = _details.size.y
 	if _progression.is_maxed(upgrade):
 		_buy_button.text = tr(&"UI_MAXED")
 		_buy_button.disabled = true
@@ -244,14 +264,56 @@ func _lock_reason(upgrade: UpgradeNode) -> String:
 
 
 func _clear_details() -> void:
-	_name_label.text = ""
-	_level_label.text = ""
-	_description.text = tr(&"UI_SELECT_UPGRADE")
-	for child: Node in _costs.get_children():
-		child.queue_free()
-	_status_label.text = ""
-	_choice_label.visible = false
+	_details.hide()
 	_buy_button.disabled = true
+
+
+func _close_details() -> void:
+	if _buy_button.has_focus():
+		_buy_button.release_focus()
+	_selected = null
+	_tree_view.set_selected(null)
+	_clear_details()
+
+
+## Puts the popup beside the selected node: right of it, or left when it does not
+## fit; vertically centred on the node and kept inside the tree area. Called once
+## when it opens; scrolling then moves it with the node (_follow_node).
+func _place_details() -> void:
+	var view := _tree_view.get_view(_selected.id) if _selected else null
+	if view == null:
+		return
+	_details.reset_size()
+	var node_rect := view.get_global_rect()
+	var popup := _details.size
+	# Inside the tree area: never over the resources bar or the footer.
+	var bounds := _scroll.get_global_rect()
+	var x := node_rect.end.x + POPUP_GAP
+	if x + popup.x > bounds.end.x:
+		x = node_rect.position.x - POPUP_GAP - popup.x
+	x = clampf(x, bounds.position.x, bounds.end.x - popup.x)
+	var y := clampf(node_rect.get_center().y - popup.y / 2.0, bounds.position.y, bounds.end.y - popup.y)
+	_popup_offset = Vector2(x, y).floor() - node_rect.position
+	_follow_node()
+
+
+## Keeps the popup at the same place relative to its node; hidden while the
+## node is scrolled out of sight.
+func _follow_node() -> void:
+	var view := _tree_view.get_view(_selected.id) if _selected else null
+	if view == null:
+		return
+	var node_rect := view.get_global_rect()
+	_details.visible = _scroll.get_global_rect().encloses(node_rect)
+	_details.global_position = node_rect.position + _popup_offset
+
+
+func _on_background_pressed() -> void:
+	_close_details()
+
+
+func _on_scrolled() -> void:
+	_follow_node()
 
 
 func _buy_selected() -> void:
@@ -274,6 +336,7 @@ func _on_menu_pressed() -> void:
 
 func _close() -> void:
 	_selected = null
+	_details.hide()
 	_save_indicator.dismiss()
 	var focused := get_viewport().gui_get_focus_owner()
 	if focused:
