@@ -7,6 +7,9 @@ extends Control
 ## picture as the previous one only changes the line. Tap (click / Space / Enter / A)
 ## completes the line or goes to the next shot; hold to skip it all (the hint
 ## appears once a button is pressed).
+## Each shot plays its narration (IntroSequence.get_voice, current locale) on the
+## Voice bus; the shot lasts the line plus a short pause, and the
+## music is lowered while the intro runs.
 ## Pixel-art rules: no continuous zoom (close-ups are cuts), no alpha.
 
 signal finished
@@ -27,6 +30,12 @@ const FLICKER_LEVELS: PackedFloat32Array = [0.0, 1.0, 0.0, 2.0, 0.0, 1.0, 0.0, 3
 const FLICKER_SPEED := 7.0
 const FLICKER_FADE_AT := 0.6
 const SCREEN := Vector2i(640, 360)
+## Pause after the narration before the next shot (seconds).
+const VOICE_TAIL := 0.8
+## The caption finishes typing at this share of the narration.
+const VOICE_TYPE_SHARE := 0.9
+## Music is lowered by this much during the intro (the narration leads).
+const MUSIC_DUCK_DB := 8.0
 
 @export var sequence: IntroSequence
 
@@ -42,6 +51,9 @@ var _montage_index: int = -1
 var _black: ImageTexture
 var _shade: ShaderMaterial
 var _dissolve: ShaderMaterial
+## Length of the current shot: its data duration, or longer if the voice needs it.
+var _shot_length: float = 0.0
+var _voice_length: float = 0.0
 
 @onready var _picture: TextureRect = %Picture
 @onready var _incoming: TextureRect = %Incoming
@@ -50,6 +62,15 @@ var _dissolve: ShaderMaterial
 @onready var _skip_fill: ColorRect = %SkipFill
 @onready var _skip_track: Control = %SkipTrack
 @onready var _skip_hint: Control = %SkipHint
+@onready var _voice: AudioStreamPlayer = %Voice
+
+
+func _enter_tree() -> void:
+	_duck_music(-MUSIC_DUCK_DB)
+
+
+func _exit_tree() -> void:
+	_duck_music(MUSIC_DUCK_DB)
 
 
 func _ready() -> void:
@@ -77,7 +98,7 @@ func _process(delta: float) -> void:
 	var shot := sequence.shots[_index]
 	_type_text(shot)
 	_animate(shot)
-	if _shot_time >= shot.duration:
+	if _shot_time >= _shot_length:
 		_next_shot()
 
 
@@ -130,6 +151,7 @@ func _advance() -> void:
 
 func _next_shot() -> void:
 	_busy = true
+	_voice.stop()
 	_index += 1
 	if _index >= sequence.shots.size():
 		_caption.hide()
@@ -148,6 +170,7 @@ func _next_shot() -> void:
 	_text.text = tr(shot.text_key)
 	_text.visible_characters = 0
 	_caption.show()
+	_start_voice()
 	_busy = false
 
 
@@ -177,7 +200,8 @@ func _type_text(shot: IntroShot) -> void:
 	if _text.visible_characters < 0:
 		return
 	var total := _text.get_total_character_count()
-	var speed := maxf(TYPE_SPEED, total / maxf(shot.duration * TYPE_SHARE, 0.1))
+	var type_time := _voice_length * VOICE_TYPE_SHARE if _voice_length > 0.0 else shot.duration * TYPE_SHARE
+	var speed := maxf(TYPE_SPEED, total / maxf(type_time, 0.1))
 	var shown := mini(total, floori(_shot_time * speed))
 	_text.visible_characters = -1 if shown >= total else shown
 
@@ -186,15 +210,15 @@ func _animate(shot: IntroShot) -> void:
 	var t := _shot_time
 	match shot.motion:
 		IntroShot.Motion.FLICKER:
-			var fade_at := shot.duration * FLICKER_FADE_AT
+			var fade_at := _shot_length * FLICKER_FADE_AT
 			if t < fade_at:
 				_set_level(FLICKER_LEVELS[int(t * FLICKER_SPEED) % FLICKER_LEVELS.size()])
 			else:
-				_set_level(minf(4.0, 4.0 * (t - fade_at) / (shot.duration - fade_at)))
+				_set_level(minf(4.0, 4.0 * (t - fade_at) / (_shot_length - fade_at)))
 	# Montage: the biomes follow each other at equal intervals, each one
 	# dissolving into the next.
 	if _montage_index >= 0 and not _incoming.visible:
-		var slot := shot.duration / shot.backgrounds.size()
+		var slot := _shot_length / shot.backgrounds.size()
 		var index := mini(shot.backgrounds.size() - 1, floori(t / slot))
 		if index != _montage_index:
 			_montage_index = index
@@ -205,10 +229,30 @@ func _finish() -> void:
 	if _done:
 		return
 	_done = true
+	_voice.stop()
 	finished.emit()
 
 
 # --- Helpers -------------------------------------------------------------------
+
+## Plays the shot's narration (if recorded for the current locale) and sets the
+## shot length to fit it.
+func _start_voice() -> void:
+	var shot := sequence.shots[_index]
+	var stream := sequence.get_voice(_index, TranslationServer.get_locale())
+	_voice_length = stream.get_length() if stream else 0.0
+	# With a voice the shot follows the recording; without one, its data duration.
+	_shot_length = _voice_length + VOICE_TAIL if stream else shot.duration
+	_voice.stream = stream
+	if stream:
+		_voice.play()
+
+
+func _duck_music(db: float) -> void:
+	var bus := AudioServer.get_bus_index(&"Music")
+	if bus >= 0:
+		AudioServer.set_bus_volume_db(bus, AudioServer.get_bus_volume_db(bus) + db)
+
 
 ## Dissolves the current picture into `texture` pixel by pixel.
 func _dissolve_to(texture: Texture2D, time: float) -> void:

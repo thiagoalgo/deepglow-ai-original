@@ -34,3 +34,11 @@ func test_montage_shows_every_biome() -> String:
 		if montage[i] != db.biomes[i].background:
 			return "montage frame %d is not %s" % [i, db.biomes[i].id]
 	return ""
+
+
+func test_pt_br_voice_lines_exist() -> String:
+	var sequence: IntroSequence = load(INTRO_PATH)
+	for i: int in sequence.shots.size():
+		if sequence.get_voice(i, "pt_BR") == null:
+			return "missing pt_BR voice for shot %d" % (i + 1)
+	return ""

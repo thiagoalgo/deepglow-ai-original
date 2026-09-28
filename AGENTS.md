@@ -389,7 +389,7 @@ Art file names: `snake_case`, no spaces, English, id equal to the data `id`
   Vorbis): no samples, no licenses to track. Edit the recipe, re-run, commit the `.ogg`:
   `python3 tools/audio/sfx.py` (effects), `music.py` (loops), `ambience.py` (night ambience).
   Outputs: `assets/audio/{sfx,music,ambience}/`.
-- **Buses** (`default_bus_layout.tres`): Master (hard limiter, -1 dB) ← Music, SFX, Ambience.
+- **Buses** (`default_bus_layout.tres`): Master (hard limiter, -1 dB) ← Music, SFX, Ambience, Voice.
   Volumes are `Settings` values in steps 0–10 (Settings screen rows).
 - **`Sound` autoload** (`src/autoload/sound.gd`): `play(stream, pitch_jitter)` (pooled one-shots),
   `play_music(stream)` (crossfade), `set_rush(bool)` (fades layer 1 of an `AudioStreamSynchronized`),
@@ -401,6 +401,11 @@ Art file names: `snake_case`, no spaces, English, id equal to the data `id`
   the rush layer fades in during the last 10 s); `camp.ogg` (112 BPM, 16 bars, second half one
   tone up) for menus and between phases. `play_music` crossfades in linear amplitude (out 2 s,
   in 2.5 s, new track starts 0.6 s later). Loops are imported with `loop=true` (edit the `.ogg.import`).
+- **Voice (narration):** recorded outside (ElevenLabs, paid plan = commercial license), exported as
+  `intro_NN_<locale>.mp3` into `pixelart/06_voice/`, then `python3 tools/audio/voice.py <dir>` trims
+  silence, normalizes to -16 LUFS and writes `assets/audio/voice/<locale>/intro_NN.ogg`. The intro
+  plays the file for the current locale (`IntroSequence.get_voice`); a missing file = captions only.
+  Each shot lasts its line + 0.8 s; the music bus is lowered 8 dB while the intro runs.
 - **Ambience:** `night.ogg` = crickets in bouts with long rests. Rejected by the owner (don't
   bring back): a continuous stream/wind noise bed (sounded like hiss) and occasional water swells.
 - **Material sounds/particles are data:** `ToolType.hit_sound` + `ToolType.particle_colors`

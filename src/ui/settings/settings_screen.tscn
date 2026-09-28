@@ -83,6 +83,12 @@ layout_mode = 2
 label_key = &"UI_SETTING_AMBIENCE"
 wrap_keys = false
 
+[node name="VoiceRow" parent="Center/Panel/Layout/Rows" instance=ExtResource("3_row")]
+unique_name_in_owner = true
+layout_mode = 2
+label_key = &"UI_SETTING_VOICE"
+wrap_keys = false
+
 [node name="BackButton" type="Button" parent="Center/Panel/Layout"]
 unique_name_in_owner = true
 layout_mode = 2

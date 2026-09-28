@@ -12,7 +12,7 @@ signal closed
 @onready var _back_button: Button = %BackButton
 ## Audio bus name -> its volume row.
 @onready var _volume_rows: Dictionary[StringName, SettingRow] = {
-	&"Music": %MusicRow, &"SFX": %SfxRow, &"Ambience": %AmbienceRow,
+	&"Music": %MusicRow, &"SFX": %SfxRow, &"Ambience": %AmbienceRow, &"Voice": %VoiceRow,
 }
 
 

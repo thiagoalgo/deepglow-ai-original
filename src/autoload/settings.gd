@@ -15,7 +15,7 @@ const SAVE_PATH := "user://settings.cfg"
 const DEFAULT_LOCALE := "en"
 ## Volume is stored in steps (0 = muted .. VOLUME_STEPS = full) per audio bus
 ## (default_bus_layout.tres). Default steps per bus:
-const DEFAULT_VOLUMES: Dictionary[StringName, int] = {&"Music": 7, &"SFX": 8, &"Ambience": 6}
+const DEFAULT_VOLUMES: Dictionary[StringName, int] = {&"Music": 7, &"SFX": 8, &"Ambience": 6, &"Voice": 9}
 const VOLUME_STEPS := 10
 ## Locale code -> language name written in that language (never translated).
 const SUPPORTED_LOCALES: Dictionary[String, String] = {
