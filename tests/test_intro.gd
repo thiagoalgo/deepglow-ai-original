@@ -36,9 +36,20 @@ func test_montage_shows_every_biome() -> String:
 	return ""
 
 
-func test_pt_br_voice_lines_exist() -> String:
+func test_voice_lines_exist() -> String:
 	var sequence: IntroSequence = load(INTRO_PATH)
-	for i: int in sequence.shots.size():
-		if sequence.get_voice(i, "pt_BR") == null:
-			return "missing pt_BR voice for shot %d" % (i + 1)
+	for locale: String in ["pt_BR", "en"]:
+		for i: int in sequence.shots.size():
+			var path := sequence.voice_path.format({"locale": locale, "index": "%02d" % (i + 1)})
+			if not ResourceLoader.exists(path):
+				return "missing %s voice for shot %d" % [locale, i + 1]
+	return ""
+
+
+func test_other_languages_fall_back_to_english_voice() -> String:
+	var sequence: IntroSequence = load(INTRO_PATH)
+	var voice := sequence.get_voice(0, "fr")
+	var english := sequence.get_voice(0, "en")
+	if voice == null or voice.resource_path != english.resource_path:
+		return "a language without recordings should get the English voice"
 	return ""

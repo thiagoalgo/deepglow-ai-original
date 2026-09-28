@@ -404,7 +404,9 @@ Art file names: `snake_case`, no spaces, English, id equal to the data `id`
 - **Voice (narration):** recorded outside (ElevenLabs, paid plan = commercial license), exported as
   `intro_NN_<locale>.mp3` into `pixelart/06_voice/`, then `python3 tools/audio/voice.py <dir>` trims
   silence, normalizes to -16 LUFS and writes `assets/audio/voice/<locale>/intro_NN.ogg`. The intro
-  plays the file for the current locale (`IntroSequence.get_voice`); a missing file = captions only.
+  plays the file for the current locale (`IntroSequence.get_voice`). **Rule (owner):** a language
+  without its own recording is narrated in English, with the captions in its own language
+  (`IntroSequence.fallback_voice_locale`). Recorded: pt_BR, en.
   Each shot lasts its line + 0.8 s; the music bus is lowered 8 dB while the intro runs.
 - **Ambience:** `night.ogg` = crickets in bouts with long rests. Rejected by the owner (don't
   bring back): a continuous stream/wind noise bed (sounded like hiss) and occasional water swells.

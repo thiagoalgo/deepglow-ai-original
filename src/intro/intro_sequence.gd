@@ -3,15 +3,20 @@ extends Resource
 ## The intro's shots in order (data/intro/intro.tres), played by the Intro screen.
 
 @export var shots: Array[IntroShot] = []
-## Narration of shot N (1-based, two digits) in a locale; a missing file = no
-## voice for that shot/locale (the caption still plays).
+## Narration of shot N (1-based, two digits) in a locale.
 @export var voice_path: String = "res://assets/audio/voice/{locale}/intro_{index}.ogg"
+## Languages without their own recording are narrated in this one (with the
+## captions in the player's language).
+@export var fallback_voice_locale: String = "en"
 
 
-## Voice line of a shot for `locale`, or null when it was not recorded.
+## Voice line of a shot for `locale` (or the fallback language), or null.
 func get_voice(index: int, locale: String) -> AudioStream:
-	var path := voice_path.format({"locale": locale, "index": "%02d" % (index + 1)})
-	return load(path) as AudioStream if ResourceLoader.exists(path) else null
+	for candidate: String in [locale, fallback_voice_locale]:
+		var path := voice_path.format({"locale": candidate, "index": "%02d" % (index + 1)})
+		if ResourceLoader.exists(path):
+			return load(path) as AudioStream
+	return null
 
 
 func get_total_duration() -> float:
