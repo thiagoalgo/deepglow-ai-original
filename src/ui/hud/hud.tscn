@@ -146,3 +146,35 @@ mouse_filter = 2
 theme_override_constants/h_separation = 10
 theme_override_constants/v_separation = 4
 columns = 2
+
+[node name="BiomeBanner" type="CenterContainer" parent="."]
+unique_name_in_owner = true
+visible = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Panel" type="PanelContainer" parent="BiomeBanner"]
+layout_mode = 2
+mouse_filter = 2
+theme_type_variation = &"HudPanel"
+
+[node name="Stack" type="VBoxContainer" parent="BiomeBanner/Panel"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 2
+
+[node name="Caption" type="Label" parent="BiomeBanner/Panel/Stack"]
+layout_mode = 2
+theme_type_variation = &"MutedLabel"
+text = "UI_NEW_BIOME"
+horizontal_alignment = 1
+
+[node name="BiomeName" type="Label" parent="BiomeBanner/Panel/Stack"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"TitleLabel"
+horizontal_alignment = 1

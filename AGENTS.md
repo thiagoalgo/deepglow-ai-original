@@ -96,6 +96,7 @@ src/                  # code + scenes, organized by FEATURE (.tscn next to its .
   economy/            # ResourceType, ResourceAmount (data) + Inventory (state)
   sources/            # Rarity, ToolType, SourceType (data) + SourceCard (scene)
   progression/        # UpgradeNode, Achievement (data) + ProgressionState (state, derived stats)
+  biomes/             # Biome (data: background, gate points, first tree row)
   survival/           # Needs (hunger/thirst state; empty hunger = weak hits, empty thirst = half materials)
   save/               # SaveGame (run snapshot <-> JSON dict) + SaveSystem (user://save.json I/O)
   phases/             # PhaseRules (data) + PhaseGenerator/PhasePlan (pure logic)
@@ -104,7 +105,7 @@ src/                  # code + scenes, organized by FEATURE (.tscn next to its .
                       # upgrade_tree, tool_cursor, language_select, title_menu) + theme/
 localization/         # translations.csv (source of all player-facing text)
 data/                 # .tres instances: game_database.tres (root), resources/, rarities/,
-                      # tools/, sources/, upgrades/, achievements/, phases/, board/, audio/
+                      # tools/, sources/, upgrades/, achievements/, phases/, board/, audio/, biomes/
 assets/               # FINAL game-ready art/audio (sprites/, tilesets/, fonts/, audio/, palettes/)
 tests/                # headless tests (test_*.gd)
 tools/                # outside the game: pixellab/, art/ + audio/ (Python), balance/ (GDScript simulator),
@@ -126,7 +127,8 @@ App (Control)                        src/main/app.tscn — window root: integer 
             │                                     fullscreen; volume later), applied + saved immediately
             │
             └── Game (Node2D)                    src/game/game.tscn — run state: inventory, progression, needs
-                ├── Background (Sprite2D)        — night_shift.gdshader (darkened by NightCycle)
+                ├── Background (Sprite2D) %      — current biome's background (Game.apply_biome());
+                │                                  night_shift.gdshader (darkened by NightCycle)
                 ├── Fireflies (Node2D)           — ambient palette-stepped fireflies
                 ├── Board (Node2D) %             src/board/board.tscn
                 │   ├── GridView (Node2D) %      — frame + cells drawn with PixelStyleBox (_draw)
@@ -139,7 +141,8 @@ App (Control)                        src/main/app.tscn — window root: integer 
                 │   ├── Phase          — timer, clicks, needs, collection → PhaseSummary
                 │   ├── PhaseSummary   — results overlay → Upgrade
                 │   └── Upgrade        — autosave + drawn upgrade tree (GDD §7.1) → PhaseBuild / Menu → title
-                ├── Hud (CanvasLayer) %          src/ui/hud/ — ClockTimer (round clock) + seconds, needs bars, inventory
+                ├── Hud (CanvasLayer) %          src/ui/hud/ — ClockTimer (round clock) + seconds, needs bars, inventory,
+                │                                  "New biome" banner
                 ├── Overlays (CanvasLayer 10)
                 │   ├── PhaseSummary (Control) %
                 │   ├── UpgradeTreeScreen (Control) % — UpgradeTreeView (grid, lines, gates)
@@ -153,6 +156,14 @@ App (Control)                        src/main/app.tscn — window root: integer 
                 ├── GameRumble (Node)            — gamepad vibration on hits/collects (only when playing with a pad)
                 └── NightCycle (Node)            — dusk -> deep night in palette steps during a phase
 ```
+
+**Biomes:** six `Biome` resources (`GameDatabase.biomes`, in order) split the upgrade tree into
+stages: a biome's `required_points` gates every node from its `tree_row` down
+(`ProgressionState.get_required_points()`), the tree draws "Biome · N required" dividers, and the
+current biome (`ProgressionState.get_biome()`, from levels bought — not saved; a biome also needs
+a level bought in the previous biome's rows, so points alone never skip one) sets the phase
+background; `PhaseBuild` shows a banner on the first phase of a new biome. Each biome's content
+matches its theme (GDD §7.2): keep new tools/sources in the biome they belong to.
 
 Data flow: `GameDatabase` (all data) → `ProgressionState` computes derived stats (effective clicks,
 yields, phase duration, drains, rarity weights) from upgrade levels → `PhaseGenerator` builds a
@@ -342,8 +353,11 @@ sources whose tool is unlocked.
      `tools/art/hand_drawn/{icons,cursors,upgrades,pointer,hand}.py` (run them to rewrite the PNGs).
      Pixellab is too muddy at 16–24 px. Cursor hotspots are set by hand in `data/tools/*.tres`
      and `tool_cursor.tscn`.
-   - **Background:** `python3 tools/art/concept_background.py <concept-art-4.png>` (palette first,
-     majority-vote downscale, lonely-pixel cleanup; drawn at 320x180 and upscaled 2x).
+   - **Backgrounds:** `python3 tools/art/concept_background.py <painting.png> <out.png> [--lab]
+     [--warm-boost K]` (palette first, majority-vote downscale, lonely-pixel cleanup; drawn at
+     320x180 and upscaled 2x). Biome paintings (1672x941) live in
+     `pixelart/deepglow-biomes-v2/`; outputs in `assets/sprites/board/biomes/<biome_id>.png`
+     (`--lab` for all, `--warm-boost 2.2` for the ash forest; the night forest is `board/background.png`).
    - `concept_to_sprite.py` / `concept_panel_items.py` are the earlier script-only conversions,
      kept as helpers (they produced halos; not used for final art).
    - HUD text sits on opaque `HudPanel` panels (no transparency). Font: `assets/fonts/m5x7.ttf`

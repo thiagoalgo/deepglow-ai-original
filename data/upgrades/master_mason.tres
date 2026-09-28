@@ -6,10 +6,10 @@
 [ext_resource type="Resource" path="res://data/upgrades/stone_sense.tres" id="4_milrv"]
 [ext_resource type="Script" path="res://src/progression/upgrade_node.gd" id="5_gpqgw"]
 
-[sub_resource type="Resource" id="Resource_303ch"]
+[sub_resource type="Resource" id="Resource_td2qu"]
 script = ExtResource("1_td2qu")
 resource = ExtResource("2_cmttf")
-amount = 170
+amount = 180
 
 [resource]
 script = ExtResource("5_gpqgw")
@@ -18,9 +18,8 @@ icon = ExtResource("3_8cd6l")
 target = &"stone"
 value_per_level = 2.0
 max_level = 2
-base_costs = Array[ExtResource("1_td2qu")]([SubResource("Resource_303ch")])
+base_costs = Array[ExtResource("1_td2qu")]([SubResource("Resource_td2qu")])
 cost_growth = 3.0
-grid_position = Vector2i(3, 4)
+grid_position = Vector2i(3, 6)
 choice_group = &"mastery"
-required_points = 22
 prerequisites = Array[Resource]([ExtResource("4_milrv")])

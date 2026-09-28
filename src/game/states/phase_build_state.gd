@@ -1,5 +1,6 @@
 extends GameState
-## Generates the next phase from current progress and fills the board.
+## Generates the next phase from current progress and fills the board; switches
+## to the background of a newly reached biome (with a banner).
 
 
 func enter(_payload: Dictionary = {}) -> void:
@@ -13,4 +14,6 @@ func enter(_payload: Dictionary = {}) -> void:
 		card.setup(source, game.progression.get_effective_clicks(source))
 		game.board.place_item(card, cell)
 	game.current_plan = plan
+	if game.apply_biome():
+		game.hud.show_biome_banner(game.biome)
 	request_transition.call_deferred(&"Phase")

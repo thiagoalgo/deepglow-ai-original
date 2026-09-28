@@ -7,15 +7,15 @@
 [ext_resource type="Resource" path="res://data/upgrades/copper_sense.tres" id="5_ee5fd"]
 [ext_resource type="Script" path="res://src/progression/upgrade_node.gd" id="6_nugtk"]
 
-[sub_resource type="Resource" id="Resource_ke1wd"]
+[sub_resource type="Resource" id="Resource_k84dc"]
 script = ExtResource("1_k84dc")
 resource = ExtResource("2_d5q31")
-amount = 20
+amount = 16
 
-[sub_resource type="Resource" id="Resource_kr4wv"]
+[sub_resource type="Resource" id="Resource_d5q31"]
 script = ExtResource("1_k84dc")
 resource = ExtResource("3_td15g")
-amount = 65
+amount = 52
 
 [resource]
 script = ExtResource("6_nugtk")
@@ -24,9 +24,8 @@ icon = ExtResource("4_be5ce")
 target = &"gold"
 value_per_level = 2.0
 max_level = 2
-base_costs = Array[ExtResource("1_k84dc")]([SubResource("Resource_ke1wd"), SubResource("Resource_kr4wv")])
+base_costs = Array[ExtResource("1_k84dc")]([SubResource("Resource_k84dc"), SubResource("Resource_d5q31")])
 cost_growth = 2.4
-grid_position = Vector2i(1, 8)
+grid_position = Vector2i(1, 9)
 choice_group = &"deep_path"
-required_points = 45
 prerequisites = Array[Resource]([ExtResource("5_ee5fd")])

@@ -7,15 +7,15 @@
 [ext_resource type="Resource" path="res://data/upgrades/unlock_pickaxe.tres" id="5_lo2yq"]
 [ext_resource type="Script" path="res://src/progression/upgrade_node.gd" id="6_3qhpa"]
 
-[sub_resource type="Resource" id="Resource_24vbt"]
+[sub_resource type="Resource" id="Resource_fvevm"]
 script = ExtResource("1_fvevm")
 resource = ExtResource("2_36rpy")
-amount = 20
+amount = 30
 
-[sub_resource type="Resource" id="Resource_2p17v"]
+[sub_resource type="Resource" id="Resource_36rpy"]
 script = ExtResource("1_fvevm")
 resource = ExtResource("3_60oya")
-amount = 45
+amount = 70
 
 [resource]
 script = ExtResource("6_3qhpa")
@@ -24,7 +24,7 @@ icon = ExtResource("4_t162m")
 effect = 1
 target = &"pickaxe"
 max_level = 3
-base_costs = Array[ExtResource("1_fvevm")]([SubResource("Resource_24vbt"), SubResource("Resource_2p17v")])
+base_costs = Array[ExtResource("1_fvevm")]([SubResource("Resource_fvevm"), SubResource("Resource_36rpy")])
 cost_growth = 3.2
-grid_position = Vector2i(0, 3)
+grid_position = Vector2i(0, 5)
 prerequisites = Array[Resource]([ExtResource("5_lo2yq")])

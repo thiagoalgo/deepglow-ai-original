@@ -68,7 +68,6 @@ UPGRADE_LONGER_DAYS_NAME,Longer Days,Dias Longos
 UPGRADE_LONGER_DAYS_DESC,Longer phases with more sources (+5 s per level).,Fases mais longas e com mais fontes (+5 s por nível).
 UPGRADE_KEEN_EYE_NAME,Keen Eye,Olhar Atento
 UPGRADE_KEEN_EYE_DESC,Uncommon and rarer sources appear 25% more often per level.,Fontes incomuns ou mais raras aparecem 25% mais por nível.
-UI_REQUIRED_POINTS,%d required,%d necessários
 UI_REQUIRES,Requires: %s,Requer: %s
 UI_REQUIRES_POINTS,Requires %d points in the tree,Requer %d pontos na árvore
 UI_CHOICE_TAKEN,Blocked: you chose %s.,Bloqueado: você escolheu %s.
@@ -148,3 +147,11 @@ HUD_WEAK_POPUP,Weak!,Fraco!
 HUD_THIRSTY_POPUP,Thirsty!,Com sede!
 UI_SUMMARY_HUNGRY,Hungry for %d s: hits at half strength,Com fome por %d s: golpes pela metade
 UI_SUMMARY_THIRSTY,Thirsty for %d s: half the materials,Com sede por %d s: metade dos materiais
+UI_BIOME_GATE,%s · %d required,%s · %d necessários
+UI_NEW_BIOME,New biome,Novo bioma
+BIOME_NIGHT_FOREST_NAME,Night Forest,Bosque Noturno
+BIOME_GLOW_SWAMP_NAME,Glowing Swamp,Pântano Luminescente
+BIOME_CRYSTAL_CAVES_NAME,Crystal Caves,Cavernas de Cristal
+BIOME_ASH_FOREST_NAME,Ash Forest,Bosque de Cinzas
+BIOME_FROZEN_MOON_VALE_NAME,Frozen Moon Vale,Vale Lunar Congelado
+BIOME_SUNKEN_RUINS_NAME,Sunken Ruins,Ruínas Submersas

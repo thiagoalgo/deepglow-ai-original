@@ -62,15 +62,18 @@ que o pinheiro, a árvore luminosa brilha); o jogador aprende pela experiência.
 | 0 | Macieira (`fruit_tree`) | incomum | 5 | 5 fruta | mão |
 | 0 | Poça (`puddle`) | comum | 1 | 1 água | copo (`cup`) |
 | 0 | Nascente (`spring`) | incomum | 4 | 5 água | copo |
-| 1 | Pedra solta (`rock_small`) | comum | 4 | 2 pedra | picareta (`pickaxe`) |
-| 1 | Rocha (`rock_large`) | incomum | 9 | 6 pedra | picareta |
 | 1 | Lago (`pond`) | incomum | 6 | 3 peixe | vara (`fishing_rod`) |
-| 2 | Javali (`boar`) | rara | 10 | 4 carne | lança (`spear`) |
+| 2 | Pedra solta (`rock_small`) | comum | 4 | 2 pedra | picareta (`pickaxe`) |
+| 2 | Rocha (`rock_large`) | incomum | 9 | 6 pedra | picareta |
+| 2 | Cristal Violeta (`crystal_violet`) | incomum | 12 | 3 cristal | picareta de cristal (`crystal_pick`) |
+| 2 | Cristal Deepglow (`crystal_teal`) | rara | 16 | 6 cristal | picareta de cristal |
 | 3 | Veio de Cobre (`copper_vein`) | comum | 8 | 3 cobre | picareta reforçada (`ore_pick`) |
 | 3 | Veio de Ferro (`iron_vein`) | incomum | 12 | 4 ferro | picareta reforçada |
 | 3 | Veio de Ouro (`gold_vein`) | rara | 16 | 4 ouro | picareta reforçada |
-| 4 | Cristal Violeta (`crystal_violet`) | rara | 18 | 3 cristal | picareta de cristal (`crystal_pick`) |
-| 4 | Cristal Deepglow (`crystal_teal`) | épica | 24 | 6 cristal | picareta de cristal |
+| 4 | Javali (`boar`) | rara | 10 | 4 carne | lança (`spear`) |
+
+A camada acompanha o bioma em que a ferramenta é liberada (§7.2): 1 Pântano, 2 Cavernas de
+Cristal, 3 Bosque de Cinzas, 4 Vale Lunar Congelado.
 
 ## 4. Interação: cursor contextual (decidido)
 
@@ -147,21 +150,23 @@ Aberta entre as fases. Cada nó tem custo (um ou vários recursos), pré-requisi
 
 Custos crescem de forma geométrica por nível. A árvore completa terá ~50–70 nós.
 
-### 7.0 Nós atuais (camadas 0–4, 29 nós)
+### 7.0 Nós atuais (6 biomas, 29 nós)
 
-| Linha | Nós (coluna) | Portão |
+| Linha | Nós (coluna) | Bioma (portão) |
 |---|---|---|
-| 0 | Machado Afiado (1) · Cesta (3) · Cantil (5) | — |
-| 1 | Olho de Lenhador (0) · Olhar Atento (2) · Dias Longos (3) | — |
-| 2 | **Picareta** (1) · **Vara de Pesca** (4) | 10 pontos |
-| 3 | Picareta Afiada (0) · Olho de Pedreiro (2) · Isca (4) · Mãos Firmes (5) | — |
-| 4 | **Lança** (1) · escolha: Mestre Pedreiro (3) **ou** Mestre Pescador (4) | 22 pontos |
-| 5 | Lança Afiada (0) · Instinto de Caçador (1) · Refeições Fartas (2) | — |
-| 6 | **Picareta Reforçada** (0) | 34 pontos |
-| 7 | Picareta Temperada (0) · Faro de Cobre (1) · Faro de Ferro (2) · Cantil de Cobre (3) | — |
-| 8 | escolha: Febre do Ouro (1) **ou** Foco Profundo (2) · **Picareta de Cristal** (4) | 45 pontos |
-| 9 | Fio de Cristal (3) · Sintonia (5) | — |
-| 10 | **Coração de Deepglow** (4) — nó final | 55 pontos |
+| 0 | Machado Afiado (1) · Cesta (3) · Cantil (5) | Bosque Noturno (início) |
+| 1 | Olho de Lenhador (0) · Olhar Atento (2) · Dias Longos (3) | |
+| 2 | **Vara de Pesca** (4) | Pântano Luminescente (10) |
+| 3 | Refeições Fartas (3) · Isca (4) · Mãos Firmes (5) | |
+| 4 | **Picareta** (1) | Cavernas de Cristal (18) |
+| 5 | Picareta Afiada (0) · **Picareta de Cristal** (1) · Olho de Pedreiro (2) | |
+| 6 | Fio de Cristal (0) · Sintonia (1) · escolha: Mestre Pedreiro (3) **ou** Mestre Pescador (4) | |
+| 7 | **Picareta Reforçada** (0) | Bosque de Cinzas (31) |
+| 8 | Picareta Temperada (0) · Faro de Cobre (1) · Faro de Ferro (2) · Cantil de Cobre (3) | |
+| 9 | escolha: Febre do Ouro (1) **ou** Foco Profundo (2) | |
+| 10 | **Lança** (3) | Vale Lunar Congelado (41) |
+| 11 | Lança Afiada (2) · Instinto de Caçador (4) | |
+| 12 | **Coração de Deepglow** (3) — nó final | Ruínas Submersas (53) |
 
 A interface mostra no HUD e no topo da árvore apenas os recursos já descobertos (coletados ao
 menos uma vez) e usa números compactos (1.2k) para caber em 640x360.
@@ -175,9 +180,32 @@ como lista:
 - **Conexões:** linhas ligam cada pré-requisito ao nó dependente.
 - **Níveis:** cada nó mostra `nível/máximo` (ex.: 1/3).
 - **Nós de escolha:** nós com o mesmo `choice_group` são exclusivos — comprar um bloqueia os outros.
-- **Portões:** `required_points` exige um total de níveis investidos na árvore (ex.: "8 necessários")
-  para liberar as linhas de baixo.
+- **Portões = biomas:** cada bioma (§7.2) exige um total de níveis investidos na árvore para
+  liberar as suas linhas; a divisória mostra o nome do bioma e os pontos ("Pântano Luminescente ·
+  10 necessários"). Um nó ainda pode ter `required_points` próprio (vale o maior).
 - **Estados visuais:** bloqueado, disponível, comprável, parcialmente comprado, completo.
+
+### 7.2 Biomas (decidido, set/2026)
+
+A jornada da "História de Deepglow" atravessa seis biomas, um por etapa da árvore. Alcançar os
+pontos de um bioma troca o fundo das fases (arte do bioma convertida para a paleta) e a primeira
+fase nele mostra o aviso "Novo bioma". O conteúdo de cada etapa combina com o lugar:
+
+| Bioma | Pontos | O que se coleta de novo | Tema |
+|---|---|---|---|
+| Bosque Noturno | 0 | madeira, fruta, água | a floresta de onde você parte |
+| Pântano Luminescente | 10 | peixe (vara) | águas paradas cheias de peixe |
+| Cavernas de Cristal | 18 | pedra (picareta) e cristais (picareta de cristal) | mineração na caverna |
+| Bosque de Cinzas | 31 | cobre, ferro, ouro (picareta reforçada) | o fogo expôs os veios de metal |
+| Vale Lunar Congelado | 41 | carne (lança, javali) | caça na neve |
+| Ruínas Submersas | 53 | — | o Coração de Deepglow |
+
+Dados: `data/biomes/*.tres` (`Biome`: id, fundo, pontos, primeira linha da árvore), em ordem em
+`GameDatabase.biomes`. O bioma atual é derivado dos níveis comprados (não vai no save): chega-se a
+um bioma com os pontos do portão **e** ao menos um nível comprado nas linhas do bioma anterior —
+assim não dá para "pular" um bioma só maximizando os nós anteriores (ex.: chegar às Ruínas sem a
+lança). Fundos:
+`tools/art/concept_background.py <arte> <saída> --lab` (+ `--warm-boost 2.2` no Bosque de Cinzas).
 
 **Tela (M2.5):** a árvore ocupa a área principal (com rolagem quando crescer) e um painel lateral
 mostra nome, nível, descrição, custo e o motivo do bloqueio (pré-requisito, pontos ou escolha já
@@ -221,7 +249,7 @@ Relatório em `tools/balance/reports/latest.md` (não versionado). Perfis padrã
 | Rápido vs médio | no máximo 40% mais rápido **e** mesmo nº de fases (±10%) — sem bola de neve |
 | Fim do jogo útil | ≥ 50% do que o médio coleta no último quarto ainda serve para alguma evolução |
 
-### 8.2 Resultado atual (gerador com demanda + custos graduais; 29 nós, 12 execuções por perfil)
+### 8.2 Resultado atual (biomas + gerador com demanda; 29 nós, 12 execuções por perfil)
 
 Antes da demanda, no último quarto do jogo só **11%** do que se coletava ainda servia (sobravam
 madeira, pedra e frutas; faltavam cobre, ouro e cristal) e o médio levava ~3h30 no simulador — na
@@ -229,14 +257,21 @@ primeira partida real, quase 6 h. Agora a meta é ~2h10 no simulador, e os custo
 **gradual** pela linha da árvore: `custo × (1 + 0,4 × linha/10)` — linha 0 igual a antes, a última
 linha +40% (arredondados).
 
+Na realocação por biomas (set/2026) os custos de cada nó passaram a usar os recursos do seu bioma
+e foram reajustados no simulador.
+
 | Perfil | Minutos (médio) | Fases | Fases limpas | Barra vazia | Coleta útil (último quarto) |
 |---|---|---|---|---|---|
-| Lento (2,2) | 176,3 | 116 | 21% | 11,2% | 48% |
-| Médio (3,0) | **130,9** (~2h10) | 110 | 31% | 5,4% | 56% |
-| Rápido (4,5) | 93,9 | 107 | 44% | 0,8% | 60% |
+| Lento (2,2) | 183,1 | 119 | 17% | 15,1% | 49% |
+| Médio (3,0) | **132,0** (~2h10) | 111 | 28% | 6,8% | 55% |
+| Rápido (4,5) | 92,9 | 106 | 45% | 0,6% | 63% |
 
-Marcos do jogador médio (minutos): picareta ~13 · vara de pesca ~20 · lança ~51 · picareta
-reforçada (minérios) ~67 · picareta de cristal ~107 · Coração de Deepglow (fim) ~130.
+Marcos do jogador médio (minutos), por bioma: Pântano (vara) ~14 · Cavernas (picareta) ~33,
+picareta de cristal ~44 · Bosque de Cinzas (minérios) ~67 · Vale Lunar (lança) ~112 · Coração
+de Deepglow (fim) ~128.
+
+Critério "rápido ≤ 40% mais rápido que o médio": fica no limite (40–42% conforme as execuções;
+já estava em 40% antes da realocação) — aceito por ora.
 
 Comando: `--runs 12` (alvo padrão 120 min; leva ~1–2 min; o jogo completo tem ~110 fases por execução).
 
@@ -287,3 +322,4 @@ Estados da `StateMachine`: `Setup` → `PhaseBuild` → `Phase` → `PhaseSummar
 | D8 | Raridade não é exibida no tabuleiro; o sprite comunica o valor | decidido |
 | D9 | Árvore de evolução desenhada em grade (conexões, níveis, escolhas, portões) | decidido |
 | D10 | Gerador ciente da demanda: fontes dos recursos que faltam aparecem mais, as inúteis ficam raras; custos sobem gradualmente pela árvore (+0% no topo, +40% na última linha) | decidido (simulador) |
+| D11 | Seis biomas, um por etapa da árvore: o portão de pontos troca o fundo e o conteúdo de cada etapa combina com o bioma (§7.2) | decidido (set/2026) |

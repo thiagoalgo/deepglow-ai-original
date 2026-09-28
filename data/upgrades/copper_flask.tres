@@ -7,12 +7,12 @@
 [ext_resource type="Resource" path="res://data/upgrades/unlock_ore_pick.tres" id="5_i1tgs"]
 [ext_resource type="Script" path="res://src/progression/upgrade_node.gd" id="6_3l08n"]
 
-[sub_resource type="Resource" id="Resource_w14ud"]
+[sub_resource type="Resource" id="Resource_ewh7x"]
 script = ExtResource("1_ewh7x")
 resource = ExtResource("2_3ouab")
 amount = 75
 
-[sub_resource type="Resource" id="Resource_wqe1l"]
+[sub_resource type="Resource" id="Resource_3ouab"]
 script = ExtResource("1_ewh7x")
 resource = ExtResource("3_k3atk")
 amount = 260
@@ -24,7 +24,7 @@ icon = ExtResource("4_i6g2s")
 effect = 6
 value_per_level = 0.15
 max_level = 2
-base_costs = Array[ExtResource("1_ewh7x")]([SubResource("Resource_w14ud"), SubResource("Resource_wqe1l")])
+base_costs = Array[ExtResource("1_ewh7x")]([SubResource("Resource_ewh7x"), SubResource("Resource_3ouab")])
 cost_growth = 2.6
-grid_position = Vector2i(3, 7)
+grid_position = Vector2i(3, 8)
 prerequisites = Array[Resource]([ExtResource("5_i1tgs")])

@@ -1,21 +1,21 @@
 [gd_resource type="Resource" script_class="UpgradeNode" format=3]
 
 [ext_resource type="Script" path="res://src/economy/resource_amount.gd" id="1_ylxtm"]
-[ext_resource type="Resource" path="res://data/resources/iron.tres" id="2_tbqk1"]
-[ext_resource type="Resource" path="res://data/resources/gold.tres" id="3_06nll"]
+[ext_resource type="Resource" path="res://data/resources/stone.tres" id="2_ylxtm"]
+[ext_resource type="Resource" path="res://data/resources/wood.tres" id="3_tbqk1"]
 [ext_resource type="Texture2D" path="res://assets/sprites/cursors/crystal_pick.png" id="4_swsfn"]
-[ext_resource type="Resource" path="res://data/upgrades/iron_sense.tres" id="5_d6cvj"]
+[ext_resource type="Resource" path="res://data/upgrades/unlock_pickaxe.tres" id="5_06nll"]
 [ext_resource type="Script" path="res://src/progression/upgrade_node.gd" id="6_n1xnm"]
 
-[sub_resource type="Resource" id="Resource_2vb52"]
+[sub_resource type="Resource" id="Resource_swsfn"]
 script = ExtResource("1_ylxtm")
-resource = ExtResource("2_tbqk1")
-amount = 180
+resource = ExtResource("2_ylxtm")
+amount = 120
 
-[sub_resource type="Resource" id="Resource_m36cs"]
+[sub_resource type="Resource" id="Resource_d6cvj"]
 script = ExtResource("1_ylxtm")
-resource = ExtResource("3_06nll")
-amount = 55
+resource = ExtResource("3_tbqk1")
+amount = 300
 
 [resource]
 script = ExtResource("6_n1xnm")
@@ -23,8 +23,7 @@ id = &"unlock_crystal_pick"
 icon = ExtResource("4_swsfn")
 effect = 0
 target = &"crystal_pick"
-base_costs = Array[ExtResource("1_ylxtm")]([SubResource("Resource_2vb52"), SubResource("Resource_m36cs")])
+base_costs = Array[ExtResource("1_ylxtm")]([SubResource("Resource_swsfn"), SubResource("Resource_d6cvj")])
 cost_growth = 1.0
-grid_position = Vector2i(4, 8)
-required_points = 45
-prerequisites = Array[Resource]([ExtResource("5_d6cvj")])
+grid_position = Vector2i(1, 5)
+prerequisites = Array[Resource]([ExtResource("5_06nll")])

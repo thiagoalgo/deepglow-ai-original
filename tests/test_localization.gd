@@ -53,6 +53,8 @@ func test_every_data_item_has_keys() -> String:
 		keys.append(String(item.call("get_desc_key")))
 	for item: Resource in db.get("tools"):
 		keys.append("TOOL_%s_NAME" % String(item.get("id")).to_upper())
+	for item: Resource in db.get("biomes"):
+		keys.append(String(item.call("get_name_key")))
 	for item: Resource in db.get("rarities"):
 		keys.append("RARITY_%s_NAME" % String(item.get("id")).to_upper())
 	for key: String in keys:

@@ -231,8 +231,9 @@ func _choice_rival_names(upgrade: UpgradeNode, owned_only: bool) -> PackedString
 func _lock_reason(upgrade: UpgradeNode) -> String:
 	if _progression.is_blocked_by_choice(upgrade):
 		return tr(&"UI_CHOICE_TAKEN") % ", ".join(_choice_rival_names(upgrade, true))
-	if _progression.get_total_levels() < upgrade.required_points:
-		return tr(&"UI_REQUIRES_POINTS") % upgrade.required_points
+	var required := _progression.get_required_points(upgrade)
+	if _progression.get_total_levels() < required:
+		return tr(&"UI_REQUIRES_POINTS") % required
 	var missing: PackedStringArray = []
 	for prerequisite: UpgradeNode in upgrade.prerequisites:
 		if _progression.get_level(prerequisite.id) < 1:

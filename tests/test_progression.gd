@@ -176,3 +176,53 @@ func test_number_format_compact() -> String:
 		if NumberFormat.compact(value) != cases[value]:
 			return "%d -> %s" % [value, NumberFormat.compact(value)]
 	return ""
+
+
+func test_biomes_gate_their_rows() -> String:
+	var db := _db()
+	if db.biomes.size() != 6 or db.biomes[0].required_points != 0:
+		return "expected 6 biomes starting at 0 points"
+	for i: int in range(1, db.biomes.size()):
+		var prev := db.biomes[i - 1]
+		var biome := db.biomes[i]
+		if biome.required_points <= prev.required_points or biome.tree_row <= prev.tree_row:
+			return "biomes must be ordered by points and tree row (%s)" % biome.id
+		if biome.background == null:
+			return "biome %s has no background" % biome.id
+	var prog := ProgressionState.new(db)
+	if prog.get_biome() != db.biomes[0]:
+		return "a new run starts in the first biome"
+	# A node in the second biome's rows is gated by that biome's points.
+	var rod := db.get_upgrade(&"unlock_fishing_rod")
+	if prog.get_required_points(rod) != db.biomes[1].required_points:
+		return "fishing rod should be gated by the swamp"
+	if db.get_biome_for_points(db.biomes[2].required_points) != db.biomes[2]:
+		return "points should select the biome"
+	# Points alone do not skip a biome: 18 points spent only in the forest
+	# (rows 0-1) keep the player out of the caves until the swamp is explored.
+	for id: StringName in [&"sharp_axe", &"basket", &"canteen", &"lumber_sense", &"keen_eye", &"longer_days"]:
+		prog._levels[id] = 3
+	if prog.get_biome() != db.biomes[1]:
+		return "18 forest points should reach the swamp only (got %s)" % prog.get_biome().id
+	prog._levels[&"unlock_fishing_rod"] = 1
+	if prog.get_biome() != db.biomes[2]:
+		return "exploring the swamp should open the caves"
+	return ""
+
+
+func test_every_tool_unlock_lives_in_its_biome() -> String:
+	# Theme check (docs/game-design.md §7.2): each biome unlocks its tools.
+	var db := _db()
+	var expected := {
+		&"unlock_fishing_rod": &"glow_swamp",
+		&"unlock_pickaxe": &"crystal_caves",
+		&"unlock_crystal_pick": &"crystal_caves",
+		&"unlock_ore_pick": &"ash_forest",
+		&"unlock_spear": &"frozen_moon_vale",
+		&"heart_of_deepglow": &"sunken_ruins",
+	}
+	for id: StringName in expected:
+		var biome := db.get_biome_for_row(db.get_upgrade(id).grid_position.y)
+		if biome.id != expected[id]:
+			return "%s is in %s, expected %s" % [id, biome.id, expected[id]]
+	return ""

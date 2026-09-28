@@ -7,15 +7,15 @@
 [ext_resource type="Resource" path="res://data/upgrades/unlock_pickaxe.tres" id="5_4eod6"]
 [ext_resource type="Script" path="res://src/progression/upgrade_node.gd" id="6_2tw8q"]
 
-[sub_resource type="Resource" id="Resource_rd6bi"]
+[sub_resource type="Resource" id="Resource_mccqu"]
 script = ExtResource("1_mccqu")
 resource = ExtResource("2_dxnui")
-amount = 35
+amount = 40
 
-[sub_resource type="Resource" id="Resource_ou28c"]
+[sub_resource type="Resource" id="Resource_dxnui"]
 script = ExtResource("1_mccqu")
 resource = ExtResource("3_il11x")
-amount = 65
+amount = 80
 
 [resource]
 script = ExtResource("6_2tw8q")
@@ -23,7 +23,7 @@ id = &"stone_sense"
 icon = ExtResource("4_02pni")
 target = &"stone"
 max_level = 3
-base_costs = Array[ExtResource("1_mccqu")]([SubResource("Resource_rd6bi"), SubResource("Resource_ou28c")])
+base_costs = Array[ExtResource("1_mccqu")]([SubResource("Resource_mccqu"), SubResource("Resource_dxnui")])
 cost_growth = 3.2
-grid_position = Vector2i(2, 3)
+grid_position = Vector2i(2, 5)
 prerequisites = Array[Resource]([ExtResource("5_4eod6")])

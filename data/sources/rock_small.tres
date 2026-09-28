@@ -10,7 +10,7 @@
 script = ExtResource("2_nfq82")
 id = &"rock_small"
 family = &"rock"
-tier = 1
+tier = 2
 rarity = ExtResource("1_m2wbe")
 tool = ExtResource("4_kfudk")
 clicks = 4

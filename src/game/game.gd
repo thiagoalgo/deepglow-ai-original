@@ -17,9 +17,12 @@ var needs: Needs
 var phase_number: int = 0
 var run_seed: int
 var current_plan: PhasePlan
+## Biome shown on the background (reached by the levels invested in the tree).
+var biome: Biome
 
 var _pending_save: SaveGame
 
+@onready var background: Sprite2D = %Background
 @onready var board: Board = %Board
 @onready var effects: Node2D = %Effects
 @onready var state_machine: StateMachine = %StateMachine
@@ -72,6 +75,17 @@ func report_achievements() -> void:
 	Platform.unlock_achievements(unlocked)
 
 
+## Shows the current biome's background. Returns true when a new biome was
+## reached since the last call (never on the first call of a run).
+func apply_biome() -> bool:
+	var current := progression.get_biome()
+	var changed := biome != null and current != biome
+	biome = current
+	if current and current.background:
+		background.texture = current.background
+	return changed
+
+
 ## Writes the current run to the save slot and shows the save badge on the
 ## upgrade screen (saves only happen between phases).
 func save_run() -> void:
@@ -100,6 +114,8 @@ func _bind_run_state() -> void:
 	needs.changed.connect(Events.needs_changed.emit)
 	progression.upgrade_purchased.connect(_on_upgrade_purchased)
 	hud.setup(database, inventory)
+	biome = null
+	apply_biome()
 
 
 func _center_board() -> void:

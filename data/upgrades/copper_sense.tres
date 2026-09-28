@@ -7,12 +7,12 @@
 [ext_resource type="Resource" path="res://data/upgrades/unlock_ore_pick.tres" id="5_du1ax"]
 [ext_resource type="Script" path="res://src/progression/upgrade_node.gd" id="6_ax5ep"]
 
-[sub_resource type="Resource" id="Resource_y2m3o"]
+[sub_resource type="Resource" id="Resource_0c8k0"]
 script = ExtResource("1_0c8k0")
 resource = ExtResource("2_2xymm")
 amount = 30
 
-[sub_resource type="Resource" id="Resource_uxmt0"]
+[sub_resource type="Resource" id="Resource_2xymm"]
 script = ExtResource("1_0c8k0")
 resource = ExtResource("3_t5nqf")
 amount = 130
@@ -23,7 +23,7 @@ id = &"copper_sense"
 icon = ExtResource("4_i11uq")
 target = &"copper"
 max_level = 3
-base_costs = Array[ExtResource("1_0c8k0")]([SubResource("Resource_y2m3o"), SubResource("Resource_uxmt0")])
+base_costs = Array[ExtResource("1_0c8k0")]([SubResource("Resource_0c8k0"), SubResource("Resource_2xymm")])
 cost_growth = 2.1
-grid_position = Vector2i(1, 7)
+grid_position = Vector2i(1, 8)
 prerequisites = Array[Resource]([ExtResource("5_du1ax")])

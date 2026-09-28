@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="Biome" format=3]
+
+[ext_resource type="Script" path="res://src/biomes/biome.gd" id="1_biome"]
+[ext_resource type="Texture2D" path="res://assets/sprites/board/biomes/frozen_moon_vale.png" id="2_bg"]
+
+[resource]
+script = ExtResource("1_biome")
+id = &"frozen_moon_vale"
+background = ExtResource("2_bg")
+required_points = 41
+tree_row = 10

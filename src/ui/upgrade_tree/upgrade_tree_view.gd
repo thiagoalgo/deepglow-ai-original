@@ -2,7 +2,7 @@ class_name UpgradeTreeView
 extends Control
 ## Draws the upgrade tree: nodes on a grid (UpgradeNode.grid_position),
 ## lines from each prerequisite to its dependents and "N required" gate
-## dividers above rows with required_points. Lives inside a ScrollContainer.
+## dividers (biome name + points) above the first row of every biome after the first. Lives inside a ScrollContainer.
 
 signal node_focused(upgrade: UpgradeNode)
 signal node_pressed(upgrade: UpgradeNode)
@@ -21,7 +21,7 @@ const LINE_WIDTH := 2.0
 const ELBOW_ABOVE_CHILD := 8.0
 
 var _views: Dictionary[StringName, UpgradeNodeView] = {}
-var _gates: Dictionary[int, int] = {}  # row -> required points
+var _gates: Dictionary[int, Biome] = {}  # first tree row -> biome
 var _progression: ProgressionState
 
 
@@ -31,10 +31,9 @@ func build(database: GameDatabase) -> void:
 	_views.clear()
 	_gates.clear()
 	var extent := Vector2i.ZERO
-	for upgrade: UpgradeNode in database.upgrades:
-		if upgrade.required_points > 0:
-			_gates[upgrade.grid_position.y] = maxi(_gates.get(upgrade.grid_position.y, 0),
-				upgrade.required_points)
+	for biome: Biome in database.biomes:
+		if biome.tree_row > 0:
+			_gates[biome.tree_row] = biome
 	for upgrade: UpgradeNode in database.upgrades:
 		var view := UpgradeNodeView.create(upgrade)
 		view.position = _node_position(upgrade.grid_position)
@@ -139,8 +138,9 @@ func _draw() -> void:
 	for row: int in _gates:
 		# Middle of the gap inserted above the gated row.
 		var y := floorf(padding.y + row * cell_size.y + _row_shift(row) - gate_gap / 2.0 + 1.0)
-		var label := tr(&"UI_REQUIRED_POINTS") % _gates[row]
-		var met := _progression != null and _progression.get_total_levels() >= _gates[row]
+		var biome := _gates[row]
+		var label := tr(&"UI_BIOME_GATE") % [tr(biome.get_name_key()), biome.required_points]
+		var met := _progression != null and _progression.get_total_levels() >= biome.required_points
 		var color := active_line_color if met else gate_color
 		draw_rect(Rect2(padding.x, y - 1, size.x - padding.x * 2, 2), color)
 		var width := font.get_string_size(label, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size).x

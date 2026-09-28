@@ -6,10 +6,10 @@
 [ext_resource type="Resource" path="res://data/upgrades/bait.tres" id="4_44ega"]
 [ext_resource type="Script" path="res://src/progression/upgrade_node.gd" id="5_hc6t1"]
 
-[sub_resource type="Resource" id="Resource_tlaig"]
+[sub_resource type="Resource" id="Resource_y6je4"]
 script = ExtResource("1_y6je4")
 resource = ExtResource("2_mg77d")
-amount = 140
+amount = 150
 
 [resource]
 script = ExtResource("5_hc6t1")
@@ -18,9 +18,8 @@ icon = ExtResource("3_bi60d")
 target = &"fish"
 value_per_level = 2.0
 max_level = 2
-base_costs = Array[ExtResource("1_y6je4")]([SubResource("Resource_tlaig")])
+base_costs = Array[ExtResource("1_y6je4")]([SubResource("Resource_y6je4")])
 cost_growth = 3.0
-grid_position = Vector2i(4, 4)
+grid_position = Vector2i(4, 6)
 choice_group = &"mastery"
-required_points = 22
 prerequisites = Array[Resource]([ExtResource("4_44ega")])

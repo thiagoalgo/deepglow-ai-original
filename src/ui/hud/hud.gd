@@ -7,6 +7,8 @@ const LOW_TIME := 10.0
 ## Icon shake when a bar empties: offsets in pixels, one per step.
 const SHAKE_OFFSETS: PackedFloat32Array = [-2.0, 2.0, -2.0, 2.0, -1.0, 1.0, 0.0]
 const SHAKE_STEP := 0.05
+## Seconds the "new biome" banner stays on screen.
+const BIOME_BANNER_TIME := 2.5
 
 var _counters: Dictionary[StringName, Label] = {}
 var _phase_duration: float = 1.0
@@ -21,6 +23,10 @@ var _phase_duration: float = 1.0
 @onready var _hunger_icon: TextureRect = %HungerIcon
 @onready var _thirst_icon: TextureRect = %ThirstIcon
 @onready var _inventory_list: GridContainer = %InventoryList
+@onready var _biome_banner: Control = %BiomeBanner
+@onready var _biome_name: Label = %BiomeName
+
+var _banner_tween: Tween
 
 
 func _ready() -> void:
@@ -50,6 +56,17 @@ func setup(database: GameDatabase, inventory: Inventory) -> void:
 		row.visible = inventory.is_discovered(resource.id)
 		_inventory_list.add_child(row)
 		_counters[resource.id] = label
+
+
+## Announces a newly reached biome over the board for a moment.
+func show_biome_banner(biome: Biome) -> void:
+	_biome_name.text = biome.get_name_key()
+	_biome_banner.show()
+	if _banner_tween:
+		_banner_tween.kill()
+	_banner_tween = create_tween()
+	_banner_tween.tween_interval(BIOME_BANNER_TIME)
+	_banner_tween.tween_callback(_biome_banner.hide)
 
 
 func _on_phase_started(phase_number: int, duration: float) -> void:

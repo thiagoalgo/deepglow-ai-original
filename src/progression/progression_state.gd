@@ -32,7 +32,7 @@ func is_maxed(upgrade: UpgradeNode) -> bool:
 func is_available(upgrade: UpgradeNode) -> bool:
 	if is_maxed(upgrade):
 		return false
-	if get_total_levels() < upgrade.required_points:
+	if get_total_levels() < get_required_points(upgrade):
 		return false
 	if is_blocked_by_choice(upgrade):
 		return false
@@ -42,7 +42,31 @@ func is_available(upgrade: UpgradeNode) -> bool:
 	return true
 
 
-## Total levels bought across the whole tree (used by required_points gates).
+## Levels the tree needs before `upgrade` can be bought: its biome's gate
+## (from the node's tree row) or its own required_points, whichever is higher.
+func get_required_points(upgrade: UpgradeNode) -> int:
+	var biome := database.get_biome_for_row(upgrade.grid_position.y)
+	return maxi(upgrade.required_points, biome.required_points if biome else 0)
+
+
+## Current biome: the last one whose gate points are met, walking in order and
+## only moving on when the previous biome was explored (at least one level in
+## its tree rows). Points alone could skip a biome (e.g. reach the Sunken Ruins
+## by maxing earlier nodes without ever getting the spear).
+func get_biome() -> Biome:
+	var biomes := database.biomes
+	if biomes.is_empty():
+		return null
+	var total := get_total_levels()
+	var result := biomes[0]
+	for i: int in range(1, biomes.size()):
+		if total < biomes[i].required_points or not _owns_rows(biomes[i - 1].tree_row, biomes[i].tree_row):
+			break
+		result = biomes[i]
+	return result
+
+
+## Total levels bought across the whole tree (used by the biome gates).
 func get_total_levels() -> int:
 	var total := 0
 	for level: int in _levels.values():
@@ -167,3 +191,12 @@ func _effect_total(effect: UpgradeNode.Effect, target: StringName = &"") -> floa
 			continue
 		total += upgrade.value_per_level * get_level(upgrade.id)
 	return total
+
+
+## True when some upgrade in tree rows [from_row, to_row) owns a level.
+func _owns_rows(from_row: int, to_row: int) -> bool:
+	for upgrade: UpgradeNode in database.upgrades:
+		var row := upgrade.grid_position.y
+		if row >= from_row and row < to_row and get_level(upgrade.id) > 0:
+			return true
+	return false

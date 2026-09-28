@@ -7,12 +7,12 @@
 [ext_resource type="Resource" path="res://data/upgrades/unlock_fishing_rod.tres" id="5_0v6vu"]
 [ext_resource type="Script" path="res://src/progression/upgrade_node.gd" id="6_2vrmw"]
 
-[sub_resource type="Resource" id="Resource_5peo1"]
+[sub_resource type="Resource" id="Resource_42y2h"]
 script = ExtResource("1_42y2h")
 resource = ExtResource("2_43kql")
 amount = 20
 
-[sub_resource type="Resource" id="Resource_ayhy3"]
+[sub_resource type="Resource" id="Resource_43kql"]
 script = ExtResource("1_42y2h")
 resource = ExtResource("3_qmt0a")
 amount = 90
@@ -24,7 +24,7 @@ icon = ExtResource("4_3gb03")
 effect = 1
 target = &"fishing_rod"
 max_level = 2
-base_costs = Array[ExtResource("1_42y2h")]([SubResource("Resource_5peo1"), SubResource("Resource_ayhy3")])
+base_costs = Array[ExtResource("1_42y2h")]([SubResource("Resource_42y2h"), SubResource("Resource_43kql")])
 cost_growth = 3.2
 grid_position = Vector2i(5, 3)
 prerequisites = Array[Resource]([ExtResource("5_0v6vu")])

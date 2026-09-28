@@ -12,7 +12,7 @@
 script = ExtResource("2_pj0fd")
 id = &"boar"
 family = &"game"
-tier = 2
+tier = 4
 rarity = ExtResource("1_gfstc")
 tool = ExtResource("4_ds6yu")
 clicks = 10

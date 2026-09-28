@@ -7,12 +7,12 @@
 [ext_resource type="Resource" path="res://data/upgrades/iron_sense.tres" id="5_trj0d"]
 [ext_resource type="Script" path="res://src/progression/upgrade_node.gd" id="6_03q1m"]
 
-[sub_resource type="Resource" id="Resource_eijwh"]
+[sub_resource type="Resource" id="Resource_g137a"]
 script = ExtResource("1_g137a")
 resource = ExtResource("2_w652l")
 amount = 20
 
-[sub_resource type="Resource" id="Resource_klst2"]
+[sub_resource type="Resource" id="Resource_w652l"]
 script = ExtResource("1_g137a")
 resource = ExtResource("3_5h1eu")
 amount = 130
@@ -24,9 +24,8 @@ icon = ExtResource("4_0hitn")
 effect = 4
 value_per_level = 0.5
 max_level = 2
-base_costs = Array[ExtResource("1_g137a")]([SubResource("Resource_eijwh"), SubResource("Resource_klst2")])
+base_costs = Array[ExtResource("1_g137a")]([SubResource("Resource_g137a"), SubResource("Resource_w652l")])
 cost_growth = 2.4
-grid_position = Vector2i(2, 8)
+grid_position = Vector2i(2, 9)
 choice_group = &"deep_path"
-required_points = 45
 prerequisites = Array[Resource]([ExtResource("5_trj0d")])

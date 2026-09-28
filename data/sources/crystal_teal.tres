@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="SourceType" format=3]
 
-[ext_resource type="Resource" path="res://data/rarities/epic.tres" id="1_ivhw6"]
+[ext_resource type="Resource" path="res://data/rarities/rare.tres" id="1_ivhw6"]
 [ext_resource type="Script" path="res://src/sources/source_type.gd" id="2_vhcua"]
 [ext_resource type="Texture2D" path="res://assets/sprites/sources/crystal_teal.png" id="3_dspvq"]
 [ext_resource type="Resource" path="res://data/tools/crystal_pick.tres" id="4_6n3d5"]
@@ -10,10 +10,10 @@
 script = ExtResource("2_vhcua")
 id = &"crystal_teal"
 family = &"crystal"
-tier = 4
+tier = 2
 rarity = ExtResource("1_ivhw6")
 tool = ExtResource("4_6n3d5")
-clicks = 24
+clicks = 16
 yield_resource = ExtResource("5_4lkcy")
 yield_amount = 6
 texture = ExtResource("3_dspvq")

@@ -1,21 +1,21 @@
 [gd_resource type="Resource" script_class="UpgradeNode" format=3]
 
 [ext_resource type="Script" path="res://src/economy/resource_amount.gd" id="1_r41gx"]
-[ext_resource type="Resource" path="res://data/resources/stone.tres" id="2_bhb17"]
-[ext_resource type="Resource" path="res://data/resources/wood.tres" id="3_jtm23"]
+[ext_resource type="Resource" path="res://data/resources/iron.tres" id="2_r41gx"]
+[ext_resource type="Resource" path="res://data/resources/gold.tres" id="3_bhb17"]
 [ext_resource type="Texture2D" path="res://assets/sprites/cursors/spear.png" id="4_ytvja"]
-[ext_resource type="Resource" path="res://data/upgrades/stone_sense.tres" id="5_c7cwl"]
+[ext_resource type="Resource" path="res://data/upgrades/copper_flask.tres" id="5_jtm23"]
 [ext_resource type="Script" path="res://src/progression/upgrade_node.gd" id="6_2xmti"]
 
-[sub_resource type="Resource" id="Resource_jpou7"]
+[sub_resource type="Resource" id="Resource_ytvja"]
 script = ExtResource("1_r41gx")
-resource = ExtResource("2_bhb17")
-amount = 290
+resource = ExtResource("2_r41gx")
+amount = 150
 
-[sub_resource type="Resource" id="Resource_dpr55"]
+[sub_resource type="Resource" id="Resource_c7cwl"]
 script = ExtResource("1_r41gx")
-resource = ExtResource("3_jtm23")
-amount = 580
+resource = ExtResource("3_bhb17")
+amount = 45
 
 [resource]
 script = ExtResource("6_2xmti")
@@ -23,8 +23,7 @@ id = &"unlock_spear"
 icon = ExtResource("4_ytvja")
 effect = 0
 target = &"spear"
-base_costs = Array[ExtResource("1_r41gx")]([SubResource("Resource_jpou7"), SubResource("Resource_dpr55")])
+base_costs = Array[ExtResource("1_r41gx")]([SubResource("Resource_ytvja"), SubResource("Resource_c7cwl")])
 cost_growth = 1.0
-grid_position = Vector2i(1, 4)
-required_points = 22
-prerequisites = Array[Resource]([ExtResource("5_c7cwl")])
+grid_position = Vector2i(3, 10)
+prerequisites = Array[Resource]([ExtResource("5_jtm23")])

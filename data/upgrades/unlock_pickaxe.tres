@@ -2,14 +2,20 @@
 
 [ext_resource type="Script" path="res://src/economy/resource_amount.gd" id="1_kq16w"]
 [ext_resource type="Resource" path="res://data/resources/wood.tres" id="2_jiqpi"]
+[ext_resource type="Resource" path="res://data/resources/fish.tres" id="3_jiqpi"]
 [ext_resource type="Texture2D" path="res://assets/sprites/cursors/pickaxe.png" id="3_jnrp7"]
 [ext_resource type="Resource" path="res://data/upgrades/sharp_axe.tres" id="4_3byp3"]
 [ext_resource type="Script" path="res://src/progression/upgrade_node.gd" id="5_qcpmt"]
 
-[sub_resource type="Resource" id="Resource_fo1al"]
+[sub_resource type="Resource" id="Resource_jnrp7"]
 script = ExtResource("1_kq16w")
 resource = ExtResource("2_jiqpi")
-amount = 280
+amount = 350
+
+[sub_resource type="Resource" id="Resource_3byp3"]
+script = ExtResource("1_kq16w")
+resource = ExtResource("3_jiqpi")
+amount = 60
 
 [resource]
 script = ExtResource("5_qcpmt")
@@ -17,8 +23,7 @@ id = &"unlock_pickaxe"
 icon = ExtResource("3_jnrp7")
 effect = 0
 target = &"pickaxe"
-base_costs = Array[ExtResource("1_kq16w")]([SubResource("Resource_fo1al")])
+base_costs = Array[ExtResource("1_kq16w")]([SubResource("Resource_jnrp7"), SubResource("Resource_3byp3")])
 cost_growth = 1.0
-grid_position = Vector2i(1, 2)
-required_points = 10
+grid_position = Vector2i(1, 4)
 prerequisites = Array[Resource]([ExtResource("4_3byp3")])
