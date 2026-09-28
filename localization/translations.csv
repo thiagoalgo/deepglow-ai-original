@@ -155,3 +155,12 @@ BIOME_CRYSTAL_CAVES_NAME,Crystal Caves,Cavernas de Cristal
 BIOME_ASH_FOREST_NAME,Ash Forest,Bosque de Cinzas
 BIOME_FROZEN_MOON_VALE_NAME,Frozen Moon Vale,Vale Lunar Congelado
 BIOME_SUNKEN_RUINS_NAME,Sunken Ruins,Ruínas Submersas
+INTRO_01,"Before the Rupture, Deepglow flowed beneath the earth like a living light, feeding forests, rivers and creatures.","Antes da Ruptura, o Deepglow corria sob a terra como uma luz viva, alimentando florestas, rios e criaturas."
+INTRO_02,"Deep below, an ancient civilization found the source of that light: a crystal called the Heart of Deepglow.","Nas profundezas, uma antiga civilização encontrou a origem dessa luz: um cristal chamado Coração de Deepglow."
+INTRO_03,"Believing they could control its power, they tore it from its resting place.","Acreditando que poderiam controlar seu poder, eles o arrancaram de seu lugar de repouso."
+INTRO_04,"That was the Rupture. The light faded, the paths grew dangerous, and that civilization vanished beneath its own ruins.","Foi a Ruptura. A luz enfraqueceu, os caminhos se tornaram perigosos e aquela civilização desapareceu sob as próprias ruínas."
+INTRO_05,"Now you awaken in the Night Forest, before an old lantern.","Agora, você desperta no Bosque Noturno, diante de um antigo lampião."
+INTRO_06,"Within its flame lives a small shard of the Heart, still able to sense where it lies.","Dentro de sua chama vive uma pequena lasca do Coração, que ainda sente onde ele está."
+INTRO_07,"Follow the call of the light. Gather resources, build your tools and cross six lands the light has abandoned.","Siga o chamado da luz. Reúna recursos, construa suas ferramentas e atravesse seis terras que a luz abandonou."
+INTRO_08,"In the Sunken Ruins, the Heart of Deepglow awaits.","Nas Ruínas Submersas, o Coração de Deepglow aguarda."
+INTRO_09,Find it before the last light goes out.,Encontre-o antes que a última luz se apague.
