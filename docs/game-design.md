@@ -201,11 +201,12 @@ fase nele mostra o aviso "Novo bioma". O conteúdo de cada etapa combina com o l
 | Ruínas Submersas | 53 | — | o Coração de Deepglow |
 
 Dados: `data/biomes/*.tres` (`Biome`: id, fundo, pontos, primeira linha da árvore), em ordem em
-`GameDatabase.biomes`. O bioma atual é derivado dos níveis comprados (não vai no save): chega-se a
+`GameDatabase.biomes`. Fundos: as pinturas dos biomas foram redesenhadas como pixel art pelo
+Pixellab (`/image-to-pixelart`, 320x180) e mapeadas para a paleta (`concept_background.py
+--native`); converter a pintura direto gerava ruído. O bioma atual é derivado dos níveis comprados (não vai no save): chega-se a
 um bioma com os pontos do portão **e** ao menos um nível comprado nas linhas do bioma anterior —
 assim não dá para "pular" um bioma só maximizando os nós anteriores (ex.: chegar às Ruínas sem a
-lança). Fundos:
-`tools/art/concept_background.py <arte> <saída> --lab` (+ `--warm-boost 2.2` no Bosque de Cinzas).
+lança).
 
 **Tela (M2.5):** a árvore ocupa a área principal (com rolagem quando crescer) e um painel lateral
 mostra nome, nível, descrição, custo e o motivo do bloqueio (pré-requisito, pontos ou escolha já

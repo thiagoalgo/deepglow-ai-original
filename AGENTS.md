@@ -356,8 +356,12 @@ sources whose tool is unlocked.
    - **Backgrounds:** `python3 tools/art/concept_background.py <painting.png> <out.png> [--lab]
      [--warm-boost K]` (palette first, majority-vote downscale, lonely-pixel cleanup; drawn at
      320x180 and upscaled 2x). Biome paintings (1672x941) live in
-     `pixelart/deepglow-biomes-v2/`; outputs in `assets/sprites/board/biomes/<biome_id>.png`
-     (`--lab` for all, `--warm-boost 2.2` for the ash forest; the night forest is `board/background.png`).
+     `pixelart/deepglow-biomes-v2/`; they are painterly (no pixel grid), so downscaling them gives
+     noise: they were redrawn with Pixellab `/image-to-pixelart` (painting resized to 1280x720,
+     output 320x180, seed 11 or 23; raw results in `pixelart/03_pixellab/2026-09-28/bg_i2p_*`) and
+     converted with `--native` (+ `--warm-boost 2.2` for the ash forest). Outputs in
+     `assets/sprites/board/biomes/<biome_id>.png`; the night forest is `board/background.png`
+     (its painting was already real pixel art).
    - `concept_to_sprite.py` / `concept_panel_items.py` are the earlier script-only conversions,
      kept as helpers (they produced halos; not used for final art).
    - HUD text sits on opaque `HudPanel` panels (no transparency). Font: `assets/fonts/m5x7.ttf`

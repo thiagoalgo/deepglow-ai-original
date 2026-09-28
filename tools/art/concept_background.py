@@ -14,6 +14,14 @@ Usage: python3 tools/art/concept_background.py <concept.png> [out.png] [--lab] [
                   from turning lilac (used for the biome backgrounds).
   --warm-boost K  brighten reds/oranges by K before matching, so embers and lava land on
                   the palette's amber/pink instead of dark violet (the palette has no red).
+  --native        the input is already pixel art at 320x180 (e.g. a Pixellab
+                  image-to-pixelart result): only map each pixel to the palette (8-bit Lab)
+                  and upscale 2x.
+
+Biome backgrounds (Sep 2026): the biome paintings are painterly (no pixel grid), so
+downscaling them gives noise. They were redrawn with Pixellab /image-to-pixelart
+(painting resized to 1280x720, output 320x180, seed 11 or 23, default "reinterpret"
+mode) and converted with `--native` (+ `--warm-boost 2.2` for the ash forest).
 """
 from __future__ import annotations
 
@@ -44,17 +52,32 @@ def to_lab(rgb: np.ndarray) -> np.ndarray:
     return np.stack([116 * f[..., 1] - 16, 500 * (f[..., 0] - f[..., 1]), 200 * (f[..., 1] - f[..., 2])], -1)
 
 
+def to_lab8(rgb: np.ndarray) -> np.ndarray:
+    """8-bit Lab (L scaled to 0-255, rounded) like OpenCV's RGB2LAB on uint8: weighs
+    lightness more than plain Lab. Used by --native (the approved biome look)."""
+    try:
+        import cv2  # exact match with the approved previews when OpenCV is installed
+        flat = np.asarray(rgb, np.uint8).reshape(-1, 1, 3)
+        return cv2.cvtColor(flat, cv2.COLOR_RGB2LAB).reshape(np.shape(rgb)).astype(np.float32)
+    except ImportError:
+        l = to_lab(rgb)
+        return np.rint(np.stack([l[..., 0] * 255 / 100, l[..., 1] + 128, l[..., 2] + 128], -1))
+
+
 def warm_boost(a: np.ndarray, k: float) -> np.ndarray:
     r, g, b = a[..., 0], a[..., 1], a[..., 2]
     warmth = np.clip((r - np.maximum(g, b)) / 80.0, 0.0, 1.0)[..., None]
     return np.clip(a * (1.0 + (k - 1.0) * warmth), 0, 255)
 
 
-def nearest_indices(img: Image.Image, pal: np.ndarray, lab: bool = False, warm: float = 1.0) -> np.ndarray:
+def nearest_indices(img: Image.Image, pal: np.ndarray, lab: bool = False, warm: float = 1.0,
+                    lab8: bool = False) -> np.ndarray:
     a = np.asarray(img.convert('RGB')).astype(np.float32)
     if warm != 1.0:
         a = warm_boost(a, warm)
-    if lab:
+    if lab8:
+        a, pal = to_lab8(np.clip(np.rint(a), 0, 255)), to_lab8(pal)
+    elif lab:
         a, pal = to_lab(a), to_lab(pal)
     out = np.empty(a.shape[:2], np.uint8)
     for y0 in range(0, a.shape[0], 64):
@@ -83,14 +106,23 @@ def remove_lonely(idx: np.ndarray, n: int, passes: int = 1) -> np.ndarray:
 def main() -> None:
     args = [a for a in sys.argv[1:]]
     lab = '--lab' in args
+    native = '--native' in args
     warm = 1.0
     if '--warm-boost' in args:
         i = args.index('--warm-boost')
         warm = float(args[i + 1])
         del args[i:i + 2]
-    args = [a for a in args if a != '--lab']
+    args = [a for a in args if a not in ('--lab', '--native')]
     out = Path(args[1]) if len(args) > 1 else ROOT / 'assets' / 'sprites' / 'board' / 'background.png'
     pal = palette()
+    if native:
+        src = Image.open(args[0]).convert('RGB').resize((OUT_SIZE[0] // PIXEL_SCALE, OUT_SIZE[1] // PIXEL_SCALE), Image.NEAREST)
+        idx = nearest_indices(src, pal, warm=warm, lab8=True)
+        img = Image.fromarray(pal[idx].astype(np.uint8)).resize(OUT_SIZE, Image.NEAREST)
+        out.parent.mkdir(parents=True, exist_ok=True)
+        img.save(out)
+        print(out)
+        return
     work = Image.open(args[0]).convert('RGB').resize(WORK_SIZE, Image.LANCZOS).filter(ImageFilter.GaussianBlur(0.8))
     idx = nearest_indices(work, pal, lab, warm)
     block = WORK_SIZE[0] // (OUT_SIZE[0] // PIXEL_SCALE)
