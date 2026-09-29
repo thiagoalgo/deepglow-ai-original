@@ -195,3 +195,16 @@ UI_UNLOCKED,Unlocked,Conquistada
 UI_ACHIEVEMENT_UNLOCKED,Achievement unlocked!,Conquista desbloqueada!
 UI_BADGE_UNLOCKED,Badge earned!,Insígnia conquistada!
 UI_UNLOCKED_MANY,%d achievements and badges,%d conquistas e insígnias
+ENDING_01,"Deep in the Sunken Ruins, the Heart of Deepglow beats once more.","No fundo das Ruínas Submersas, o Coração de Deepglow volta a pulsar."
+ENDING_02,The shard that guided you knows its source and returns to the Heart.,A lasca que guiou você reconhece sua origem e retorna ao Coração.
+ENDING_03,"The light flows down through roots and stones again, as it did before the Rupture.","A luz desce outra vez pelas raízes e pelas pedras, como corria antes da Ruptura."
+ENDING_04,"Swamps, caves, ashes and ice: the abandoned lands glow once more.","Pântanos, cavernas, cinzas e gelo: as terras abandonadas voltam a brilhar."
+ENDING_05,"In the Night Forest, the path you opened is now lit.","No Bosque Noturno, o caminho que você abriu agora está iluminado."
+ENDING_06,But there are still tools to perfect and trails you did not choose.,Mas ainda há ferramentas a aperfeiçoar e trilhas que você não escolheu.
+ENDING_07,Deepglow lives again. Keep exploring.,O Deepglow vive de novo. Continue explorando.
+UI_WATCH_ENDING,Watch ending,Rever final
+UI_TREE_PROGRESS,Tree complete: %d/%d,Árvore completa: %d/%d
+UI_NEW_PATHS_TITLE,New paths opened,Novos caminhos se abriram
+UI_NEW_PATHS_TEXT,The other choices can now be bought,As outras escolhas agora podem ser compradas
+ACH_LIGHT_KEEPER_NAME,Keeper of the Light,Guardião da Luz
+ACH_LIGHT_KEEPER_DESC,Complete every upgrade of the tree.,Complete todas as melhorias da árvore.

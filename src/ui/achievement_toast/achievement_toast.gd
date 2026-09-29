@@ -27,6 +27,18 @@ func _ready() -> void:
 	Events.achievement_unlocked.connect(_on_achievement_unlocked)
 
 
+## Queues a notice that is not an unlock (e.g. "New paths opened" after the
+## ending), shown after the unlocks of the current frame.
+func notify(title: String, text: String) -> void:
+	_enqueue.call_deferred({"title": title, "text": text})
+
+
+func _enqueue(item: Dictionary) -> void:
+	_queue.append(item)
+	if not _showing:
+		_show_next()
+
+
 func _on_achievement_unlocked(badge: bool, id: StringName) -> void:
 	if _batch.is_empty():
 		_flush_batch.call_deferred()
@@ -53,7 +65,12 @@ func _show_next() -> void:
 	for child: Node in _slot.get_children():
 		child.queue_free()
 	var badge_view: BadgeView
-	if item.has("summary"):
+	if item.has("title"):
+		badge_view = BadgeView.create(load("res://assets/sprites/icons/crystal.png") as Texture2D,
+			Palette.VEGETATION_NEON_TEAL, true)
+		_title.text = item["title"]
+		_name.text = item["text"]
+	elif item.has("summary"):
 		badge_view = BadgeView.create(load("res://assets/sprites/icons/crystal.png") as Texture2D,
 			Palette.LIGHT_AMBER, true)
 		_title.text = tr(&"UI_ACHIEVEMENT_UNLOCKED")

@@ -1,0 +1,74 @@
+[gd_resource type="Resource" script_class="IntroSequence" format=3]
+
+[ext_resource type="Script" path="res://src/intro/intro_sequence.gd" id="1_seq"]
+[ext_resource type="Script" path="res://src/intro/intro_shot.gd" id="2_shot"]
+[ext_resource type="Texture2D" path="res://assets/sprites/board/background.png" id="10_forest"]
+[ext_resource type="Texture2D" path="res://assets/sprites/board/biomes/glow_swamp.png" id="11_swamp"]
+[ext_resource type="Texture2D" path="res://assets/sprites/board/biomes/crystal_caves.png" id="12_caves"]
+[ext_resource type="Texture2D" path="res://assets/sprites/board/biomes/ash_forest.png" id="13_ash"]
+[ext_resource type="Texture2D" path="res://assets/sprites/board/biomes/frozen_moon_vale.png" id="14_vale"]
+[ext_resource type="Texture2D" path="res://assets/sprites/board/biomes/sunken_ruins.png" id="15_ruins"]
+[ext_resource type="Script" path="res://src/biomes/biome.gd" id="21_biome"]
+[ext_resource type="Resource" path="res://data/biomes/night_forest.tres" id="20_night_forest"]
+[ext_resource type="Resource" path="res://data/biomes/glow_swamp.tres" id="20_glow_swamp"]
+[ext_resource type="Resource" path="res://data/biomes/crystal_caves.tres" id="20_crystal_caves"]
+[ext_resource type="Resource" path="res://data/biomes/ash_forest.tres" id="20_ash_forest"]
+[ext_resource type="Resource" path="res://data/biomes/frozen_moon_vale.tres" id="20_frozen_moon_vale"]
+[ext_resource type="Resource" path="res://data/biomes/sunken_ruins.tres" id="20_sunken_ruins"]
+
+[sub_resource type="Resource" id="Shot_1"]
+script = ExtResource("2_shot")
+text_key = &"ENDING_01"
+duration = 5.0
+motion = 0
+backgrounds = Array[Texture2D]([ExtResource("15_ruins")])
+
+[sub_resource type="Resource" id="Shot_2"]
+script = ExtResource("2_shot")
+text_key = &"ENDING_02"
+duration = 5.0
+motion = 0
+backgrounds = Array[Texture2D]([ExtResource("10_forest")])
+close_up = Rect2i(320, 60, 320, 180)
+
+[sub_resource type="Resource" id="Shot_3"]
+script = ExtResource("2_shot")
+text_key = &"ENDING_03"
+duration = 6.0
+motion = 0
+backgrounds = Array[Texture2D]([ExtResource("12_caves")])
+
+[sub_resource type="Resource" id="Shot_4"]
+script = ExtResource("2_shot")
+text_key = &"ENDING_04"
+duration = 6.8
+motion = 0
+backgrounds = Array[Texture2D]([ExtResource("15_ruins"), ExtResource("14_vale"), ExtResource("13_ash"), ExtResource("12_caves"), ExtResource("11_swamp"), ExtResource("10_forest")])
+
+[sub_resource type="Resource" id="Shot_5"]
+script = ExtResource("2_shot")
+text_key = &"ENDING_05"
+duration = 4.4
+motion = 0
+backgrounds = Array[Texture2D]([ExtResource("10_forest")])
+
+[sub_resource type="Resource" id="Shot_6"]
+script = ExtResource("2_shot")
+text_key = &"ENDING_06"
+duration = 4.9
+motion = 0
+backgrounds = Array[Texture2D]([ExtResource("10_forest")])
+
+[sub_resource type="Resource" id="Shot_7"]
+script = ExtResource("2_shot")
+text_key = &"ENDING_07"
+duration = 3.5
+motion = 0
+backgrounds = Array[Texture2D]([ExtResource("10_forest")])
+close_up = Rect2i(320, 60, 320, 180)
+
+[resource]
+script = ExtResource("1_seq")
+shots = Array[ExtResource("2_shot")]([SubResource("Shot_1"), SubResource("Shot_2"), SubResource("Shot_3"), SubResource("Shot_4"), SubResource("Shot_5"), SubResource("Shot_6"), SubResource("Shot_7")])
+ambient_biomes = Array[ExtResource("21_biome")]([ExtResource("20_night_forest"), ExtResource("20_glow_swamp"), ExtResource("20_crystal_caves"), ExtResource("20_ash_forest"), ExtResource("20_frozen_moon_vale"), ExtResource("20_sunken_ruins")])
+voice_path = "res://assets/audio/voice/{locale}/ending_{index}.ogg"

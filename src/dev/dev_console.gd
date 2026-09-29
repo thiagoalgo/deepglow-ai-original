@@ -113,6 +113,8 @@ func _register_commands() -> void:
 		_save_names)
 	_add("set", "set <resource> <amount>", "sets a resource amount (e.g. set gold 372)", _cmd_set,
 		_resource_ids)
+	_add("intro", "intro", "plays the intro (over the game in a run)", _cmd_intro)
+	_add("ending", "ending", "plays the ending (over the game in a run; nothing is bought)", _cmd_ending)
 	_add("fullscreen", "fullscreen", "toggles fullscreen / window", _cmd_fullscreen)
 	_add("mute", "mute", "toggles all sound on/off (not saved)", _cmd_mute)
 	_add("clear_achievements", "clear_achievements", "forgets every achievement and badge", _cmd_clear_achievements)
@@ -179,6 +181,24 @@ func _cmd_fullscreen(_args: PackedStringArray) -> void:
 	# Same as F11 / the Settings row (saved in settings.cfg).
 	Settings.set_fullscreen(not Settings.fullscreen)
 	_print("fullscreen = %s" % Settings.fullscreen)
+
+
+func _cmd_intro(_args: PackedStringArray) -> void:
+	_set_open(false)
+	var game := _game()
+	if game:
+		game.play_cutscene()
+	else:
+		main.call(&"play_intro")
+
+
+func _cmd_ending(_args: PackedStringArray) -> void:
+	_set_open(false)
+	var game := _game()
+	if game:
+		game.play_ending()
+	else:
+		main.call(&"play_ending")
 
 
 func _cmd_mute(_args: PackedStringArray) -> void:

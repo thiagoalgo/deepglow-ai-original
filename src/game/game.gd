@@ -4,12 +4,22 @@ extends Node2D
 ## scene parts the states drive. Rules live in the states under states/.
 ## Saving (M5): the run is saved between phases (see UpgradeState) and after each
 ## purchase; a loaded run resumes at the upgrade screen.
+## Buying the story's last node (UpgradeNode.ends_story, the Heart of Deepglow)
+## plays the ending over the tree (game paused), then the choice groups open.
 
 ## The player asked to go back to the title menu (the run is already saved).
 signal exit_requested
 
+## Unlocked by finishing the story in any run: shows "Watch ending" on the title.
+const STORY_ACHIEVEMENT := &"ACH_HEART_OF_DEEPGLOW"
+## Drawn above the tree, the toasts and the HUD (the software cursor is hidden).
+const ENDING_LAYER := 40
+
 @export var database: GameDatabase
 @export var card_scene: PackedScene
+## The ending (an Intro screen playing `ending_sequence`).
+@export var intro_scene: PackedScene
+@export var ending_sequence: IntroSequence
 
 var inventory: Inventory
 var progression: ProgressionState
@@ -34,6 +44,7 @@ var _pending_save: SaveGame
 @onready var tool_cursor: ToolCursor = %ToolCursor
 @onready var game_audio: GameAudio = %GameAudio
 @onready var pause_menu: PauseMenu = %PauseMenu
+@onready var achievement_toast: AchievementToast = %AchievementToast
 
 
 func _ready() -> void:
@@ -71,7 +82,7 @@ func load_run(save: SaveGame) -> void:
 func report_achievements() -> void:
 	var unlocked: Array[StringName] = []
 	for achievement: Achievement in database.achievements:
-		if achievement.is_unlocked(progression):
+		if achievement.on_steam and achievement.is_unlocked(progression):
 			unlocked.append(achievement.id)
 	Platform.unlock_achievements(unlocked)
 	# "My achievements" (kept across runs): announce only what is new.
@@ -141,7 +152,36 @@ func _on_board_cell_navigated(cell: Vector2i) -> void:
 	tool_cursor.place_at(board.position + board.cell_to_local(cell))
 
 
-func _on_upgrade_purchased(_upgrade: UpgradeNode, _new_level: int) -> void:
+## Plays the ending over the paused game. Awaitable (finishes when it is over).
+func play_ending() -> void:
+	await play_cutscene(ending_sequence)
+
+
+## Plays an Intro screen over the paused game; `sequence` null = the intro
+## (dev console: intro / ending). Awaitable.
+func play_cutscene(sequence: IntroSequence = null) -> void:
+	var layer := CanvasLayer.new()
+	layer.layer = ENDING_LAYER
+	layer.process_mode = Node.PROCESS_MODE_ALWAYS
+	var intro := intro_scene.instantiate() as Intro
+	if sequence:
+		intro.sequence = sequence
+	layer.add_child(intro)
+	tool_cursor.hide()
+	get_tree().paused = true
+	add_child(layer)
+	await intro.finished
+	layer.queue_free()
+	get_tree().paused = false
+	tool_cursor.show()
+
+
+func _on_upgrade_purchased(upgrade: UpgradeNode, new_level: int) -> void:
 	game_audio.play_purchase()
 	save_run()
+	if upgrade.ends_story and new_level == 1:
+		await play_ending()
+		report_achievements()
+		achievement_toast.notify(tr(&"UI_NEW_PATHS_TITLE"), tr(&"UI_NEW_PATHS_TEXT"))
+		return
 	report_achievements()

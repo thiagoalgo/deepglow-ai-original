@@ -8,6 +8,19 @@ extends Resource
 ## Languages without their own recording are narrated in this one (with the
 ## captions in the player's language).
 @export var fallback_voice_locale: String = "en"
+## Biomes whose ambient particles (fireflies, spores, snow…) play over their
+## background when it is on screen, as in the game (also on close-ups, 2x).
+## Empty = still pictures.
+@export var ambient_biomes: Array[Biome] = []
+
+
+## Biome drawn by `texture` (a background or a close-up of one), or null.
+func get_ambient_biome(texture: Texture2D) -> Biome:
+	var source := (texture as AtlasTexture).atlas if texture is AtlasTexture else texture
+	for biome: Biome in ambient_biomes:
+		if biome.background == source:
+			return biome
+	return null
 
 
 ## Voice line of a shot for `locale` (or the fallback language), or null.

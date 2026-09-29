@@ -2,7 +2,7 @@ extends Node
 ## Entry point and screen flow:
 ##   first launch: LanguageSelect -> TitleMenu;  later launches: TitleMenu
 ##   TitleMenu -> Game (continue the saved run) / Intro -> Game (new game) /
-##   Intro -> TitleMenu ("Watch intro") / SettingsScreen / AchievementsScreen
+##   Intro -> TitleMenu ("Watch intro" / "Watch ending") / SettingsScreen / AchievementsScreen
 ##   Game "Menu" -> TitleMenu
 ## Screens are PackedScene exports that only emit signals; Main swaps them.
 
@@ -16,6 +16,8 @@ const DEV_CONSOLE := "res://src/dev/dev_console.gd"
 @export var achievements_scene: PackedScene
 @export var game_scene: PackedScene
 @export var intro_scene: PackedScene
+## Played by "Watch ending" (the Game plays it itself when the story ends).
+@export var ending_sequence: IntroSequence
 ## Music for the menus (the Game switches tracks itself, see GameAudio).
 @export var menu_music: AudioStream
 ## Night ambience, under the menus (in a run, the current biome's ambience).
@@ -51,12 +53,14 @@ func _show_title_menu(focus: StringName = &"") -> void:
 	Sound.play_ambience(ambience)
 	var save := SaveSystem.read()
 	var screen := title_menu_scene.instantiate() as TitleMenu
-	screen.setup(save.phase_number + 1 if save else 0, focus)
+	var ending_unlocked := AchievementStore.new().has_achievement(Game.STORY_ACHIEVEMENT)
+	screen.setup(save.phase_number + 1 if save else 0, focus, ending_unlocked)
 	screen.continue_requested.connect(_start_game.bind(save), CONNECT_ONE_SHOT)
 	screen.new_game_requested.connect(_on_new_game_requested, CONNECT_ONE_SHOT)
 	screen.settings_requested.connect(_show_settings, CONNECT_ONE_SHOT)
 	screen.achievements_requested.connect(_show_achievements, CONNECT_ONE_SHOT)
 	screen.intro_requested.connect(_play_intro.bind(_show_title_menu), CONNECT_ONE_SHOT)
+	screen.ending_requested.connect(play_ending, CONNECT_ONE_SHOT)
 	screen.quit_requested.connect(_quit, CONNECT_ONE_SHOT)
 	_switch_to(screen)
 
@@ -77,6 +81,19 @@ func _show_achievements() -> void:
 func _play_intro(then: Callable) -> void:
 	var intro := intro_scene.instantiate() as Intro
 	intro.finished.connect(then, CONNECT_ONE_SHOT | CONNECT_DEFERRED)
+	_switch_to(intro)
+
+
+## Plays the intro (dev console), then back to the title menu.
+func play_intro() -> void:
+	_play_intro(_show_title_menu)
+
+
+## Plays the ending ("Watch ending", dev console), then back to the title menu.
+func play_ending() -> void:
+	var intro := intro_scene.instantiate() as Intro
+	intro.sequence = ending_sequence
+	intro.finished.connect(_show_title_menu.bind(&"ending"), CONNECT_ONE_SHOT | CONNECT_DEFERRED)
 	_switch_to(intro)
 
 

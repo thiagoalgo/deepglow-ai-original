@@ -10,6 +10,9 @@ extends Control
 ## Each shot plays its narration (IntroSequence.get_voice, current locale) on the
 ## Voice bus; the shot lasts the line plus a short pause, and the
 ## music is lowered while the intro runs.
+## Biome pictures can play their ambient particles (IntroSequence.ambient_biomes);
+## the incoming picture's dissolve covers the old particles, then they switch.
+## Only the music and the narration are heard: the ambience bus is muted.
 ## Pixel-art rules: no continuous zoom (close-ups are cuts), no alpha.
 
 signal finished
@@ -53,6 +56,7 @@ var _shot_length: float = 0.0
 var _voice_length: float = 0.0
 
 @onready var _picture: TextureRect = %Picture
+@onready var _particles: AmbientParticles = %Particles
 @onready var _incoming: TextureRect = %Incoming
 @onready var _caption: Control = %Caption
 @onready var _text: Label = %Text
@@ -64,10 +68,12 @@ var _voice_length: float = 0.0
 
 func _enter_tree() -> void:
 	_duck_music(-MUSIC_DUCK_DB)
+	_mute_ambience(true)
 
 
 func _exit_tree() -> void:
 	_duck_music(MUSIC_DUCK_DB)
+	_mute_ambience(false)
 
 
 func _ready() -> void:
@@ -240,6 +246,12 @@ func _start_voice() -> void:
 		_voice.play()
 
 
+func _mute_ambience(mute: bool) -> void:
+	var bus := AudioServer.get_bus_index(&"Ambience")
+	if bus >= 0:
+		AudioServer.set_bus_mute(bus, mute)
+
+
 func _duck_music(db: float) -> void:
 	var bus := AudioServer.get_bus_index(&"Music")
 	if bus >= 0:
@@ -263,7 +275,30 @@ func _place(rect: TextureRect, texture: Texture2D) -> void:
 	rect.texture = texture
 	rect.position = Vector2.ZERO
 	rect.size = Vector2(SCREEN)
+	if rect == _picture:
+		_show_particles(texture)
+
+
+## The particles of the biome on screen, scaled and moved like a close-up.
+func _show_particles(texture: Texture2D) -> void:
+	var biome := sequence.get_ambient_biome(texture)
+	var layers: Array[AmbientEffect] = []
+	if biome:
+		for effect: Resource in biome.ambient_effects:
+			layers.append(effect as AmbientEffect)
+	_particles.effects = layers
+	_particles.visible = not layers.is_empty()
+	if texture is AtlasTexture:
+		var region := (texture as AtlasTexture).region
+		_particles.scale = Vector2(SCREEN) / region.size
+		_particles.position = -region.position * _particles.scale
+	else:
+		_particles.scale = Vector2.ONE
+		_particles.position = Vector2.ZERO
 
 
 func _set_level(level: float) -> void:
 	_shade.set_shader_parameter(&"level", level)
+	# The particles go dark with the picture (the lamp going out takes the
+	# fireflies with it): hidden while it is darkened.
+	_particles.visible = level < 1.0 and not _particles.effects.is_empty()

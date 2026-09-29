@@ -126,14 +126,18 @@ App (Control)                        src/main/app.tscn — window root: integer 
     └── GameViewport (SubViewport 640x360)
         └── Main (Node)              src/main/main.tscn — swaps screens (one at a time)
             ├── LanguageSelect (Control)         src/ui/language_select/  — first launch only
-            ├── TitleMenu (Control)              src/ui/title_menu/ — Continue, New game, Watch intro, My achievements,
-            │                                     Settings, Quit
+            ├── TitleMenu (Control)              src/ui/title_menu/ — Continue, New game, Watch intro, Watch ending
+            │                                     (after ACH_HEART_OF_DEEPGLOW), My achievements, Settings, Quit
             ├── AchievementsScreen (Control)     src/ui/achievements/ — milestone achievements + one badge per upgrade
             │                                     (BadgeView: pixel shield + icon; locked = silhouette)
             ├── Intro (Control)                  src/intro/ — animated intro (IntroSequence data, data/intro/intro.tres):
             │                                     plays before a new game and from "Watch intro"; tap advances,
             │                                     hold (0.6 s) skips — the "Hold to skip" hint is always visible; every picture change is a pixel dissolve
-            │                                     (src/fx/pixel_dissolve.gdshader, ordered dither, no alpha)
+            │                                     (src/fx/pixel_dissolve.gdshader, ordered dither, no alpha);
+            │                                     the same screen plays the ending (data/intro/ending.tres)
+            │                                     both with their biomes' ambient particles (IntroSequence.ambient_biomes,
+            │                                     hidden while a shot is darkened);
+            │                                     the ambience bus is muted while it plays (music + voice only)
             ├── SettingsScreen (Control)         src/ui/settings/ — SettingRow per setting (language, CRT,
             │                                     fullscreen; volume later), applied + saved immediately
             │
@@ -163,7 +167,9 @@ App (Control)                        src/main/app.tscn — window root: integer 
                 │   │                                     + SaveIndicator badge (src/ui/save_indicator/)
                 │   └── PauseMenu (Control) %    src/ui/pause_menu/ — pauses the tree (timer, needs, board stop);
                 │                                  Resume / Main menu (phase progress is lost, confirmed)
-                ├── AchievementToast (CanvasLayer 30) — "Achievement unlocked!/Badge earned!" (many at once = 1 summary)
+                ├── AchievementToast (CanvasLayer 30) % — "Achievement unlocked!/Badge earned!" (many at once = 1 summary)
+                │                                  + other notices (notify(), e.g. "New paths opened")
+                ├── (ending, CanvasLayer 40)     — added by Game.play_ending(): Intro with the ending, game paused
                 ├── ToolCursor (CanvasLayer 100) % — software cursor showing the contextual tool
                 ├── GameAudio (Node) %           — music/SFX from Events (phase track + rush layer, hits, ticks)
                 ├── GameFx (Node)                — PixelBurst chips on hits, sparkles on collect
@@ -181,6 +187,16 @@ specks, item shadow — each biome has its own colors so the board changes with 
 `AmbientParticles`) and its ambience loop (`Sound.play_ambience` crossfades; menus use the night
 loop); `PhaseBuild` shows a banner on the first phase of a new biome. Each biome's content
 matches its theme (GDD §7.2): keep new tools/sources in the biome they belong to.
+
+**Ending and post-game:** the node with `UpgradeNode.ends_story` (the Heart of Deepglow) ends
+the story. Buying it the first time in a run makes `Game.play_ending()` play the ending over the
+tree (paused), then the achievement toasts and a "New paths opened" notice. From then on
+`ProgressionState.is_story_complete()` is true: `is_blocked_by_choice()` returns false (every
+`choice_group` opens, so the whole tree can be finished — nothing new is saved, it is derived from
+the levels), the tree footer shows "Tree complete: X/N" and the `ACH_LIGHT_KEEPER` achievement
+(`Kind.ALL_MAXED`, `on_steam = false`) waits for every node at max level. "Watch ending" on the
+title menu and the dev console command `ending` replay it (`intro` plays the intro; in a run
+both play over the paused game via `Game.play_cutscene()`).
 
 Data flow: `GameDatabase` (all data) → `ProgressionState` computes derived stats (effective clicks,
 yields, phase duration, drains, rarity weights) from upgrade levels → `PhaseGenerator` builds a
@@ -423,10 +439,16 @@ Art file names: `snake_case`, no spaces, English, id equal to the data `id`
   rush layer — 16th hats + snare roll — fades in during the last 10 s). Rejected by the owner:
   the earlier 132 BPM acid techno phase track. `play_music` crossfades in linear amplitude (out 2 s,
   in 2.5 s, new track starts 0.6 s later). Loops are imported with `loop=true` (edit the `.ogg.import`).
-- **Voice (narration):** recorded outside (ElevenLabs, paid plan = commercial license), exported as
-  `intro_NN_<locale>.mp3` into `pixelart/06_voice/`, then `python3 tools/audio/voice.py <dir>` trims
-  silence, normalizes to -16 LUFS and writes `assets/audio/voice/<locale>/intro_NN.ogg`. The intro
-  plays the file for the current locale (`IntroSequence.get_voice`). **Rule (owner):** a language
+- **Voice (narration):** ElevenLabs (paid plan = commercial license). The intro lines were recorded
+  by the owner; the ending lines come from `python3 tools/audio/tts.py ENDING` (text-to-speech API,
+  run on the owner's machine: lines read from `translations.csv` by key prefix, the voices below,
+  model `eleven_multilingual_v2`, key `ELEVENLABS_API_KEY` in `.env`; existing files are kept
+  unless `--force`). Files go to `pixelart/06_voice/<id>_NN_<locale>.mp3`, then
+  `python3 tools/audio/voice.py <dir>` trims silence, normalizes to -16 LUFS and writes
+  `assets/audio/voice/<locale>/<id>_NN.ogg` (`intro_NN`, `ending_NN`). The intro/ending plays the
+  file for the current locale (`IntroSequence.get_voice`, path in `voice_path`). `voice.py <dir> 'ending_07_*'`
+  re-processes only some lines; it measures first and applies a plain gain + limiter (one-pass
+  `loudnorm` left lines under 3 s ~15 dB too quiet). **Rule (owner):** a language
   without its own recording is narrated in English, with the captions in its own language
   (`IntroSequence.fallback_voice_locale`). Recorded: pt_BR, en.
   ElevenLabs voices (reuse them for any new narration so every line sounds the same):
@@ -459,7 +481,9 @@ Art file names: `snake_case`, no spaces, English, id equal to the data `id`
 - `Platform` autoload: uses GodotSteam only if its `Steam` singleton exists (all calls via
   `call()`), so builds without the extension still run. Steam App ID: project setting
   `deepglow/steam/app_id`. Achievements are data (`data/achievements/*.tres`, `Achievement`
-  resource, ids = Steamworks API names) and are reported by `Game.report_achievements()`.
+  resource, ids = Steamworks API names) and are reported by `Game.report_achievements()`
+  (only those with `on_steam = true`; the others exist only in "My achievements" until they are
+  created in Steamworks).
 - Full guide (Steamworks, Steam Cloud, Deck checklist, macOS notarization, store page):
   `docs/publishing.md`.
 

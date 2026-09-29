@@ -75,13 +75,31 @@ func get_total_levels() -> int:
 
 
 ## True when another node of the same choice group already owns a level.
+## True once the story-ending node (UpgradeNode.ends_story) is owned.
+func is_story_complete() -> bool:
+	for upgrade: UpgradeNode in database.upgrades:
+		if upgrade.ends_story and get_level(upgrade.id) > 0:
+			return true
+	return false
+
+
+## Owning one node of a choice group blocks the others, until the story is
+## complete (post-game: every path opens so the whole tree can be finished).
 func is_blocked_by_choice(upgrade: UpgradeNode) -> bool:
-	if upgrade.choice_group.is_empty():
+	if upgrade.choice_group.is_empty() or is_story_complete():
 		return false
 	for other: UpgradeNode in database.upgrades:
 		if other != upgrade and other.choice_group == upgrade.choice_group and get_level(other.id) > 0:
 			return true
 	return false
+
+
+## Upgrades at their max level (for the "tree complete" counter).
+func count_maxed() -> int:
+	var total := 0
+	for upgrade: UpgradeNode in database.upgrades:
+		total += int(is_maxed(upgrade))
+	return total
 
 
 func get_next_cost(upgrade: UpgradeNode) -> Array[ResourceAmount]:

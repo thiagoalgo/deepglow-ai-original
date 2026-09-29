@@ -83,6 +83,13 @@ layout_mode = 2
 size_flags_horizontal = 3
 mouse_filter = 2
 
+[node name="TreeProgress" type="Label" parent="Margin/Stack/Footer"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+size_flags_vertical = 4
+theme_type_variation = &"ChoiceLabel"
+
 [node name="StartButton" type="Button" parent="Margin/Stack/Footer"]
 unique_name_in_owner = true
 layout_mode = 2

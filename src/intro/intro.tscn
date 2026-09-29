@@ -4,6 +4,7 @@
 [ext_resource type="Resource" path="res://data/intro/intro.tres" id="2_seq"]
 [ext_resource type="Shader" path="res://src/fx/night_shift.gdshader" id="3_shader"]
 [ext_resource type="Shader" path="res://src/fx/pixel_dissolve.gdshader" id="4_dissolve"]
+[ext_resource type="Script" path="res://src/fx/ambient_particles.gd" id="5_particles"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_intro"]
 shader = ExtResource("3_shader")
@@ -49,6 +50,10 @@ offset_right = 640.0
 offset_bottom = 360.0
 mouse_filter = 2
 expand_mode = 1
+
+[node name="Particles" type="Node2D" parent="Stage"]
+unique_name_in_owner = true
+script = ExtResource("5_particles")
 
 [node name="Incoming" type="TextureRect" parent="Stage"]
 unique_name_in_owner = true

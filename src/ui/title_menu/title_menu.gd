@@ -2,7 +2,8 @@ class_name TitleMenu
 extends Control
 ## Title screen: Continue (only when a save exists), New game (asks for
 ## confirmation before overwriting a save; the intro plays first), Watch intro,
-## My achievements, Settings and Quit.
+## Watch ending (once the story was completed in any run), My achievements,
+## Settings and Quit.
 ## Main decides what each choice does; this screen only reports it.
 
 signal continue_requested
@@ -10,17 +11,20 @@ signal new_game_requested
 signal achievements_requested
 signal settings_requested
 signal intro_requested
+signal ending_requested
 signal quit_requested
 
 ## Next phase of the saved run; 0 when there is no save.
 var _saved_next_phase: int = 0
 ## Button to focus when the screen opens (coming back from a sub-screen).
 var _focus: StringName = &""
+var _ending_unlocked: bool = false
 
 @onready var _menu: VBoxContainer = %Menu
 @onready var _continue_button: Button = %ContinueButton
 @onready var _new_game_button: Button = %NewGameButton
 @onready var _intro_button: Button = %IntroButton
+@onready var _ending_button: Button = %EndingButton
 @onready var _achievements_button: Button = %AchievementsButton
 @onready var _settings_button: Button = %SettingsButton
 @onready var _quit_button: Button = %QuitButton
@@ -31,10 +35,12 @@ var _focus: StringName = &""
 
 
 ## Call before adding the screen to the tree. `focus`: coming back from a
-## sub-screen (&"settings" / &"achievements"), so keep the focus on its button.
-func setup(saved_next_phase: int, focus: StringName = &"") -> void:
+## sub-screen (&"settings" / &"achievements" / &"ending"), so keep the focus on
+## its button. `ending_unlocked`: show "Watch ending".
+func setup(saved_next_phase: int, focus: StringName = &"", ending_unlocked: bool = false) -> void:
 	_saved_next_phase = saved_next_phase
 	_focus = focus
+	_ending_unlocked = ending_unlocked
 
 
 func _ready() -> void:
@@ -44,6 +50,8 @@ func _ready() -> void:
 	_continue_button.pressed.connect(continue_requested.emit)
 	_new_game_button.pressed.connect(_on_new_game_pressed)
 	_intro_button.pressed.connect(intro_requested.emit)
+	_ending_button.visible = _ending_unlocked
+	_ending_button.pressed.connect(ending_requested.emit)
 	_achievements_button.pressed.connect(achievements_requested.emit)
 	_settings_button.pressed.connect(settings_requested.emit)
 	_quit_button.pressed.connect(quit_requested.emit)
@@ -57,6 +65,8 @@ func _ready() -> void:
 			first = _settings_button
 		&"achievements":
 			first = _achievements_button
+		&"ending":
+			first = _ending_button if _ending_button.visible else first
 	_show_menu(first)
 
 

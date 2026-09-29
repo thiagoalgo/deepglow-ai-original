@@ -9,6 +9,7 @@ enum Kind {
 	PHASES_PLAYED,  ## progression.phases_played >= amount
 	UPGRADE_OWNED,  ## the upgrade `target` has at least one level
 	TOTAL_LEVELS,   ## levels bought across the whole tree >= amount
+	ALL_MAXED,      ## every upgrade of the tree at its max level
 }
 
 ## Steamworks API name (e.g. ACH_FIRST_NIGHT).
@@ -17,6 +18,8 @@ enum Kind {
 ## Upgrade id for UPGRADE_OWNED.
 @export var target: StringName
 @export var amount: int = 1
+## Also reported to Steam (false = only in "My achievements", not yet in Steamworks).
+@export var on_steam: bool = true
 ## Emblem drawn inside the badge (an existing game icon).
 @export var icon: Texture2D
 
@@ -37,4 +40,6 @@ func is_unlocked(progression: ProgressionState) -> bool:
 			return progression.get_level(target) > 0
 		Kind.TOTAL_LEVELS:
 			return progression.get_total_levels() >= amount
+		Kind.ALL_MAXED:
+			return progression.count_maxed() == progression.database.upgrades.size()
 	return false

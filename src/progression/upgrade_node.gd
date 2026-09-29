@@ -23,6 +23,9 @@ enum Effect {
 @export var base_costs: Array[ResourceAmount] = []
 ## Cost multiplier applied per already-owned level.
 @export var cost_growth: float = 2.0
+## Buying it finishes the story: the ending plays and the choice groups open
+## (the other side of every "pick one" can be bought too). The Heart of Deepglow.
+@export var ends_story: bool = false
 @export_group("Tree layout")
 ## Cell of the node in the upgrade tree grid (column, row). Row 0 is the top.
 ## Connections are drawn from each prerequisite to this node.

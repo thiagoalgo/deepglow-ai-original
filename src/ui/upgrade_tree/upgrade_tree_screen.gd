@@ -44,6 +44,8 @@ var _pointer_input: bool = true
 @onready var _choice_label: Label = %ChoiceLabel
 @onready var _buy_button: Button = %BuyButton
 @onready var _start_button: Button = %StartButton
+## "Tree complete: X/N", only after the ending (post-game goal).
+@onready var _tree_progress: Label = %TreeProgress
 @onready var _menu_button: Button = %MenuButton
 @onready var _save_indicator: SaveIndicator = %SaveIndicator
 
@@ -123,6 +125,8 @@ func _refresh() -> void:
 		if _inventory.is_discovered(resource.id):
 			_inventory_bar.add_child(ResourceAmountView.create(resource, NumberFormat.compact(_inventory.get_amount(resource.id))))
 	_tree_view.refresh(_progression, _inventory)
+	_tree_progress.visible = _progression.is_story_complete()
+	_tree_progress.text = tr(&"UI_TREE_PROGRESS") % [_progression.count_maxed(), _database.upgrades.size()]
 	if _selected:
 		_show_details(_selected)
 	else:
@@ -234,7 +238,8 @@ func _show_details(upgrade: UpgradeNode) -> void:
 ## (A node blocked by the other choice explains it in the status line instead.)
 func _update_choice_label(upgrade: UpgradeNode) -> void:
 	_choice_label.visible = false
-	if upgrade.choice_group.is_empty() or _progression.is_blocked_by_choice(upgrade):
+	if upgrade.choice_group.is_empty() or _progression.is_blocked_by_choice(upgrade) \
+			or _progression.is_story_complete():
 		return
 	var rivals := ", ".join(_choice_rival_names(upgrade, false))
 	var owned := _progression.get_level(upgrade.id) > 0

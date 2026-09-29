@@ -31,5 +31,6 @@ icon = ExtResource("5_csp47")
 effect = 4
 base_costs = Array[ExtResource("1_d6w3c")]([SubResource("Resource_b85o7"), SubResource("Resource_csp47"), SubResource("Resource_vmnxx")])
 cost_growth = 1.0
+ends_story = true
 grid_position = Vector2i(3, 12)
 prerequisites = Array[Resource]([ExtResource("6_qo8rd"), ExtResource("7_kjueq")])

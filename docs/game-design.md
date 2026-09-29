@@ -183,7 +183,7 @@ como lista:
   (diagonais em degraus de pixel, sem antialiasing), nunca passando por trás de outro nó. Com o
   pré-requisito comprado, a linha ganha a cor do bioma do nó dependente.
 - **Níveis:** cada nó (28 px, ícone 20x20 sem escala) mostra os níveis como quadradinhos abaixo dele.
-- **Nós de escolha:** nós com o mesmo `choice_group` são exclusivos — comprar um bloqueia os outros.
+- **Nós de escolha:** nós com o mesmo `choice_group` são exclusivos — comprar um bloqueia os outros. Depois do final (Coração de Deepglow comprado) todas as escolhas se abrem (§7.4).
 - **Portões = biomas:** cada bioma (§7.2) exige um total de níveis investidos na árvore para
   liberar as suas linhas; o cabeçalho (só texto, na cor do bioma, `Biome.color`) mostra o nome e
   os pontos ("Pântano Luminescente / Libera com 10 pontos"); bioma ainda não alcançado fica apagado. Um nó ainda pode ter `required_points` próprio (vale o maior).
@@ -235,8 +235,9 @@ pode comprar, âmbar = parcialmente comprado, amarelo = completo.
 
 - **Minhas conquistas** (menu principal) mostra duas coleções, como brasões em pixel art com o
   ícone no centro (bloqueado = brasão escuro com a silhueta do ícone):
-  - **Conquistas:** os 10 marcos (primeira noite, 25/100 fases, primeira evolução, cada
-    ferramenta, Coração de Deepglow), os mesmos reportados à Steam; borda âmbar.
+  - **Conquistas:** os 11 marcos (primeira noite, 25/100 fases, primeira evolução, cada
+    ferramenta, Coração de Deepglow), os mesmos reportados à Steam, mais o Guardião da Luz
+    (pós-jogo, §7.4; só no jogo até ser criado no Steamworks); borda âmbar.
   - **Insígnias:** uma por melhoria da árvore (29), ganha ao chegar ao nível máximo dela
     (1, 2 ou 3 níveis); borda na cor do bioma da melhoria, na ordem da árvore.
 - São **permanentes**: ficam em `user://achievements.cfg`, fora do save da partida, e continuam
@@ -244,6 +245,17 @@ pode comprar, âmbar = parcialmente comprado, amarelo = completo.
 - Cada desbloqueio mostra um aviso no topo ("Conquista desbloqueada!" / "Insígnia conquistada!");
   muitos de uma vez viram um aviso único com a contagem.
 - Terminal de dev: `clear_achievements` apaga tudo.
+
+### 7.4 Final e pós-jogo (decidido, set/2026)
+
+- Comprar o **Coração de Deepglow** (`ends_story`) pela primeira vez na partida toca o **final**
+  sobre a árvore (jogo pausado): 7 planos com os mesmos fundos da introdução (`data/intro/ending.tres`,
+  textos `ENDING_01`…`07`, narração ElevenLabs gerada por `tools/audio/tts.py` nas vozes da intro).
+- Ao terminar: avisos de conquistas e "Novos caminhos se abriram". A partir daí os nós de escolha
+  deixam de se bloquear (dá para comprar os dois lados), o rodapé da árvore mostra
+  "Árvore completa: X/29" e a conquista **Guardião da Luz** (`ACH_LIGHT_KEEPER`, todos os nós no
+  máximo; ainda fora do Steam) incentiva completar tudo.
+- "Rever final" no menu inicial aparece depois da conquista Coração de Deepglow.
 
 ## 8. Balanceamento e duração
 

@@ -31,6 +31,8 @@
 [ext_resource type="Script" path="res://src/fx/ambient_particles.gd" id="28_ambient"]
 [ext_resource type="PackedScene" path="res://src/ui/pause_menu/pause_menu.tscn" id="29_pause"]
 [ext_resource type="PackedScene" path="res://src/ui/achievement_toast/achievement_toast.tscn" id="30_toast"]
+[ext_resource type="PackedScene" path="res://src/intro/intro.tscn" id="31_intro"]
+[ext_resource type="Resource" path="res://data/intro/ending.tres" id="32_ending"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_night"]
 shader = ExtResource("27_night_shader")
@@ -39,6 +41,8 @@ shader = ExtResource("27_night_shader")
 script = ExtResource("1_game")
 database = ExtResource("2_db")
 card_scene = ExtResource("3_card")
+intro_scene = ExtResource("31_intro")
+ending_sequence = ExtResource("32_ending")
 
 [node name="Background" type="Sprite2D" parent="."]
 unique_name_in_owner = true
@@ -99,6 +103,7 @@ unique_name_in_owner = true
 unique_name_in_owner = true
 
 [node name="AchievementToast" parent="." instance=ExtResource("30_toast")]
+unique_name_in_owner = true
 
 [node name="ToolCursor" parent="." instance=ExtResource("14_cursor")]
 unique_name_in_owner = true

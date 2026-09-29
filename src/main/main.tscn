@@ -9,6 +9,7 @@
 [ext_resource type="AudioStream" path="res://assets/audio/ambience/night.ogg" id="7_ambience"]
 [ext_resource type="PackedScene" path="res://src/intro/intro.tscn" id="8_intro"]
 [ext_resource type="PackedScene" path="res://src/ui/achievements/achievements_screen.tscn" id="9_achievements"]
+[ext_resource type="Resource" path="res://data/intro/ending.tres" id="10_ending"]
 
 [node name="Main" type="Node"]
 script = ExtResource("1_main")
@@ -18,5 +19,6 @@ settings_scene = ExtResource("5_settings")
 achievements_scene = ExtResource("9_achievements")
 game_scene = ExtResource("3_game")
 intro_scene = ExtResource("8_intro")
+ending_sequence = ExtResource("10_ending")
 menu_music = ExtResource("6_menu_music")
 ambience = ExtResource("7_ambience")

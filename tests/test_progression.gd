@@ -136,6 +136,45 @@ func test_choice_group_is_exclusive() -> String:
 	return "" if ok else "choice group should block the other node"
 
 
+func test_story_end_opens_the_choice_groups() -> String:
+	var db := _db()
+	var enders: Array[UpgradeNode] = []
+	for upgrade: UpgradeNode in db.upgrades:
+		if upgrade.ends_story:
+			enders.append(upgrade)
+	if enders.size() != 1 or enders[0].id != &"heart_of_deepglow":
+		return "exactly one node (heart_of_deepglow) should end the story"
+	var prog := ProgressionState.new(db)
+	var levels: Dictionary[StringName, int] = {&"deep_focus": 1}
+	prog.restore(levels, 0, 0.0)
+	var rival := db.get_upgrade(&"gold_rush")
+	if prog.is_story_complete() or not prog.is_blocked_by_choice(rival):
+		return "before the ending the other choice must stay blocked"
+	levels[&"heart_of_deepglow"] = 1
+	prog.restore(levels, 0, 0.0)
+	if not prog.is_story_complete() or prog.is_blocked_by_choice(rival):
+		return "after the ending every choice must be open"
+	return ""
+
+
+func test_all_maxed_achievement() -> String:
+	var db := _db()
+	var rule := Achievement.new()
+	rule.kind = Achievement.Kind.ALL_MAXED
+	var prog := ProgressionState.new(db)
+	var levels: Dictionary[StringName, int] = {}
+	for upgrade: UpgradeNode in db.upgrades:
+		levels[upgrade.id] = upgrade.max_level
+	var last: UpgradeNode = db.upgrades[db.upgrades.size() - 1]
+	levels[last.id] = last.max_level - 1
+	prog.restore(levels, 0, 0.0)
+	if rule.is_unlocked(prog) or prog.count_maxed() != db.upgrades.size() - 1:
+		return "one node below max must not unlock it"
+	levels[last.id] = last.max_level
+	prog.restore(levels, 0, 0.0)
+	return "" if rule.is_unlocked(prog) else "every node maxed should unlock it"
+
+
 func test_required_points_gate() -> String:
 	var db := _db()
 	var gated := UpgradeNode.new()

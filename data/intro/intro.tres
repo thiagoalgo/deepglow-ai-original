@@ -8,6 +8,13 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/board/biomes/ash_forest.png" id="13_ash"]
 [ext_resource type="Texture2D" path="res://assets/sprites/board/biomes/frozen_moon_vale.png" id="14_vale"]
 [ext_resource type="Texture2D" path="res://assets/sprites/board/biomes/sunken_ruins.png" id="15_ruins"]
+[ext_resource type="Script" path="res://src/biomes/biome.gd" id="21_biome"]
+[ext_resource type="Resource" path="res://data/biomes/night_forest.tres" id="20_night_forest"]
+[ext_resource type="Resource" path="res://data/biomes/glow_swamp.tres" id="20_glow_swamp"]
+[ext_resource type="Resource" path="res://data/biomes/crystal_caves.tres" id="20_crystal_caves"]
+[ext_resource type="Resource" path="res://data/biomes/ash_forest.tres" id="20_ash_forest"]
+[ext_resource type="Resource" path="res://data/biomes/frozen_moon_vale.tres" id="20_frozen_moon_vale"]
+[ext_resource type="Resource" path="res://data/biomes/sunken_ruins.tres" id="20_sunken_ruins"]
 
 [sub_resource type="Resource" id="Shot_1"]
 script = ExtResource("2_shot")
@@ -77,3 +84,4 @@ close_up = Rect2i(320, 60, 320, 180)
 [resource]
 script = ExtResource("1_seq")
 shots = Array[ExtResource("2_shot")]([SubResource("Shot_1"), SubResource("Shot_2"), SubResource("Shot_3"), SubResource("Shot_4"), SubResource("Shot_5"), SubResource("Shot_6"), SubResource("Shot_7"), SubResource("Shot_8"), SubResource("Shot_9")])
+ambient_biomes = Array[ExtResource("21_biome")]([ExtResource("20_night_forest"), ExtResource("20_glow_swamp"), ExtResource("20_crystal_caves"), ExtResource("20_ash_forest"), ExtResource("20_frozen_moon_vale"), ExtResource("20_sunken_ruins")])

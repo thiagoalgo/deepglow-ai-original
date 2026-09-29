@@ -84,6 +84,11 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "UI_WATCH_INTRO"
 
+[node name="EndingButton" type="Button" parent="Center/Panel/Layout/Menu"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "UI_WATCH_ENDING"
+
 [node name="AchievementsButton" type="Button" parent="Center/Panel/Layout/Menu"]
 unique_name_in_owner = true
 layout_mode = 2
