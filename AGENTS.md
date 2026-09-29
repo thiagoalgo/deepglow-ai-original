@@ -96,7 +96,7 @@ src/                  # code + scenes, organized by FEATURE (.tscn next to its .
   economy/            # ResourceType, ResourceAmount (data) + Inventory (state)
   sources/            # Rarity, ToolType, SourceType (data) + SourceCard (scene)
   progression/        # UpgradeNode, Achievement (data) + ProgressionState (state, derived stats)
-  biomes/             # Biome (data: background, ambience, ambient particles, color, gate points, first tree row)
+  biomes/             # Biome (data: background, ambience, ambient particles, board ground, color, gate points, first tree row)
   survival/           # Needs (hunger/thirst state; empty hunger = weak hits, empty thirst = half materials)
   save/               # SaveGame (run snapshot <-> JSON dict) + SaveSystem (user://save.json I/O)
   phases/             # PhaseRules (data) + PhaseGenerator/PhasePlan (pure logic)
@@ -138,7 +138,8 @@ App (Control)                        src/main/app.tscn — window root: integer 
                 ├── AmbientParticles (Node2D) %  — the biome's ambient particles (Biome.ambient_effects: fireflies,
                 │                                  spores, glints/drips, embers/ash, snow, bubbles/plankton)
                 ├── Board (Node2D) %             src/board/board.tscn
-                │   ├── GridView (Node2D) %      — frame + cells drawn with PixelStyleBox (_draw)
+                │   ├── GridView (Node2D) %      — frame + cells: the biome's BoardGround (fill, 1 px bevel lit from
+                │   │                              the top-left, grass/pebble tufts from a fixed per-cell seed)
                 │   └── Items (Node2D, y_sort) % — SourceCard instances (no hovered-cell highlight)
                 ├── Effects (Node2D) %           — FloatingText popups
                 ├── PhaseTimer (Timer) %
@@ -169,7 +170,8 @@ stages: a biome's `required_points` gates every node from its `tree_row` down
 (`ProgressionState.get_required_points()`), the tree draws one column per biome (header text in `Biome.color`), and the
 current biome (`ProgressionState.get_biome()`, from levels bought — not saved; a biome also needs
 a level bought in the previous biome's rows, so points alone never skip one) sets the phase
-background, its ambient particles (`AmbientEffect` layers in `data/ambient/`, drawn by
+background, its board ground (`BoardGround` in `data/ground/`: cell fill, bevel, tufts, accent
+specks, item shadow — each biome has its own colors so the board changes with the biome), its ambient particles (`AmbientEffect` layers in `data/ambient/`, drawn by
 `AmbientParticles`) and its ambience loop (`Sound.play_ambience` crossfades; menus use the night
 loop); `PhaseBuild` shows a banner on the first phase of a new biome. Each biome's content
 matches its theme (GDD §7.2): keep new tools/sources in the biome they belong to.

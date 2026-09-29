@@ -5,6 +5,7 @@
 [ext_resource type="Resource" path="res://data/ambient/ruin_plankton.tres" id="fx_0"]
 [ext_resource type="Resource" path="res://data/ambient/ruin_bubbles.tres" id="fx_1"]
 [ext_resource type="AudioStream" path="res://assets/audio/ambience/ruins.ogg" id="3_ambience"]
+[ext_resource type="Resource" path="res://data/ground/sunken_ruins.tres" id="4_ground"]
 
 [resource]
 script = ExtResource("1_biome")
@@ -12,6 +13,7 @@ id = &"sunken_ruins"
 background = ExtResource("2_bg")
 ambient_effects = Array[Resource]([ExtResource("fx_0"), ExtResource("fx_1")])
 ambience = ExtResource("3_ambience")
+ground = ExtResource("4_ground")
 color = Color(0.1529, 0.4549, 0.9020, 1)
 required_points = 53
 tree_row = 12

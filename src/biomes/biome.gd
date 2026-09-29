@@ -11,6 +11,8 @@ extends Resource
 @export var ambient_effects: Array[Resource] = []
 ## Ambience loop played while the run is in this biome (null = keep the current one).
 @export var ambience: AudioStream
+## Look of the board cells (BoardGround) in this biome.
+@export var ground: BoardGround
 ## Accent color of the biome in the upgrade tree (band header, palette color).
 @export var color: Color = Palette.STRUCTURE_HIGHLIGHT
 ## Levels invested in the tree needed to reach this biome (0 = starting biome).

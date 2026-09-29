@@ -5,6 +5,7 @@
 [ext_resource type="Resource" path="res://data/ambient/cave_glints.tres" id="fx_0"]
 [ext_resource type="Resource" path="res://data/ambient/cave_drops.tres" id="fx_1"]
 [ext_resource type="AudioStream" path="res://assets/audio/ambience/caves.ogg" id="3_ambience"]
+[ext_resource type="Resource" path="res://data/ground/crystal_caves.tres" id="4_ground"]
 
 [resource]
 script = ExtResource("1_biome")
@@ -12,6 +13,7 @@ id = &"crystal_caves"
 background = ExtResource("2_bg")
 ambient_effects = Array[Resource]([ExtResource("fx_0"), ExtResource("fx_1")])
 ambience = ExtResource("3_ambience")
+ground = ExtResource("4_ground")
 color = Color(0.6039, 0.4196, 0.8706, 1)
 required_points = 18
 tree_row = 4

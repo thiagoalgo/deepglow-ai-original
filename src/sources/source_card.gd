@@ -7,6 +7,13 @@ extends Node2D
 signal depleted
 
 const BAR_WIDTH := 28.0
+## Flat pixel ellipse under the sprite (light from the top-left): center offset
+## and radii in pixels.
+const SHADOW_OFFSET := Vector2(4, 13)
+const SHADOW_RADII := Vector2(13, 3)
+
+## Shadow color of the current ground (set by Board; transparent = no shadow).
+static var shadow_color: Color = Color.TRANSPARENT
 
 var source: SourceType
 var total_health: float = 1.0
@@ -51,6 +58,8 @@ func collect() -> void:
 func _draw() -> void:
 	if source == null:
 		return
+	if shadow_color.a > 0.0:
+		_draw_shadow()
 	if source.texture == null:
 		draw_rect(Rect2(-10, -10, 20, 20), source.placeholder_color)
 	if health < total_health:
@@ -58,6 +67,14 @@ func _draw() -> void:
 		draw_rect(bar, Palette.SHADOW_ABSOLUTE)
 		draw_rect(Rect2(bar.position, Vector2(ceilf(BAR_WIDTH * health / total_health), 4)),
 			Palette.VEGETATION_NEON_TEAL)
+
+
+## Row by row, so the edge is stepped like the rest of the pixel art.
+func _draw_shadow() -> void:
+	var ry := int(SHADOW_RADII.y)
+	for dy: int in range(-ry + 1, ry):
+		var half := floorf(SHADOW_RADII.x * sqrt(1.0 - pow(float(dy) / ry, 2.0)))
+		draw_rect(Rect2(SHADOW_OFFSET.x - half, SHADOW_OFFSET.y + dy, half * 2.0, 1.0), shadow_color)
 
 
 func _shake() -> void:

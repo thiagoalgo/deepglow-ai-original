@@ -5,6 +5,7 @@
 [ext_resource type="Resource" path="res://data/ambient/snow_far.tres" id="fx_0"]
 [ext_resource type="Resource" path="res://data/ambient/snow_near.tres" id="fx_1"]
 [ext_resource type="AudioStream" path="res://assets/audio/ambience/frozen.ogg" id="3_ambience"]
+[ext_resource type="Resource" path="res://data/ground/frozen_moon_vale.tres" id="4_ground"]
 
 [resource]
 script = ExtResource("1_biome")
@@ -12,6 +13,7 @@ id = &"frozen_moon_vale"
 background = ExtResource("2_bg")
 ambient_effects = Array[Resource]([ExtResource("fx_0"), ExtResource("fx_1")])
 ambience = ExtResource("3_ambience")
+ground = ExtResource("4_ground")
 color = Color(0.1294, 0.7843, 0.8510, 1)
 required_points = 41
 tree_row = 10

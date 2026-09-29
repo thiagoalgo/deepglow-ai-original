@@ -89,6 +89,8 @@ func apply_biome() -> bool:
 		for effect: Resource in current.ambient_effects:
 			layers.append(effect as AmbientEffect)
 		ambient_particles.effects = layers
+	if current:
+		board.set_ground(current.ground)
 	if current and current.ambience:
 		Sound.play_ambience(current.ambience)
 	return changed

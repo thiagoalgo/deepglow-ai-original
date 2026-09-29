@@ -57,6 +57,14 @@ func cell_to_local(cell: Vector2i) -> Vector2:
 	return Vector2(cell * config.cell_size) + Vector2(config.cell_size) / 2.0
 
 
+## Ground look of the cells for the current biome (null = plain cells).
+func set_ground(ground: BoardGround) -> void:
+	_grid_view.ground = ground
+	SourceCard.shadow_color = ground.shadow if ground else Color.TRANSPARENT
+	for item: Node in _items_root.get_children():
+		(item as CanvasItem).queue_redraw()
+
+
 func local_to_cell(local_pos: Vector2) -> Vector2i:
 	var cell := Vector2i((local_pos / Vector2(config.cell_size)).floor())
 	return cell if model.is_inside(cell) else INVALID_CELL

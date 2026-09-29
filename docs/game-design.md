@@ -212,6 +212,12 @@ um bioma com os pontos do portão **e** ao menos um nível comprado nas linhas d
 assim não dá para "pular" um bioma só maximizando os nós anteriores (ex.: chegar às Ruínas sem a
 lança).
 
+**Tabuleiro de cada bioma:** as casas são um "chão" com a cor do bioma (verde-escuro no Bosque,
+verde-água no Pântano, azul-noite nas Cavernas, violeta nas Cinzas, azul-gelo no Vale, azul-profundo
+nas Ruínas), com borda de 1 px iluminada de cima-esquerda, tufos de grama/pedrinhas e uma sombra em
+pixel sob cada item. Casas próximas (2 px entre elas). Testado e rejeitado: tabuleiro "transparente"
+(pontilhado) mostrando o fundo.
+
 **Clima de cada bioma:** cada bioma tem partículas próprias atrás do tabuleiro e um som ambiente
 próprio (troca com crossfade): Bosque Noturno = vagalumes + grilos; Pântano = esporos turquesa +
 bolhas; Cavernas = brilhos de cristal e gotas + gotas com eco e tilintar; Cinzas = brasas

@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="BoardGround" format=3]
+
+[ext_resource type="Script" path="res://src/board/board_ground.gd" id="1_ground"]
+
+[resource]
+script = ExtResource("1_ground")
+fill = Color(0.0353, 0.1647, 0.3216, 1)
+light_edge = Color(0.0706, 0.3451, 0.6196, 1)
+dark_edge = Color(0.0510, 0.0745, 0.2039, 1)
+outline = Color(0.0314, 0.0510, 0.1412, 1)
+tuft = Color(0.0980, 0.3647, 0.3137, 1)
+accent = Color(0.1529, 0.4549, 0.9020, 1)

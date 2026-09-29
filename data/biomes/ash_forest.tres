@@ -5,6 +5,7 @@
 [ext_resource type="Resource" path="res://data/ambient/ash_flakes.tres" id="fx_0"]
 [ext_resource type="Resource" path="res://data/ambient/ash_embers.tres" id="fx_1"]
 [ext_resource type="AudioStream" path="res://assets/audio/ambience/ash.ogg" id="3_ambience"]
+[ext_resource type="Resource" path="res://data/ground/ash_forest.tres" id="4_ground"]
 
 [resource]
 script = ExtResource("1_biome")
@@ -12,6 +13,7 @@ id = &"ash_forest"
 background = ExtResource("2_bg")
 ambient_effects = Array[Resource]([ExtResource("fx_0"), ExtResource("fx_1")])
 ambience = ExtResource("3_ambience")
+ground = ExtResource("4_ground")
 color = Color(0.9647, 0.6588, 0.2902, 1)
 required_points = 31
 tree_row = 7
