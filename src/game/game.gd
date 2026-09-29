@@ -23,6 +23,7 @@ var biome: Biome
 var _pending_save: SaveGame
 
 @onready var background: Sprite2D = %Background
+@onready var ambient_particles: AmbientParticles = %AmbientParticles
 @onready var board: Board = %Board
 @onready var effects: Node2D = %Effects
 @onready var state_machine: StateMachine = %StateMachine
@@ -83,6 +84,13 @@ func apply_biome() -> bool:
 	biome = current
 	if current and current.background:
 		background.texture = current.background
+	if current and (changed or ambient_particles.effects.is_empty()):
+		var layers: Array[AmbientEffect] = []
+		for effect: Resource in current.ambient_effects:
+			layers.append(effect as AmbientEffect)
+		ambient_particles.effects = layers
+	if current and current.ambience:
+		Sound.play_ambience(current.ambience)
 	return changed
 
 

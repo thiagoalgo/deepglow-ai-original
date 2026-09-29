@@ -13,7 +13,7 @@ extends Node
 @export var intro_scene: PackedScene
 ## Music for the menus (the Game switches tracks itself, see GameAudio).
 @export var menu_music: AudioStream
-## Night ambience, playing under every screen.
+## Night ambience, under the menus (in a run, the current biome's ambience).
 @export var ambience: AudioStream
 
 var _current_screen: Node
@@ -37,6 +37,7 @@ func _show_language_select() -> void:
 
 func _show_title_menu(from_settings: bool = false) -> void:
 	Sound.play_music(menu_music)
+	Sound.play_ambience(ambience)
 	var save := SaveSystem.read()
 	var screen := title_menu_scene.instantiate() as TitleMenu
 	screen.setup(save.phase_number + 1 if save else 0, from_settings)

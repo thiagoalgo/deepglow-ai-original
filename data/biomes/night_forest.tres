@@ -2,11 +2,15 @@
 
 [ext_resource type="Script" path="res://src/biomes/biome.gd" id="1_biome"]
 [ext_resource type="Texture2D" path="res://assets/sprites/board/background.png" id="2_bg"]
+[ext_resource type="Resource" path="res://data/ambient/fireflies.tres" id="fx_0"]
+[ext_resource type="AudioStream" path="res://assets/audio/ambience/night.ogg" id="3_ambience"]
 
 [resource]
 script = ExtResource("1_biome")
 id = &"night_forest"
 background = ExtResource("2_bg")
+ambient_effects = Array[Resource]([ExtResource("fx_0")])
+ambience = ExtResource("3_ambience")
 color = Color(0.4549, 0.9098, 0.3608, 1)
 required_points = 0
 tree_row = 0

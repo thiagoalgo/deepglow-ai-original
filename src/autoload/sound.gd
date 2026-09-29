@@ -13,6 +13,8 @@ const MUSIC_FADE_IN := 2.5
 ## The new track starts while the old one is still fading out.
 const MUSIC_START_DELAY := 0.6
 const RUSH_FADE := 1.5
+## Ambience crossfade (biome changes): both loops overlap for this long.
+const AMBIENCE_FADE := 3.0
 const SILENT_DB := -60.0
 const UI_SOUNDS: Dictionary[StringName, AudioStream] = {
 	&"ui_move": preload("res://assets/audio/sfx/ui_move.ogg"),
@@ -23,7 +25,9 @@ var _voices: Array[AudioStreamPlayer] = []
 var _next_voice: int = 0
 var _music_players: Array[AudioStreamPlayer] = []
 var _active_music: int = 0
-var _ambience: AudioStreamPlayer
+var _ambience_players: Array[AudioStreamPlayer] = []
+var _active_ambience: int = 0
+var _ambience_tween: Tween
 var _rush_on: bool = false
 var _rush_tween: Tween
 var _music_tween: Tween
@@ -36,7 +40,8 @@ func _ready() -> void:
 		_voices.append(_make_player(&"SFX"))
 	for i: int in 2:
 		_music_players.append(_make_player(&"Music"))
-	_ambience = _make_player(&"Ambience")
+	for i: int in 2:
+		_ambience_players.append(_make_player(&"Ambience"))
 	get_tree().node_added.connect(_on_node_added)
 
 
@@ -129,11 +134,28 @@ func set_rush(enabled: bool) -> void:
 		from, 0.0 if enabled else SILENT_DB, RUSH_FADE)
 
 
+## Crossfades the ambience loop to `stream` (no-op when it is already playing);
+## the first ambience starts at full volume.
 func play_ambience(stream: AudioStream) -> void:
-	if _ambience.stream == stream and _ambience.playing:
+	var old := _ambience_players[_active_ambience]
+	if old.stream == stream and old.playing:
 		return
-	_ambience.stream = stream
-	_ambience.play()
+	_active_ambience = 1 - _active_ambience
+	var player := _ambience_players[_active_ambience]
+	if _ambience_tween:
+		_ambience_tween.kill()
+	player.stop()
+	player.stream = stream
+	player.play()
+	if not old.playing:
+		player.volume_db = 0.0
+		return
+	player.volume_db = SILENT_DB
+	_ambience_tween = create_tween().set_parallel()
+	_ambience_tween.tween_method(_set_linear_volume.bind(old), db_to_linear(old.volume_db), 0.0,
+		AMBIENCE_FADE)
+	_ambience_tween.tween_method(_set_linear_volume.bind(player), 0.0, 1.0, AMBIENCE_FADE)
+	_ambience_tween.chain().tween_callback(old.stop)
 
 
 func _make_player(bus: StringName) -> AudioStreamPlayer:

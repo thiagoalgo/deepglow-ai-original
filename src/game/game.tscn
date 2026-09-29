@@ -28,7 +28,7 @@
 [ext_resource type="Script" path="res://src/game/game_rumble.gd" id="26_rumble"]
 [ext_resource type="Script" path="res://src/fx/night_cycle.gd" id="26_night"]
 [ext_resource type="Shader" path="res://src/fx/night_shift.gdshader" id="27_night_shader"]
-[ext_resource type="Script" path="res://src/fx/fireflies.gd" id="28_fireflies"]
+[ext_resource type="Script" path="res://src/fx/ambient_particles.gd" id="28_ambient"]
 [ext_resource type="PackedScene" path="res://src/ui/pause_menu/pause_menu.tscn" id="29_pause"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_night"]
@@ -46,9 +46,10 @@ material = SubResource("ShaderMaterial_night")
 texture = ExtResource("15_background")
 centered = false
 
-[node name="Fireflies" type="Node2D" parent="."]
+[node name="AmbientParticles" type="Node2D" parent="."]
+unique_name_in_owner = true
 z_index = -9
-script = ExtResource("28_fireflies")
+script = ExtResource("28_ambient")
 
 [node name="Board" parent="." instance=ExtResource("4_board")]
 unique_name_in_owner = true

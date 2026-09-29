@@ -7,6 +7,10 @@ extends Resource
 @export var id: StringName
 ## Phase background (640x360, palette only).
 @export var background: Texture2D
+## Ambient particle layers (AmbientEffect) drawn behind the board in this biome.
+@export var ambient_effects: Array[Resource] = []
+## Ambience loop played while the run is in this biome (null = keep the current one).
+@export var ambience: AudioStream
 ## Accent color of the biome in the upgrade tree (band header, palette color).
 @export var color: Color = Palette.STRUCTURE_HIGHLIGHT
 ## Levels invested in the tree needed to reach this biome (0 = starting biome).

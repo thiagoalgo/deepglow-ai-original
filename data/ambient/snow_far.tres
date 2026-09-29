@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="AmbientEffect" format=3]
+
+[ext_resource type="Script" path="res://src/fx/ambient_effect.gd" id="1_fx"]
+
+[resource]
+script = ExtResource("1_fx")
+motion = 1
+shape = 0
+count = 90
+block = Vector2i(2, 2)
+spawn_area = Rect2(-40, -10, 720, 20)
+colors = Array[Color]([Color(0.2275, 0.2745, 0.6392, 1)])
+life = Vector2(30, 45)
+velocity_min = Vector2(2, 6)
+velocity_max = Vector2(5, 11)
+gravity = Vector2(0, 0)
+sway = Vector2(4, 0.2)
+pop = false
+rest = Vector2(0, 0)

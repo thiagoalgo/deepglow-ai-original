@@ -210,6 +210,21 @@ func test_biomes_gate_their_rows() -> String:
 	return ""
 
 
+func test_every_biome_has_its_own_ambience_and_particles() -> String:
+	var seen: Dictionary[AudioStream, bool] = {}
+	for biome: Biome in _db().biomes:
+		if biome.ambience == null or seen.has(biome.ambience):
+			return "biome %s needs its own ambience loop" % biome.id
+		seen[biome.ambience] = true
+		if biome.ambient_effects.is_empty():
+			return "biome %s has no ambient particles" % biome.id
+		for effect: Resource in biome.ambient_effects:
+			var fx := effect as AmbientEffect
+			if fx == null or fx.colors.is_empty() or fx.count <= 0:
+				return "biome %s has an invalid ambient effect" % biome.id
+	return ""
+
+
 func test_every_tool_unlock_lives_in_its_biome() -> String:
 	# Theme check (docs/game-design.md §7.2): each biome unlocks its tools.
 	var db := _db()

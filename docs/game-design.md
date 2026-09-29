@@ -212,6 +212,12 @@ um bioma com os pontos do portão **e** ao menos um nível comprado nas linhas d
 assim não dá para "pular" um bioma só maximizando os nós anteriores (ex.: chegar às Ruínas sem a
 lança).
 
+**Clima de cada bioma:** cada bioma tem partículas próprias atrás do tabuleiro e um som ambiente
+próprio (troca com crossfade): Bosque Noturno = vagalumes + grilos; Pântano = esporos turquesa +
+bolhas; Cavernas = brilhos de cristal e gotas + gotas com eco e tilintar; Cinzas = brasas
+subindo e cinza caindo + estalos; Vale Lunar = neve em duas camadas + gelo tilintando e um uivo
+distante; Ruínas = bolhas e plâncton + sino do templo afundado, abafado pela água, e bolhas. Os menus usam o som do Bosque Noturno.
+
 **Tela:** a árvore ocupa a tela toda (rolagem horizontal; a roda do mouse rola para os lados).
 Clicar num nó (ou confirmar com Enter/Espaço/A) abre um popup ao lado dele com nome, nível,
 descrição, custo, o motivo do bloqueio (pré-requisito, pontos ou escolha já feita) e o botão

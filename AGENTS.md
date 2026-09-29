@@ -96,11 +96,11 @@ src/                  # code + scenes, organized by FEATURE (.tscn next to its .
   economy/            # ResourceType, ResourceAmount (data) + Inventory (state)
   sources/            # Rarity, ToolType, SourceType (data) + SourceCard (scene)
   progression/        # UpgradeNode, Achievement (data) + ProgressionState (state, derived stats)
-  biomes/             # Biome (data: background, gate points, first tree row)
+  biomes/             # Biome (data: background, ambience, ambient particles, color, gate points, first tree row)
   survival/           # Needs (hunger/thirst state; empty hunger = weak hits, empty thirst = half materials)
   save/               # SaveGame (run snapshot <-> JSON dict) + SaveSystem (user://save.json I/O)
   phases/             # PhaseRules (data) + PhaseGenerator/PhasePlan (pure logic)
-  fx/                 # visual effects (FloatingText, PixelBurst, Fireflies, NightCycle + night_shift shader,
+  fx/                 # visual effects (FloatingText, PixelBurst, AmbientParticles + AmbientEffect, NightCycle + night_shift shader,
                       # PaletteShift = palette "darker" table shared with the intro)
   intro/              # Intro screen + IntroShot/IntroSequence (data: motion, background(s), text key, duration)
   ui/                 # one subfolder per screen/component (hud, phase_summary,
@@ -135,7 +135,8 @@ App (Control)                        src/main/app.tscn — window root: integer 
             └── Game (Node2D)                    src/game/game.tscn — run state: inventory, progression, needs
                 ├── Background (Sprite2D) %      — current biome's background (Game.apply_biome());
                 │                                  night_shift.gdshader (darkened by NightCycle)
-                ├── Fireflies (Node2D)           — ambient palette-stepped fireflies
+                ├── AmbientParticles (Node2D) %  — the biome's ambient particles (Biome.ambient_effects: fireflies,
+                │                                  spores, glints/drips, embers/ash, snow, bubbles/plankton)
                 ├── Board (Node2D) %             src/board/board.tscn
                 │   ├── GridView (Node2D) %      — frame + cells drawn with PixelStyleBox (_draw)
                 │   └── Items (Node2D, y_sort) % — SourceCard instances (no hovered-cell highlight)
@@ -168,7 +169,9 @@ stages: a biome's `required_points` gates every node from its `tree_row` down
 (`ProgressionState.get_required_points()`), the tree draws one column per biome (header text in `Biome.color`), and the
 current biome (`ProgressionState.get_biome()`, from levels bought — not saved; a biome also needs
 a level bought in the previous biome's rows, so points alone never skip one) sets the phase
-background; `PhaseBuild` shows a banner on the first phase of a new biome. Each biome's content
+background, its ambient particles (`AmbientEffect` layers in `data/ambient/`, drawn by
+`AmbientParticles`) and its ambience loop (`Sound.play_ambience` crossfades; menus use the night
+loop); `PhaseBuild` shows a banner on the first phase of a new biome. Each biome's content
 matches its theme (GDD §7.2): keep new tools/sources in the biome they belong to.
 
 Data flow: `GameDatabase` (all data) → `ProgressionState` computes derived stats (effective clicks,
@@ -220,7 +223,7 @@ saving is instant, the hold times only make it noticeable).
    (fireflies, glow), `PointLight2D` + `CanvasModulate` (bioluminescent lighting),
    `AudioStreamPlayer` (audio), `Timer`, `Marker2D`. `Autoload` only when truly global.
 8. **No magic layout numbers in scenes/code**: they come from `BoardConfig`/exports.
-9. **Effects stay pixel art:** particles, fireflies and the night cycle use whole pixels and
+9. **Effects stay pixel art:** particles, ambient particles and the night cycle use whole pixels and
    palette colors only — they change color in palette steps (or ordered dither) instead of fading
    with alpha. No `PointLight2D`/`CanvasModulate` gradients.
 10. **Boxes are pixel art:** every rectangle (panels, buttons, board cells, tree nodes, bars) uses
@@ -419,8 +422,12 @@ Art file names: `snake_case`, no spaces, English, id equal to the data `id`
   | pt_BR | Lucas - Deep & Profound Narrator | `GIuLCSVfgJaUuh7hYOY8` |
 
   Each shot lasts its line + 0.8 s; the music bus is lowered 8 dB while the intro runs.
-- **Ambience:** `night.ogg` = crickets in bouts with long rests. Rejected by the owner (don't
-  bring back): a continuous stream/wind noise bed (sounded like hiss) and occasional water swells.
+- **Ambience:** one loop per biome (`Biome.ambience`, 48 s, sparse events in bouts with long
+  rests, loudness matched to the night loop in `ambience.py`): `night` crickets, `swamp` bubbles
+  surfacing, `caves` echoing drips + rare crystal chime, `ash`
+  ember crackles + a soft thump, `frozen` ice tinkles + a rare distant howl, `ruins` a drowned temple bell
+  (muffled, inharmonic) + bubble trains; pure sub-bass pulses were inaudible on small speakers. Rejected by the owner (don't bring back): a continuous stream/wind noise bed
+  (sounded like hiss), occasional water swells and synthetic frogs (didn't sound like frogs).
 - **Material sounds/particles are data:** `ToolType.hit_sound` + `ToolType.particle_colors`
   (palette, bright → dark).
   A source can override them: `SourceType.hit_sound` and `SourceType.collect_sound` (played on
