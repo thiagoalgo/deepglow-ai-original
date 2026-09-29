@@ -411,6 +411,13 @@ Art file names: `snake_case`, no spaces, English, id equal to the data `id`
   plays the file for the current locale (`IntroSequence.get_voice`). **Rule (owner):** a language
   without its own recording is narrated in English, with the captions in its own language
   (`IntroSequence.fallback_voice_locale`). Recorded: pt_BR, en.
+  ElevenLabs voices (reuse them for any new narration so every line sounds the same):
+
+  | Locale | Voice | Voice ID |
+  |---|---|---|
+  | en | Connery - Dramatic Mythology Storyteller | `onwK4e9ZLuTAKqWW03F9` |
+  | pt_BR | Lucas - Deep & Profound Narrator | `GIuLCSVfgJaUuh7hYOY8` |
+
   Each shot lasts its line + 0.8 s; the music bus is lowered 8 dB while the intro runs.
 - **Ambience:** `night.ogg` = crickets in bouts with long rests. Rejected by the owner (don't
   bring back): a continuous stream/wind noise bed (sounded like hiss) and occasional water swells.
