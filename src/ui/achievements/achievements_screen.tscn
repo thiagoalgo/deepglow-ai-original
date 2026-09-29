@@ -1,0 +1,103 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://src/ui/achievements/achievements_screen.gd" id="1_screen"]
+[ext_resource type="Texture2D" path="res://assets/sprites/board/background.png" id="2_background"]
+[ext_resource type="Resource" path="res://data/game_database.tres" id="3_database"]
+
+[node name="AchievementsScreen" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_screen")
+database = ExtResource("3_database")
+
+[node name="Background" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("2_background")
+
+[node name="Margin" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 8
+
+[node name="Panel" type="PanelContainer" parent="Margin"]
+layout_mode = 2
+theme_type_variation = &"HudPanel"
+
+[node name="Stack" type="VBoxContainer" parent="Margin/Panel"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Header" type="HBoxContainer" parent="Margin/Panel/Stack"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="Margin/Panel/Stack/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"TitleLabel"
+text = "UI_ACHIEVEMENTS"
+
+[node name="BackButton" type="Button" parent="Margin/Panel/Stack/Header"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 4
+theme_type_variation = &"SmallButton"
+text = "UI_BACK"
+
+[node name="AchievementsLabel" type="Label" parent="Margin/Panel/Stack"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"MutedLabel"
+
+[node name="AchievementsGrid" type="GridContainer" parent="Margin/Panel/Stack"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_constants/h_separation = 6
+theme_override_constants/v_separation = 4
+columns = 10
+
+[node name="BadgesLabel" type="Label" parent="Margin/Panel/Stack"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"MutedLabel"
+
+[node name="BadgesGrid" type="GridContainer" parent="Margin/Panel/Stack"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_constants/h_separation = 6
+theme_override_constants/v_separation = 4
+columns = 10
+
+[node name="Details" type="VBoxContainer" parent="Margin/Panel/Stack"]
+layout_mode = 2
+size_flags_vertical = 10
+theme_override_constants/separation = 0
+
+[node name="NameLabel" type="Label" parent="Margin/Panel/Stack/Details"]
+unique_name_in_owner = true
+layout_mode = 2
+horizontal_alignment = 1
+
+[node name="DescLabel" type="Label" parent="Margin/Panel/Stack/Details"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_type_variation = &"MutedLabel"
+horizontal_alignment = 1

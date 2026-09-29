@@ -24,4 +24,9 @@ signal source_collected(source: SourceType, amount: int, cell: Vector2i)
 signal needs_changed(hunger: float, thirst: float)
 signal inventory_changed(resource_id: StringName, amount: int)
 
+# --- Progress ---
+## A milestone achievement (badge = false) or an upgrade badge (badge = true,
+## id = upgrade id) was unlocked for the first time (AchievementStore).
+signal achievement_unlocked(badge: bool, id: StringName)
+
 @warning_ignore_restore("unused_signal")

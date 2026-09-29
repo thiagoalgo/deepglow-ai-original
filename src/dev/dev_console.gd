@@ -115,6 +115,7 @@ func _register_commands() -> void:
 		_resource_ids)
 	_add("fullscreen", "fullscreen", "toggles fullscreen / window", _cmd_fullscreen)
 	_add("mute", "mute", "toggles all sound on/off (not saved)", _cmd_mute)
+	_add("clear_achievements", "clear_achievements", "forgets every achievement and badge", _cmd_clear_achievements)
 	_add("reset", "reset", "closes and reopens the game (save and settings kept)", _cmd_reset)
 	_add("clear_cfg", "clear_cfg", "deletes settings.cfg, closes and reopens the game", _cmd_clear_cfg)
 	_add("exit", "exit", "quits the game", _cmd_exit)
@@ -185,6 +186,11 @@ func _cmd_mute(_args: PackedStringArray) -> void:
 	var master := AudioServer.get_bus_index(&"Master")
 	AudioServer.set_bus_mute(master, not AudioServer.is_bus_mute(master))
 	_print("sound %s" % ("off" if AudioServer.is_bus_mute(master) else "on"))
+
+
+func _cmd_clear_achievements(_args: PackedStringArray) -> void:
+	AchievementStore.new().clear()
+	_print("Achievements and badges cleared.")
 
 
 func _cmd_reset(_args: PackedStringArray) -> void:

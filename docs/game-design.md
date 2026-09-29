@@ -231,6 +231,20 @@ descrição, custo, o motivo do bloqueio (pré-requisito, pontos ou escolha já 
 uma compra o popup fica no mesmo lugar e tamanho. Comprar é sempre o botão. Cores da moldura: cinza = bloqueado, azul = disponível sem recursos, turquesa =
 pode comprar, âmbar = parcialmente comprado, amarelo = completo.
 
+### 7.3 Conquistas e insígnias (decidido, set/2026)
+
+- **Minhas conquistas** (menu principal) mostra duas coleções, como brasões em pixel art com o
+  ícone no centro (bloqueado = brasão escuro com a silhueta do ícone):
+  - **Conquistas:** os 10 marcos (primeira noite, 25/100 fases, primeira evolução, cada
+    ferramenta, Coração de Deepglow), os mesmos reportados à Steam; borda âmbar.
+  - **Insígnias:** uma por melhoria da árvore (29), ganha ao chegar ao nível máximo dela
+    (1, 2 ou 3 níveis); borda na cor do bioma da melhoria, na ordem da árvore.
+- São **permanentes**: ficam em `user://achievements.cfg`, fora do save da partida, e continuam
+  depois de um "Novo jogo". Saves antigos liberam o que já tinham ao carregar.
+- Cada desbloqueio mostra um aviso no topo ("Conquista desbloqueada!" / "Insígnia conquistada!");
+  muitos de uma vez viram um aviso único com a contagem.
+- Terminal de dev: `clear_achievements` apaga tudo.
+
 ## 8. Balanceamento e duração
 
 - Todos os números ficam em dados (`.tres`), nunca no código.

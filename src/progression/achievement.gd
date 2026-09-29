@@ -1,8 +1,9 @@
 class_name Achievement
 extends Resource
-## A platform achievement (Steam) unlocked by long-term progress. The id is the
-## API name configured in Steamworks; display names/descriptions live there
-## (see docs/publishing.md). Evaluated by Game after each phase and purchase.
+## A milestone achievement unlocked by long-term progress: reported to Steam
+## (the id is the Steamworks API name, docs/publishing.md) and shown in the
+## "My achievements" screen (name/description keys <ID>_NAME / <ID>_DESC).
+## Evaluated by Game after each phase and purchase.
 
 enum Kind {
 	PHASES_PLAYED,  ## progression.phases_played >= amount
@@ -16,6 +17,16 @@ enum Kind {
 ## Upgrade id for UPGRADE_OWNED.
 @export var target: StringName
 @export var amount: int = 1
+## Emblem drawn inside the badge (an existing game icon).
+@export var icon: Texture2D
+
+
+func get_name_key() -> StringName:
+	return StringName("%s_NAME" % id)
+
+
+func get_desc_key() -> StringName:
+	return StringName("%s_DESC" % id)
 
 
 func is_unlocked(progression: ProgressionState) -> bool:

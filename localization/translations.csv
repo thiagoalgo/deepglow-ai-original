@@ -165,3 +165,33 @@ INTRO_09,Find it before the last light goes out.,Encontre-o antes que a última 
 UI_WATCH_INTRO,Watch intro,Rever introdução
 UI_INTRO_SKIP_HINT,Hold to skip,Segure para pular
 UI_SETTING_VOICE,Narration,Narração
+ACH_FIRST_NIGHT_NAME,First Night,Primeira Noite
+ACH_FIRST_NIGHT_DESC,Finish your first phase.,Termine sua primeira fase.
+ACH_NIGHT_OWL_NAME,Night Owl,Coruja Noturna
+ACH_NIGHT_OWL_DESC,Play 25 phases.,Jogue 25 fases.
+ACH_ENDLESS_NIGHT_NAME,Endless Night,Noite Sem Fim
+ACH_ENDLESS_NIGHT_DESC,Play 100 phases.,Jogue 100 fases.
+ACH_FIRST_UPGRADE_NAME,First Step,Primeiro Passo
+ACH_FIRST_UPGRADE_DESC,Buy your first upgrade.,Compre sua primeira evolução.
+ACH_STONECUTTER_NAME,Stonecutter,Cortador de Pedra
+ACH_STONECUTTER_DESC,Unlock the pickaxe.,Desbloqueie a picareta.
+ACH_ANGLER_NAME,Angler,Pescador
+ACH_ANGLER_DESC,Unlock the fishing rod.,Desbloqueie a vara de pesca.
+ACH_HUNTER_NAME,Hunter,Caçador
+ACH_HUNTER_DESC,Unlock the spear.,Desbloqueie a lança.
+ACH_MINER_NAME,Miner,Minerador
+ACH_MINER_DESC,Unlock the ore pick.,Desbloqueie a picareta de minério.
+ACH_CRYSTAL_SEEKER_NAME,Crystal Seeker,Buscador de Cristais
+ACH_CRYSTAL_SEEKER_DESC,Unlock the crystal pick.,Desbloqueie a picareta de cristal.
+ACH_HEART_OF_DEEPGLOW_NAME,Heart of Deepglow,Coração de Deepglow
+ACH_HEART_OF_DEEPGLOW_DESC,Complete the upgrade tree.,Complete a árvore de evolução.
+UI_ACHIEVEMENTS,My achievements,Minhas conquistas
+UI_ACHIEVEMENTS_SECTION,Achievements · %d/%d,Conquistas · %d/%d
+UI_BADGES_SECTION,Badges · %d/%d,Insígnias · %d/%d
+UI_BADGE_HOW,Max out %s (%d levels).,Complete %s (%d níveis).
+UI_BADGE_HOW_ONE,Buy %s.,Compre %s.
+UI_LOCKED,Locked,Bloqueada
+UI_UNLOCKED,Unlocked,Conquistada
+UI_ACHIEVEMENT_UNLOCKED,Achievement unlocked!,Conquista desbloqueada!
+UI_BADGE_UNLOCKED,Badge earned!,Insígnia conquistada!
+UI_UNLOCKED_MANY,%d achievements and badges,%d conquistas e insígnias

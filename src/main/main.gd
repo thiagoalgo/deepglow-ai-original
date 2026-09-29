@@ -2,7 +2,7 @@ extends Node
 ## Entry point and screen flow:
 ##   first launch: LanguageSelect -> TitleMenu;  later launches: TitleMenu
 ##   TitleMenu -> Game (continue the saved run) / Intro -> Game (new game) /
-##   Intro -> TitleMenu ("Watch intro") / SettingsScreen
+##   Intro -> TitleMenu ("Watch intro") / SettingsScreen / AchievementsScreen
 ##   Game "Menu" -> TitleMenu
 ## Screens are PackedScene exports that only emit signals; Main swaps them.
 
@@ -13,6 +13,7 @@ const DEV_CONSOLE := "res://src/dev/dev_console.gd"
 @export var language_select_scene: PackedScene
 @export var title_menu_scene: PackedScene
 @export var settings_scene: PackedScene
+@export var achievements_scene: PackedScene
 @export var game_scene: PackedScene
 @export var intro_scene: PackedScene
 ## Music for the menus (the Game switches tracks itself, see GameAudio).
@@ -44,15 +45,17 @@ func _show_language_select() -> void:
 	_switch_to(screen)
 
 
-func _show_title_menu(from_settings: bool = false) -> void:
+## `focus`: the sub-screen we come back from (its button keeps the focus).
+func _show_title_menu(focus: StringName = &"") -> void:
 	Sound.play_music(menu_music)
 	Sound.play_ambience(ambience)
 	var save := SaveSystem.read()
 	var screen := title_menu_scene.instantiate() as TitleMenu
-	screen.setup(save.phase_number + 1 if save else 0, from_settings)
+	screen.setup(save.phase_number + 1 if save else 0, focus)
 	screen.continue_requested.connect(_start_game.bind(save), CONNECT_ONE_SHOT)
 	screen.new_game_requested.connect(_on_new_game_requested, CONNECT_ONE_SHOT)
 	screen.settings_requested.connect(_show_settings, CONNECT_ONE_SHOT)
+	screen.achievements_requested.connect(_show_achievements, CONNECT_ONE_SHOT)
 	screen.intro_requested.connect(_play_intro.bind(_show_title_menu), CONNECT_ONE_SHOT)
 	screen.quit_requested.connect(_quit, CONNECT_ONE_SHOT)
 	_switch_to(screen)
@@ -60,7 +63,13 @@ func _show_title_menu(from_settings: bool = false) -> void:
 
 func _show_settings() -> void:
 	var screen := settings_scene.instantiate() as SettingsScreen
-	screen.closed.connect(_show_title_menu.bind(true), CONNECT_ONE_SHOT)
+	screen.closed.connect(_show_title_menu.bind(&"settings"), CONNECT_ONE_SHOT)
+	_switch_to(screen)
+
+
+func _show_achievements() -> void:
+	var screen := achievements_scene.instantiate() as AchievementsScreen
+	screen.closed.connect(_show_title_menu.bind(&"achievements"), CONNECT_ONE_SHOT | CONNECT_DEFERRED)
 	_switch_to(screen)
 
 

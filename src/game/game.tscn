@@ -30,6 +30,7 @@
 [ext_resource type="Shader" path="res://src/fx/night_shift.gdshader" id="27_night_shader"]
 [ext_resource type="Script" path="res://src/fx/ambient_particles.gd" id="28_ambient"]
 [ext_resource type="PackedScene" path="res://src/ui/pause_menu/pause_menu.tscn" id="29_pause"]
+[ext_resource type="PackedScene" path="res://src/ui/achievement_toast/achievement_toast.tscn" id="30_toast"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_night"]
 shader = ExtResource("27_night_shader")
@@ -96,6 +97,8 @@ unique_name_in_owner = true
 
 [node name="PauseMenu" parent="Overlays" instance=ExtResource("29_pause")]
 unique_name_in_owner = true
+
+[node name="AchievementToast" parent="." instance=ExtResource("30_toast")]
 
 [node name="ToolCursor" parent="." instance=ExtResource("14_cursor")]
 unique_name_in_owner = true

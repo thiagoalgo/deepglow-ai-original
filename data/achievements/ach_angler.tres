@@ -1,6 +1,7 @@
 [gd_resource type="Resource" script_class="Achievement" format=3]
 
 [ext_resource type="Script" path="res://src/progression/achievement.gd" id="1_ach"]
+[ext_resource type="Texture2D" path="res://assets/sprites/cursors/fishing_rod.png" id="2_icon"]
 
 [resource]
 script = ExtResource("1_ach")
@@ -8,3 +9,4 @@ id = &"ACH_ANGLER"
 kind = 1
 target = &"unlock_fishing_rod"
 amount = 1
+icon = ExtResource("2_icon")

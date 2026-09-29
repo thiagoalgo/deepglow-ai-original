@@ -96,6 +96,7 @@ src/                  # code + scenes, organized by FEATURE (.tscn next to its .
   economy/            # ResourceType, ResourceAmount (data) + Inventory (state)
   sources/            # Rarity, ToolType, SourceType (data) + SourceCard (scene)
   progression/        # UpgradeNode, Achievement (data) + ProgressionState (state, derived stats)
+                      # + AchievementStore (unlocks kept across runs, user://achievements.cfg)
   biomes/             # Biome (data: background, ambience, ambient particles, board ground, color, gate points, first tree row)
   survival/           # Needs (hunger/thirst state; empty hunger = weak hits, empty thirst = half materials)
   save/               # SaveGame (run snapshot <-> JSON dict) + SaveSystem (user://save.json I/O)
@@ -125,7 +126,10 @@ App (Control)                        src/main/app.tscn — window root: integer 
     └── GameViewport (SubViewport 640x360)
         └── Main (Node)              src/main/main.tscn — swaps screens (one at a time)
             ├── LanguageSelect (Control)         src/ui/language_select/  — first launch only
-            ├── TitleMenu (Control)              src/ui/title_menu/ — Continue, New game, Watch intro, Settings, Quit
+            ├── TitleMenu (Control)              src/ui/title_menu/ — Continue, New game, Watch intro, My achievements,
+            │                                     Settings, Quit
+            ├── AchievementsScreen (Control)     src/ui/achievements/ — milestone achievements + one badge per upgrade
+            │                                     (BadgeView: pixel shield + icon; locked = silhouette)
             ├── Intro (Control)                  src/intro/ — animated intro (IntroSequence data, data/intro/intro.tres):
             │                                     plays before a new game and from "Watch intro"; tap advances,
             │                                     hold (0.6 s) skips; every picture change is a pixel dissolve
@@ -159,6 +163,7 @@ App (Control)                        src/main/app.tscn — window root: integer 
                 │   │                                     + SaveIndicator badge (src/ui/save_indicator/)
                 │   └── PauseMenu (Control) %    src/ui/pause_menu/ — pauses the tree (timer, needs, board stop);
                 │                                  Resume / Main menu (phase progress is lost, confirmed)
+                ├── AchievementToast (CanvasLayer 30) — "Achievement unlocked!/Badge earned!" (many at once = 1 summary)
                 ├── ToolCursor (CanvasLayer 100) % — software cursor showing the contextual tool
                 ├── GameAudio (Node) %           — music/SFX from Events (phase track + rush layer, hits, ticks)
                 ├── GameFx (Node)                — PixelBurst chips on hits, sparkles on collect
@@ -193,6 +198,12 @@ changes do not break old saves; bump `SaveGame.VERSION` (and migrate in `from_di
 changes. Player settings stay in `user://settings.cfg` (Settings autoload), separate from the run.
 Every save shows the `SaveIndicator` badge ("Saving" for 1.2 s, then "Game saved" for 1.8 s —
 saving is instant, the hold times only make it noticeable).
+**Achievements & badges:** `Game.report_achievements()` (after each phase/purchase and when a run
+opens) reports milestones to Steam (`Platform`) and updates `AchievementStore`: an `Achievement` when
+its rule is met, a **badge** for every upgrade taken to its max level (all 29, whatever `max_level`).
+Unlocks are kept across runs (a new game keeps them) in `user://achievements.cfg`, separate from the
+run save; new ones emit `Events.achievement_unlocked` (toast). Names: `<ACH_ID>_NAME/_DESC`; badges use
+the upgrade name/icon and their biome's color. Dev console: `clear_achievements`.
 `user://` is a custom user dir named `Deepglow` (`application/config/use_custom_user_dir`): macOS
 `~/Library/Application Support/Deepglow/`, Windows `%APPDATA%\Deepglow\`, Linux `~/.local/share/Deepglow/`.
 
@@ -471,7 +482,7 @@ Art file names: `snake_case`, no spaces, English, id equal to the data `id`
   (`tools/build/export_all.sh "Windows (dev)"` → `build/windows-dev/`).
 - Ctrl+Space or F1 opens/closes it, Esc or a click outside it closes it; the game pauses while it is open; Up/Down = history.
 - Commands: `help` / `?`, `load_save <NN>` (writes `src/dev/saves/NN_*.json` over the save slot and
-  opens the run: 01 = empty run, 02–06 = one per biome), `set <resource> <amount>`, `fullscreen` (toggles, like F11), `mute` (toggles the Master bus, not saved), `reset` (closes and
+  opens the run: 01 = empty run, 02–06 = one per biome), `set <resource> <amount>`, `fullscreen` (toggles, like F11), `clear_achievements`, `mute` (toggles the Master bus, not saved), `reset` (closes and
   reopens the program, save and settings kept), `clear_cfg`
   (same as `reset` after `Settings.reset()` deletes `settings.cfg`; both use `OS.create_instance` — adding `--path` when run from the editor — then quit, falling back to reloading the main scene if the new instance cannot start), `exit`; `help` lists the accepted values (test saves,
   resource ids) indented under their command. It is drawn over the game area at window resolution (own SubViewport, outside the 640x360 one) through a copy of the CRT filter (`crt.gdshader` `keep_alpha`), so the font stays crisp; font JetBrains Mono NL (SIL OFL, `src/dev/fonts/`), fluorescent green text on a 25% transparent background (dev tool: palette rules do not apply); Enter and clicks inside keep the focus on the `>>> ` prompt (borderless field). New command = `_add(...)` in

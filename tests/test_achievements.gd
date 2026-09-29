@@ -46,3 +46,42 @@ func test_unlock_rules() -> String:
 	if not (phases.is_unlocked(prog) and owned.is_unlocked(prog) and levels.is_unlocked(prog)):
 		return "all three should be unlocked"
 	return ""
+
+
+func test_every_achievement_has_an_icon() -> String:
+	for achievement: Achievement in _db().achievements:
+		if achievement.icon == null:
+			return "%s has no icon for its badge" % achievement.id
+	return ""
+
+
+func test_store_unlocks_badges_once_and_persists() -> String:
+	var path := "user://test_achievements.cfg"
+	var db := _db()
+	var store := AchievementStore.new(path)
+	store.clear()
+	var prog := ProgressionState.new(db)
+	var inv := Inventory.new()
+	inv.add(&"wood", 100000)
+	var axe := db.get_upgrade(&"sharp_axe")
+	prog.buy(axe, inv)
+	var first := store.update(db, prog)
+	if store.has_badge(axe.id):
+		return "a badge needs the upgrade at its max level"
+	if first.size() != 1 or first[0]["badge"] or first[0]["id"] != &"ACH_FIRST_UPGRADE":
+		return "first purchase should only unlock ACH_FIRST_UPGRADE, got %s" % [first]
+	while not prog.is_maxed(axe):
+		prog.buy(axe, inv)
+	var second := store.update(db, prog)
+	if second.size() != 1 or not second[0]["badge"] or second[0]["id"] != axe.id:
+		return "maxing sharp_axe should unlock only its badge, got %s" % [second]
+	if not store.update(db, prog).is_empty():
+		return "unlocks must not repeat"
+	# A new run (fresh progression) keeps what was unlocked.
+	var reloaded := AchievementStore.new(path)
+	if not (reloaded.has_badge(axe.id) and reloaded.has_achievement(&"ACH_FIRST_UPGRADE")):
+		return "unlocks must survive a reload"
+	reloaded.clear()
+	if AchievementStore.new(path).count(AchievementStore.BADGES) != 0:
+		return "clear should forget everything"
+	return ""

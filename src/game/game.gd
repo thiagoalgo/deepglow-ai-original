@@ -74,6 +74,9 @@ func report_achievements() -> void:
 		if achievement.is_unlocked(progression):
 			unlocked.append(achievement.id)
 	Platform.unlock_achievements(unlocked)
+	# "My achievements" (kept across runs): announce only what is new.
+	for new_unlock: Dictionary in AchievementStore.new().update(database, progression):
+		Events.achievement_unlocked.emit(new_unlock["badge"], new_unlock["id"])
 
 
 ## Shows the current biome's background. Returns true when a new biome was
