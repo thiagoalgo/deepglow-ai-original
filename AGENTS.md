@@ -132,7 +132,7 @@ App (Control)                        src/main/app.tscn — window root: integer 
             │                                     (BadgeView: pixel shield + icon; locked = silhouette)
             ├── Intro (Control)                  src/intro/ — animated intro (IntroSequence data, data/intro/intro.tres):
             │                                     plays before a new game and from "Watch intro"; tap advances,
-            │                                     hold (0.6 s) skips; every picture change is a pixel dissolve
+            │                                     hold (0.6 s) skips — the "Hold to skip" hint is always visible; every picture change is a pixel dissolve
             │                                     (src/fx/pixel_dissolve.gdshader, ordered dither, no alpha)
             ├── SettingsScreen (Control)         src/ui/settings/ — SettingRow per setting (language, CRT,
             │                                     fullscreen; volume later), applied + saved immediately

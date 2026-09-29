@@ -5,8 +5,8 @@ extends Control
 ## inside the biome montage, in from and out to black) is the same pixel
 ## dissolve (src/fx/pixel_dissolve.gdshader); a shot that shows the same
 ## picture as the previous one only changes the line. Tap (click / Space / Enter / A)
-## completes the line or goes to the next shot; hold to skip it all (the hint
-## appears once a button is pressed).
+## completes the line or goes to the next shot; hold to skip it all (the
+## "Hold to skip" hint is always on screen; its bar fills while holding).
 ## Each shot plays its narration (IntroSequence.get_voice, current locale) on the
 ## Voice bus; the shot lasts the line plus a short pause, and the
 ## music is lowered while the intro runs.
@@ -16,8 +16,6 @@ signal finished
 
 ## Seconds a confirm button must be held to skip the whole intro.
 const HOLD_TO_SKIP := 0.6
-## The "Hold to skip" hint shows while a button is held and for this long after.
-const SKIP_HINT_TIME := 2.0
 ## Minimum typing speed (characters per second); long lines type faster so
 ## they finish at ~75% of the shot.
 const TYPE_SPEED := 30.0
@@ -44,7 +42,6 @@ var _shot_time: float = 0.0
 var _hold: float = 0.0
 ## A confirm press that started during the intro is being held.
 var _holding: bool = false
-var _hint_time: float = 0.0
 var _busy: bool = false
 var _done: bool = false
 var _montage_index: int = -1
@@ -86,7 +83,7 @@ func _ready() -> void:
 	_text.text = ""
 	_caption.hide()
 	_skip_fill.size.x = 0.0
-	_skip_hint.hide()
+	_skip_hint.show()
 	_next_shot()
 
 
@@ -115,7 +112,6 @@ func _input(event: InputEvent) -> void:
 		if not _holding:
 			_holding = true
 			_hold = 0.0
-			_skip_hint.show()
 	elif _holding:
 		_holding = false
 		_skip_fill.size.x = 0.0
@@ -125,11 +121,7 @@ func _input(event: InputEvent) -> void:
 
 func _update_input(delta: float) -> void:
 	if not _holding:
-		if _skip_hint.visible:
-			_hint_time += delta
-			_skip_hint.visible = _hint_time < SKIP_HINT_TIME
 		return
-	_hint_time = 0.0
 	_hold += delta
 	_skip_fill.size.x = floorf(_skip_track.size.x * minf(_hold / HOLD_TO_SKIP, 1.0))
 	if _hold >= HOLD_TO_SKIP:
