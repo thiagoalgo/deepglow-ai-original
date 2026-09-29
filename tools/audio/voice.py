@@ -25,7 +25,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / 'assets' / 'audio' / 'voice'
-NAME = re.compile(r'^(?P<id>[a-z]+_\d+)_(?P<locale>[a-z]{2}(?:_[A-Z]{2})?)\.(mp3|wav|ogg)$')
+NAME = re.compile(r'^(?P<id>[a-z_]+_\d+)_(?P<locale>[a-z]{2}(?:_[A-Z]{2})?)\.(mp3|wav|ogg)$')
 TRIM = ('silenceremove=start_periods=1:start_threshold=-50dB,'
         'areverse,silenceremove=start_periods=1:start_threshold=-50dB,areverse')
 LOUDNORM = 'loudnorm=I=-16:TP=-1.5:LRA=11'

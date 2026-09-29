@@ -5,6 +5,7 @@
 #
 #   GODOT=/Applications/Godot.app/Contents/MacOS/Godot tools/build/export_all.sh
 #   tools/build/export_all.sh Linux          # a single preset
+#   tools/build/export_all.sh "Web (demo)"   # itch.io demo (needs the Web export templates)
 set -euo pipefail
 cd "$(dirname "$0")/../.."
 

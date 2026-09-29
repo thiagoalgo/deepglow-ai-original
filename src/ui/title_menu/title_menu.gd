@@ -45,6 +45,8 @@ func setup(saved_next_phase: int, focus: StringName = &"", ending_unlocked: bool
 
 func _ready() -> void:
 	_version.text = "v%s" % ProjectSettings.get_setting("application/config/version", "")
+	if Demo.is_active():
+		_version.text += " " + tr(&"UI_DEMO")
 	_continue_button.visible = _saved_next_phase > 0
 	_continue_button.text = tr(&"UI_CONTINUE_RUN") % _saved_next_phase
 	_continue_button.pressed.connect(continue_requested.emit)

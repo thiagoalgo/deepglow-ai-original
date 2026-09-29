@@ -18,6 +18,7 @@ const DEV_CONSOLE := "res://src/dev/dev_console.gd"
 @export var intro_scene: PackedScene
 ## Played by "Watch ending" (the Game plays it itself when the story ends).
 @export var ending_sequence: IntroSequence
+@export var demo_ending_sequence: IntroSequence
 ## Music for the menus (the Game switches tracks itself, see GameAudio).
 @export var menu_music: AudioStream
 ## Night ambience, under the menus (in a run, the current biome's ambience).
@@ -53,7 +54,8 @@ func _show_title_menu(focus: StringName = &"") -> void:
 	Sound.play_ambience(ambience)
 	var save := SaveSystem.read()
 	var screen := title_menu_scene.instantiate() as TitleMenu
-	var ending_unlocked := AchievementStore.new().has_achievement(Game.STORY_ACHIEVEMENT)
+	var ending_unlocked := AchievementStore.new().has_achievement(Game.STORY_ACHIEVEMENT) \
+		and not Demo.is_active()
 	screen.setup(save.phase_number + 1 if save else 0, focus, ending_unlocked)
 	screen.continue_requested.connect(_start_game.bind(save), CONNECT_ONE_SHOT)
 	screen.new_game_requested.connect(_on_new_game_requested, CONNECT_ONE_SHOT)
@@ -92,7 +94,7 @@ func play_intro() -> void:
 ## Plays the ending ("Watch ending", dev console), then back to the title menu.
 func play_ending() -> void:
 	var intro := intro_scene.instantiate() as Intro
-	intro.sequence = ending_sequence
+	intro.sequence = demo_ending_sequence if Demo.is_active() else ending_sequence
 	intro.finished.connect(_show_title_menu.bind(&"ending"), CONNECT_ONE_SHOT | CONNECT_DEFERRED)
 	_switch_to(intro)
 

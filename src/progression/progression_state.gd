@@ -11,6 +11,11 @@ var database: GameDatabase
 var phases_played: int = 0
 ## Moving average of effective clicks/second (see PhaseRules).
 var measured_cps: float
+## Seconds played in this run (phases + tree, not paused), saved with the run.
+var play_seconds: float = 0.0
+## Demo build (Demo.get_last_biome()): the last biome that can be played; nodes of
+## later biomes stay locked. &"" = full game.
+var demo_last_biome: StringName = &""
 var _levels: Dictionary[StringName, int] = {}
 
 
@@ -30,7 +35,7 @@ func is_maxed(upgrade: UpgradeNode) -> bool:
 
 
 func is_available(upgrade: UpgradeNode) -> bool:
-	if is_maxed(upgrade):
+	if is_maxed(upgrade) or is_beyond_demo(upgrade):
 		return false
 	if get_total_levels() < get_required_points(upgrade):
 		return false
@@ -53,17 +58,52 @@ func get_required_points(upgrade: UpgradeNode) -> int:
 ## only moving on when the previous biome was explored (at least one level in
 ## its tree rows). Points alone could skip a biome (e.g. reach the Sunken Ruins
 ## by maxing earlier nodes without ever getting the spear).
+## In the demo it stops at the last demo biome.
 func get_biome() -> Biome:
-	var biomes := database.biomes
-	if biomes.is_empty():
+	if database.biomes.is_empty():
 		return null
+	var index := _reached_biome_index()
+	var last := _demo_biome_index()
+	return database.biomes[mini(index, last) if last >= 0 else index]
+
+
+## Demo: the next biome's gate was reached (the demo ending plays once).
+func is_demo_complete() -> bool:
+	var last := _demo_biome_index()
+	return last >= 0 and _reached_biome_index() > last
+
+
+## Demo: `biome` comes after the last demo biome (shown, but locked).
+func is_biome_beyond_demo(biome: Biome) -> bool:
+	var last := _demo_biome_index()
+	return last >= 0 and database.biomes.find(biome) > last
+
+
+## Demo: the node belongs to a biome after the last demo biome.
+func is_beyond_demo(upgrade: UpgradeNode) -> bool:
+	var biome := database.get_biome_for_row(upgrade.grid_position.y)
+	return biome != null and is_biome_beyond_demo(biome)
+
+
+func _reached_biome_index() -> int:
+	var biomes := database.biomes
 	var total := get_total_levels()
-	var result := biomes[0]
+	var result := 0
 	for i: int in range(1, biomes.size()):
 		if total < biomes[i].required_points or not _owns_rows(biomes[i - 1].tree_row, biomes[i].tree_row):
 			break
-		result = biomes[i]
+		result = i
 	return result
+
+
+## Index of the last demo biome, or -1 in the full game.
+func _demo_biome_index() -> int:
+	if demo_last_biome == &"":
+		return -1
+	for i: int in database.biomes.size():
+		if database.biomes[i].id == demo_last_biome:
+			return i
+	return -1
 
 
 ## Total levels bought across the whole tree (used by the biome gates).
@@ -125,7 +165,7 @@ func buy(upgrade: UpgradeNode, inventory: Inventory) -> bool:
 func get_remaining_need(inventory: Inventory) -> Dictionary[StringName, int]:
 	var totals: Dictionary[StringName, int] = {}
 	for upgrade: UpgradeNode in database.upgrades:
-		if is_blocked_by_choice(upgrade):
+		if is_blocked_by_choice(upgrade) or is_beyond_demo(upgrade):
 			continue
 		for level: int in range(get_level(upgrade.id), upgrade.max_level):
 			for cost: ResourceAmount in upgrade.get_cost(level):

@@ -81,6 +81,12 @@ func refresh() -> void:
 	_refresh()
 
 
+## Closes the details popup (e.g. before the demo end screen covers the tree).
+func hide_details() -> void:
+	if _selected:
+		_close_details()
+
+
 ## Shows the "Saving… / Game saved" badge next to the Start button.
 func show_save(ok: bool) -> void:
 	_save_indicator.show_save(ok)
@@ -260,6 +266,8 @@ func _choice_rival_names(upgrade: UpgradeNode, owned_only: bool) -> PackedString
 
 
 func _lock_reason(upgrade: UpgradeNode) -> String:
+	if _progression.is_beyond_demo(upgrade):
+		return tr(&"UI_REQUIRES_FULL_VERSION")
 	if _progression.is_blocked_by_choice(upgrade):
 		return tr(&"UI_CHOICE_TAKEN") % ", ".join(_choice_rival_names(upgrade, true))
 	var required := _progression.get_required_points(upgrade)

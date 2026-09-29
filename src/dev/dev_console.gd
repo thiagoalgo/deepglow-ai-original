@@ -113,6 +113,7 @@ func _register_commands() -> void:
 		_save_names)
 	_add("set", "set <resource> <amount>", "sets a resource amount (e.g. set gold 372)", _cmd_set,
 		_resource_ids)
+	_add("demo", "demo", "toggles the demo rules (like a demo build; not saved)", _cmd_demo)
 	_add("intro", "intro", "plays the intro (over the game in a run)", _cmd_intro)
 	_add("ending", "ending", "plays the ending (over the game in a run; nothing is bought)", _cmd_ending)
 	_add("fullscreen", "fullscreen", "toggles fullscreen / window", _cmd_fullscreen)
@@ -181,6 +182,14 @@ func _cmd_fullscreen(_args: PackedStringArray) -> void:
 	# Same as F11 / the Settings row (saved in settings.cfg).
 	Settings.set_fullscreen(not Settings.fullscreen)
 	_print("fullscreen = %s" % Settings.fullscreen)
+
+
+func _cmd_demo(_args: PackedStringArray) -> void:
+	Demo.forced = not Demo.forced
+	var game := _game()
+	if game:
+		game.apply_demo()
+	_print("demo %s" % ("on (last biome: %s)" % Demo.get_last_biome() if Demo.is_active() else "off"))
 
 
 func _cmd_intro(_args: PackedStringArray) -> void:

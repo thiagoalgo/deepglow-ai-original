@@ -33,6 +33,8 @@
 [ext_resource type="PackedScene" path="res://src/ui/achievement_toast/achievement_toast.tscn" id="30_toast"]
 [ext_resource type="PackedScene" path="res://src/intro/intro.tscn" id="31_intro"]
 [ext_resource type="Resource" path="res://data/intro/ending.tres" id="32_ending"]
+[ext_resource type="Resource" path="res://data/intro/demo_ending.tres" id="33_demo_ending"]
+[ext_resource type="PackedScene" path="res://src/ui/demo_end/demo_end_screen.tscn" id="34_demo_end"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_night"]
 shader = ExtResource("27_night_shader")
@@ -43,6 +45,7 @@ database = ExtResource("2_db")
 card_scene = ExtResource("3_card")
 intro_scene = ExtResource("31_intro")
 ending_sequence = ExtResource("32_ending")
+demo_ending_sequence = ExtResource("33_demo_ending")
 
 [node name="Background" type="Sprite2D" parent="."]
 unique_name_in_owner = true
@@ -100,6 +103,9 @@ unique_name_in_owner = true
 unique_name_in_owner = true
 
 [node name="PauseMenu" parent="Overlays" instance=ExtResource("29_pause")]
+unique_name_in_owner = true
+
+[node name="DemoEndScreen" parent="Overlays" instance=ExtResource("34_demo_end")]
 unique_name_in_owner = true
 
 [node name="AchievementToast" parent="." instance=ExtResource("30_toast")]

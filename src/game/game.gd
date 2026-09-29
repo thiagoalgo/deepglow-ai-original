@@ -6,6 +6,8 @@ extends Node2D
 ## purchase; a loaded run resumes at the upgrade screen.
 ## Buying the story's last node (UpgradeNode.ends_story, the Heart of Deepglow)
 ## plays the ending over the tree (game paused), then the choice groups open.
+## Demo builds (Demo): reaching the gate of the first biome after the demo plays
+## the demo ending, then the "thanks for playing" screen.
 
 ## The player asked to go back to the title menu (the run is already saved).
 signal exit_requested
@@ -20,6 +22,7 @@ const ENDING_LAYER := 40
 ## The ending (an Intro screen playing `ending_sequence`).
 @export var intro_scene: PackedScene
 @export var ending_sequence: IntroSequence
+@export var demo_ending_sequence: IntroSequence
 
 var inventory: Inventory
 var progression: ProgressionState
@@ -31,6 +34,8 @@ var current_plan: PhasePlan
 var biome: Biome
 
 var _pending_save: SaveGame
+## Demo: the demo ending already played in this run (or the save was past it).
+var _demo_end_seen: bool = false
 
 @onready var background: Sprite2D = %Background
 @onready var ambient_particles: AmbientParticles = %AmbientParticles
@@ -45,6 +50,7 @@ var _pending_save: SaveGame
 @onready var game_audio: GameAudio = %GameAudio
 @onready var pause_menu: PauseMenu = %PauseMenu
 @onready var achievement_toast: AchievementToast = %AchievementToast
+@onready var demo_end_screen: DemoEndScreen = %DemoEndScreen
 
 
 func _ready() -> void:
@@ -57,6 +63,21 @@ func _ready() -> void:
 		_pending_save = null
 	else:
 		new_run()
+
+
+func _process(delta: float) -> void:
+	# The Game is pausable: pause menu, cutscenes and the dev console don't count.
+	if progression:
+		progression.play_seconds += delta
+
+
+## Applies Demo.get_last_biome() to the run (new/loaded run; dev console "demo").
+func apply_demo() -> void:
+	progression.demo_last_biome = Demo.get_last_biome()
+	_demo_end_seen = progression.is_demo_complete()
+	apply_biome()
+	if upgrade_screen.visible:
+		upgrade_screen.refresh()
 
 
 ## Call before the Game enters the tree to continue a saved run instead of a new one.
@@ -139,7 +160,7 @@ func _bind_run_state() -> void:
 	progression.upgrade_purchased.connect(_on_upgrade_purchased)
 	hud.setup(database, inventory)
 	biome = null
-	apply_biome()
+	apply_demo()
 
 
 func _center_board() -> void:
@@ -153,8 +174,9 @@ func _on_board_cell_navigated(cell: Vector2i) -> void:
 
 
 ## Plays the ending over the paused game. Awaitable (finishes when it is over).
+## In a demo build, the demo ending.
 func play_ending() -> void:
-	await play_cutscene(ending_sequence)
+	await play_cutscene(demo_ending_sequence if Demo.is_active() else ending_sequence)
 
 
 ## Plays an Intro screen over the paused game; `sequence` null = the intro
@@ -183,5 +205,12 @@ func _on_upgrade_purchased(upgrade: UpgradeNode, new_level: int) -> void:
 		await play_ending()
 		report_achievements()
 		achievement_toast.notify(tr(&"UI_NEW_PATHS_TITLE"), tr(&"UI_NEW_PATHS_TEXT"))
+		return
+	if not _demo_end_seen and progression.is_demo_complete():
+		_demo_end_seen = true
+		await play_ending()
+		report_achievements()
+		upgrade_screen.hide_details()
+		demo_end_screen.open(progression.play_seconds, progression.phases_played)
 		return
 	report_achievements()

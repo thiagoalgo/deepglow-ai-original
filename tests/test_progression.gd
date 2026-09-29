@@ -175,6 +175,45 @@ func test_all_maxed_achievement() -> String:
 	return "" if rule.is_unlocked(prog) else "every node maxed should unlock it"
 
 
+func test_demo_stops_at_its_last_biome() -> String:
+	var db := _db()
+	var prog := ProgressionState.new(db)
+	prog.demo_last_biome = &"glow_swamp"
+	var levels: Dictionary[StringName, int] = {}
+	for upgrade: UpgradeNode in db.upgrades:
+		if upgrade.grid_position.y < 4:
+			levels[upgrade.id] = upgrade.max_level
+	prog.restore(levels, 0, 0.0)
+	var caves_node: UpgradeNode = null
+	for upgrade: UpgradeNode in db.upgrades:
+		if upgrade.grid_position.y >= 4 and upgrade.prerequisites.all(
+				func(p: Resource) -> bool: return levels.has((p as UpgradeNode).id)):
+			caves_node = upgrade
+			break
+	if not prog.is_demo_complete():
+		return "the caves gate reached should complete the demo"
+	if prog.get_biome().id != &"glow_swamp":
+		return "the demo biome should stay the swamp, got %s" % prog.get_biome().id
+	if caves_node == null or not prog.is_beyond_demo(caves_node) or prog.is_available(caves_node):
+		return "nodes after the demo must stay locked"
+	prog.demo_last_biome = &""
+	if prog.is_demo_complete() or not prog.is_available(caves_node):
+		return "the full game has no demo limit"
+	if prog.get_biome().id == &"glow_swamp":
+		return "full game should reach the caves"
+	return ""
+
+
+func test_play_time_is_saved() -> String:
+	var db := _db()
+	var prog := ProgressionState.new(db)
+	prog.play_seconds = 1234.5
+	var data := SaveGame.capture(1, 2, Inventory.new(), prog).to_dict()
+	var loaded := ProgressionState.new(db)
+	SaveGame.from_dict(JSON.parse_string(JSON.stringify(data))).apply_to(Inventory.new(), loaded)
+	return "" if is_equal_approx(loaded.play_seconds, 1234.5) else "play time lost: %s" % loaded.play_seconds
+
+
 func test_required_points_gate() -> String:
 	var db := _db()
 	var gated := UpgradeNode.new()

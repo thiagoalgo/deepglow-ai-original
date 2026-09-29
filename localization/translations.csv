@@ -208,3 +208,16 @@ UI_NEW_PATHS_TITLE,New paths opened,Novos caminhos se abriram
 UI_NEW_PATHS_TEXT,The other choices can now be bought,As outras escolhas agora podem ser compradas
 ACH_LIGHT_KEEPER_NAME,Keeper of the Light,Guardião da Luz
 ACH_LIGHT_KEEPER_DESC,Complete every upgrade of the tree.,Complete todas as melhorias da árvore.
+DEMO_ENDING_01,The shard's light now points to the Crystal Caves.,A luz da lasca agora aponta para as Cavernas de Cristal.
+DEMO_ENDING_02,"Beyond them, ashes, ice and ruins still wait for the light.","Além delas, cinzas, gelo e ruínas ainda esperam pela luz."
+DEMO_ENDING_03,"Deep in the Sunken Ruins, the Heart of Deepglow awaits.","No fundo das Ruínas Submersas, o Coração de Deepglow aguarda."
+DEMO_ENDING_04,Your journey continues in the full game.,Sua jornada continua na versão completa.
+UI_DEMO_THANKS,Thanks for playing the demo!,Obrigado por jogar a demo!
+UI_DEMO_PLAY_TIME,Play time: %s,Tempo de jogo: %s
+UI_DEMO_PHASES,Phases played: %d,Fases jogadas: %d
+UI_DEMO_CARRY_OVER,Your progress carries over to the full game.,Seu progresso continua no jogo completo.
+UI_DEMO_FEEDBACK,Give feedback,Dar feedback
+UI_DEMO_KEEP_PLAYING,Keep playing,Continuar jogando
+UI_FULL_VERSION,Full version,Versão completa
+UI_REQUIRES_FULL_VERSION,Available in the full game,Disponível no jogo completo
+UI_DEMO,demo,demo

@@ -35,6 +35,11 @@ Escopo: **Bosque Noturno + Pântano**, terminando no portão das Cavernas de Cri
 - Final: banner "Novo bioma" das Cavernas bloqueado, trecho da montagem dos biomas e tela com botão de wishlist (overlay da Steam).
 - O save da demo continua no jogo completo.
 - Implementação: app de demo separado e gratuito no Steamworks; no Godot, feature tag `demo` num export preset próprio, sem branch.
+- **Feito (set/2026, primeiro para o itch.io):** classe `Demo` (`src/core/demo.gd`) ligada pela feature tag `demo` (preset "Web (demo)") ou pelo comando `demo` do terminal de dev. Configurações em Project Settings → `deepglow/demo/last_biome` (`glow_swamp`) e `deepglow/demo/feedback_url` (vazio = sem botão de feedback).
+    - Na árvore, os biomas depois do Pântano aparecem com "Versão completa" no cabeçalho e os nós ficam travados ("Disponível no jogo completo").
+    - Ao chegar a 18 pontos (portão das Cavernas), toca o final da demo (`data/intro/demo_ending.tres`, 4 planos narrados: Cavernas, montagem Cavernas → Cinzas → Vale → Ruínas, Ruínas, close do lampião) e depois a tela "Obrigado por jogar a demo!" com tempo de jogo, fases jogadas, botão de feedback e "Continuar jogando".
+    - Depois disso o jogador pode terminar o Bosque e o Pântano; o save (agora com o tempo de jogo, `play_seconds`) segue para o jogo completo.
+    - Falta para a Steam: botão de wishlist (overlay) na tela final.
 - Usar a demo também para medir o tempo real de jogadores de fora.
 - A demo também exige o questionário de conteúdo de IA.
 
@@ -105,7 +110,8 @@ Idiomas planejados além de en e pt_BR: russo, chinês, japonês, alemão, espan
 - [ ] Liberar os caminhos exclusivos da árvore após o final (flag de jogo concluído) e avisar o jogador.
 - [ ] Medir o tempo real com 3–5 jogadores de fora.
 - [ ] Decidir se a demo sai antes no itch.io (versão web) e onde divulgar.
-- [ ] Tela final da demo: tempo total de jogo + link para formulário de feedback.
+- [x] Tela final da demo: tempo total de jogo + botão de feedback (falta criar o formulário e colar o link em `deepglow/demo/feedback_url`).
+- [ ] Instalar os templates de export Web no Godot e testar a demo no navegador (áudio, save no navegador).
 - [ ] Escolher Next Fest de fevereiro ou junho de 2027.
 - [ ] Avaliar fontes pixel com cirílico e CJK.
 - [ ] Decidir quais idiomas terão narração própria e escolher as vozes.

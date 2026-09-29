@@ -16,6 +16,8 @@ var discovered: Array[StringName] = []
 var levels: Dictionary[StringName, int] = {}
 var phases_played: int = 0
 var measured_cps: float = 0.0
+## Seconds played in the run (optional key: older saves read as 0).
+var play_seconds: float = 0.0
 
 
 static func capture(p_run_seed: int, p_phase_number: int, inventory: Inventory,
@@ -28,6 +30,7 @@ static func capture(p_run_seed: int, p_phase_number: int, inventory: Inventory,
 	save.levels = progression.get_levels()
 	save.phases_played = progression.phases_played
 	save.measured_cps = progression.measured_cps
+	save.play_seconds = progression.play_seconds
 	return save
 
 
@@ -55,6 +58,7 @@ func apply_to(inventory: Inventory, progression: ProgressionState) -> void:
 		if level > 0:
 			clean_levels[upgrade.id] = mini(level, upgrade.max_level)
 	progression.restore(clean_levels, phases_played, measured_cps)
+	progression.play_seconds = maxf(0.0, play_seconds)
 
 
 func to_dict() -> Dictionary:
@@ -76,6 +80,7 @@ func to_dict() -> Dictionary:
 			"levels": levels_out,
 			"phases_played": phases_played,
 			"measured_cps": measured_cps,
+			"play_seconds": play_seconds,
 		},
 	}
 
@@ -101,6 +106,7 @@ static func from_dict(data: Dictionary) -> SaveGame:
 		save.levels[StringName(str(key))] = int(levels_in[key])
 	save.phases_played = maxi(0, int(progression.get("phases_played", 0)))
 	save.measured_cps = float(progression.get("measured_cps", 0.0))
+	save.play_seconds = float(progression.get("play_seconds", 0.0))
 	return save
 
 

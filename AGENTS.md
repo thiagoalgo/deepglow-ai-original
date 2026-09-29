@@ -198,6 +198,15 @@ the levels), the tree footer shows "Tree complete: X/N" and the `ACH_LIGHT_KEEPE
 title menu and the dev console command `ending` replay it (`intro` plays the intro; in a run
 both play over the paused game via `Game.play_cutscene()`).
 
+**Demo build:** the same project exported with the `demo` feature tag (preset "Web (demo)" for
+itch.io; dev console `demo` toggles it). `Demo` (`src/core/demo.gd`) reads Project Settings
+`deepglow/demo/last_biome` and `deepglow/demo/feedback_url`; `Game.apply_demo()` sets
+`ProgressionState.demo_last_biome`: later biomes are drawn locked ("Full version"), `get_biome()`
+stops there, and the purchase that reaches the next biome's gate (`is_demo_complete()`) plays
+`data/intro/demo_ending.tres` and opens `DemoEndScreen` (play time from
+`ProgressionState.play_seconds`, saved with the run; phases; feedback link). The save carries over
+to the full game. Launch notes: `docs/steam-launch.md`.
+
 Data flow: `GameDatabase` (all data) → `ProgressionState` computes derived stats (effective clicks,
 yields, phase duration, drains, rarity weights) from upgrade levels → `PhaseGenerator` builds a
 `PhasePlan` from progression + seed → states apply it. Game relays `Inventory.changed` and

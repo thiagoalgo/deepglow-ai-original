@@ -288,7 +288,9 @@ func _draw_separator(band: Rect2i) -> void:
 func _draw_header(biome: Biome, band: Rect2i) -> void:
 	var font := get_theme_default_font()
 	var font_size := get_theme_default_font_size()
-	var reached := _progression != null and _progression.get_total_levels() >= biome.required_points
+	var beyond_demo := _progression != null and _progression.is_biome_beyond_demo(biome)
+	var reached := _progression != null and _progression.get_total_levels() >= biome.required_points \
+		and not beyond_demo
 	var center := band.position.x + band.size.x / 2.0
 	var name := tr(biome.get_name_key())
 	var name_color := biome.color if reached else Palette.STRUCTURE_VIOLET
@@ -298,7 +300,7 @@ func _draw_header(biome: Biome, band: Rect2i) -> void:
 		name, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, name_color)
 	if biome.required_points == 0:
 		return
-	var unlock := _unlock_text(biome)
+	var unlock := tr(&"UI_FULL_VERSION") if beyond_demo else _unlock_text(biome)
 	var unlock_color := Palette.STRUCTURE_MID_BLUE if reached else Palette.LIGHT_PINK
 	_links.draw_string(font, Vector2(floorf(center - _text_width(unlock, font, font_size) / 2.0), band.position.y + 25),
 		unlock, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, unlock_color)
