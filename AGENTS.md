@@ -403,10 +403,11 @@ Art file names: `snake_case`, no spaces, English, id equal to the data `id`
   `play_ambience(stream)`. Every `BaseButton` gets `ui_click`/`ui_move` automatically.
   Call `Sound.stop_all()` and wait a few frames before quitting (`Main._quit()`), or the audio
   server reports leaked playbacks.
-- **Music:** `data/audio/phase_music.tres` = `phase_base.ogg` + `phase_rush.ogg` (132 BPM acid
-  techno, 32 bars / ~58 s in four 8-bar sections that change key: Am → Cm → Dm → Am; same length,
-  the rush layer fades in during the last 10 s); `camp.ogg` (112 BPM, 16 bars, second half one
-  tone up) for menus and between phases. `play_music` crossfades in linear amplitude (out 2 s,
+- **Music:** `camp.ogg` (112 BPM, 16 bars, second half one tone up) for menus and between
+  phases; during a phase the same loop plays faster: `data/audio/phase_music.tres` =
+  `camp_fast.ogg` + `camp_fast_rush.ogg` (`CAMP_PHASE_BPM` = 128 in `music.py`; same length, the
+  rush layer — 16th hats + snare roll — fades in during the last 10 s). Rejected by the owner:
+  the earlier 132 BPM acid techno phase track. `play_music` crossfades in linear amplitude (out 2 s,
   in 2.5 s, new track starts 0.6 s later). Loops are imported with `loop=true` (edit the `.ogg.import`).
 - **Voice (narration):** recorded outside (ElevenLabs, paid plan = commercial license), exported as
   `intro_NN_<locale>.mp3` into `pixelart/06_voice/`, then `python3 tools/audio/voice.py <dir>` trims
