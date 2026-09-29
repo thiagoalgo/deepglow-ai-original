@@ -452,6 +452,16 @@ Art file names: `snake_case`, no spaces, English, id equal to the data `id`
 - Full guide (Steamworks, Steam Cloud, Deck checklist, macOS notarization, store page):
   `docs/publishing.md`.
 
+## 5.3 Notas de lançamento (Steam, demo, itch.io)
+
+- Todas as anotações sobre lançamento ficam **somente** em `docs/steam-launch.md` (versionado no
+  git). Não criar outros arquivos ou documentos para isso.
+- Toda nova anotação ou alteração relacionada a lançamento deve ser feita diretamente nesse
+  arquivo, no repositório.
+- Aplicar sem commitar, mostrar o diff e perguntar antes do commit. O push é sempre manual,
+  feito pelo dono.
+- Publicar na Steam ainda **não é decisão tomada**; o arquivo é de anotações.
+
 ## 5.4 Developer console (dev builds only)
 
 - `src/dev/dev_console.gd` (no `class_name`): `Main` creates it only when
