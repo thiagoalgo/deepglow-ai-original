@@ -433,6 +433,9 @@ Art file names: `snake_case`, no spaces, English, id equal to the data `id`
   A source can override them: `SourceType.hit_sound` and `SourceType.collect_sound` (played on
   the final, collecting hit instead of the hit sound) — the boar grunts on each spear hit and
   squeals when collected (`boar_grunt`/`boar_squeal`, formant "voice" synthesis in `sfx.py`).
+- **Hit pitch steps:** board hits play the same sound on one of `GameAudio.hit_pitch_steps`
+  (semitones, default `[-3, 0, 2]`, never the same twice in a row) instead of a tiny random
+  jitter, so repeated clicks sound "pum, pa, po".
 - New gameplay moments emit an `Events` signal (e.g. `source_hit`); `GameAudio`/`GameFx`/`GameRumble` react.
 
 ## 5.2 Publishing

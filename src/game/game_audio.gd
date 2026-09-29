@@ -19,9 +19,14 @@ extends Node
 
 ## Hit sounds play lower while the hunger bar is empty (weak hits).
 @export var weak_hit_pitch: float = 0.8
+## Each hit plays the same sound on one of these pitches (semitones from the
+## original, never the same one twice in a row): "po, pa, pum" instead of a
+## machine-gun of identical clicks.
+@export var hit_pitch_steps: Array[int] = [-3, 0, 2]
 
 var _last_second: int = -1
 var _hungry: bool = false
+var _last_hit_step: int = -1
 
 
 func _ready() -> void:
@@ -62,8 +67,19 @@ func _on_source_hit(source: SourceType, _cell: Vector2i, depleted: bool) -> void
 	if depleted and source.collect_sound:
 		Sound.play(source.collect_sound, 0.05)
 		return
-	Sound.play(source.hit_sound if source.hit_sound else source.tool.hit_sound, 0.08, 0.0,
-		weak_hit_pitch if _hungry else 1.0)
+	var pitch := _next_hit_pitch() * (weak_hit_pitch if _hungry else 1.0)
+	Sound.play(source.hit_sound if source.hit_sound else source.tool.hit_sound, 0.0, 0.0, pitch)
+
+
+## Picks a pitch step different from the previous hit's.
+func _next_hit_pitch() -> float:
+	if hit_pitch_steps.is_empty():
+		return 1.0
+	var index := randi() % hit_pitch_steps.size()
+	if hit_pitch_steps.size() > 1 and index == _last_hit_step:
+		index = (index + 1 + randi() % (hit_pitch_steps.size() - 1)) % hit_pitch_steps.size()
+	_last_hit_step = index
+	return pow(2.0, hit_pitch_steps[index] / 12.0)
 
 
 func _on_source_collected(source: SourceType, _amount: int, _cell: Vector2i) -> void:
