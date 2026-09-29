@@ -21,7 +21,6 @@
 - `Claude outputs/` in the repo is untracked; never `git add -A` blindly. export_presets.cfg is versioned.
 
 ## Communication with the owner
-- LAUNCH NOTES: all Steam/itch/launch notes live ONLY in `docs/steam-launch.md` (repo, versioned in git; also mirrored in the Project files). Claude maintains it: every launch-related note or change goes there, edited DIRECTLY in the repo when the session has repo access (Claude Code/Cowork), uncommitted, then ask before committing as usual. In claude.ai chats (Project files are read-only there), deliver the full updated file for the owner to replace in the repo and in the Project. No Claude Docs for this. If copies diverge, the repo wins.
 - When showing variants, ALWAYS label them by row and column of the image, never by seed/variant names.
 - Be honest; don't oversell weak results. Remember prior feedback before proposing.
 - NEVER show flat placeholder cards/empty screens as a result: the owner judges visually ("ficou péssimo"). Use real art or say it is a skeleton before showing.
