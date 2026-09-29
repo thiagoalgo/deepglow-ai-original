@@ -102,6 +102,7 @@ src/                  # code + scenes, organized by FEATURE (.tscn next to its .
   phases/             # PhaseRules (data) + PhaseGenerator/PhasePlan (pure logic)
   fx/                 # visual effects (FloatingText, PixelBurst, AmbientParticles + AmbientEffect, NightCycle + night_shift shader,
                       # PaletteShift = palette "darker" table shared with the intro)
+  dev/                # DEV ONLY (excluded from release exports): dev_console.gd + saves/ (test saves NN_<biome>.json)
   intro/              # Intro screen + IntroShot/IntroSequence (data: motion, background(s), text key, duration)
   ui/                 # one subfolder per screen/component (hud, phase_summary,
                       # upgrade_tree, tool_cursor, language_select, title_menu) + theme/
@@ -450,6 +451,21 @@ Art file names: `snake_case`, no spaces, English, id equal to the data `id`
   resource, ids = Steamworks API names) and are reported by `Game.report_achievements()`.
 - Full guide (Steamworks, Steam Cloud, Deck checklist, macOS notarization, store page):
   `docs/publishing.md`.
+
+## 5.4 Developer console (dev builds only)
+
+- `src/dev/dev_console.gd` (no `class_name`): `Main` creates it only when
+  `OS.has_feature("editor")` or `OS.has_feature("dev")`, loading it by path. The release presets
+  (Windows, macOS, Linux) exclude `src/dev/*`, so it can never ship; the **"Windows (dev)"**
+  preset sets the `dev` feature tag and includes `src/dev/saves/*.json`
+  (`tools/build/export_all.sh "Windows (dev)"` → `build/windows-dev/`).
+- Ctrl+Space or F1 opens/closes it, Esc or a click outside it closes it; the game pauses while it is open; Up/Down = history.
+- Commands: `help` / `?`, `load_save <NN>` (writes `src/dev/saves/NN_*.json` over the save slot and
+  opens the run: 01 = empty run, 02–06 = one per biome), `set <resource> <amount>`, `fullscreen` (toggles, like F11), `mute` (toggles the Master bus, not saved), `reset` (closes and
+  reopens the program, save and settings kept), `clear_cfg`
+  (same as `reset` after `Settings.reset()` deletes `settings.cfg`; both use `OS.create_instance` — adding `--path` when run from the editor — then quit, falling back to reloading the main scene if the new instance cannot start), `exit`; `help` lists the accepted values (test saves,
+  resource ids) indented under their command. It is drawn over the game area at window resolution (own SubViewport, outside the 640x360 one) through a copy of the CRT filter (`crt.gdshader` `keep_alpha`), so the font stays crisp; font JetBrains Mono NL (SIL OFL, `src/dev/fonts/`), fluorescent green text on a 25% transparent background (dev tool: palette rules do not apply); Enter and clicks inside keep the focus on the `>>> ` prompt (borderless field). New command = `_add(...)` in
+  `_register_commands()` + a `_cmd_*` method. Dev-only code may use raw keys and English text.
 
 ## 6. Useful commands
 

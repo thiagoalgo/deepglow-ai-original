@@ -1,0 +1,55 @@
+{
+	"inventory": {
+		"amounts": {
+			"copper": 15,
+			"crystal": 7,
+			"fish": 47,
+			"fruit": 154,
+			"gold": 4,
+			"iron": 62,
+			"stone": 190,
+			"water": 691,
+			"wood": 237
+		},
+		"discovered": [
+			"water",
+			"wood",
+			"fruit",
+			"fish",
+			"stone",
+			"crystal",
+			"copper",
+			"gold",
+			"iron"
+		]
+	},
+	"phase_number": 62,
+	"progression": {
+		"levels": {
+			"bait": 3,
+			"basket": 3,
+			"canteen": 3,
+			"copper_sense": 1,
+			"crystal_attunement": 2,
+			"crystal_edge": 2,
+			"hearty_meals": 2,
+			"keen_eye": 3,
+			"longer_days": 3,
+			"lumber_sense": 3,
+			"master_mason": 2,
+			"sharp_axe": 3,
+			"sharp_pickaxe": 3,
+			"steady_hands": 2,
+			"stone_sense": 2,
+			"tempered_pick": 1,
+			"unlock_crystal_pick": 1,
+			"unlock_fishing_rod": 1,
+			"unlock_ore_pick": 1,
+			"unlock_pickaxe": 1
+		},
+		"measured_cps": 3.0,
+		"phases_played": 62
+	},
+	"run_seed": 424242,
+	"version": 1
+}

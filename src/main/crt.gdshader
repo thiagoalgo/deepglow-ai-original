@@ -17,6 +17,9 @@ uniform float corner_radius : hint_range(0.0, 0.2) = 0.025;
 // Compensates the average darkening of scanlines + vignette.
 uniform float brightness : hint_range(0.5, 1.5) = 1.14;
 uniform vec2 source_size = vec2(640.0, 360.0);
+// Keeps the source alpha (overlays drawn on top of the game, e.g. the dev
+// console); off for the game image itself, which is always opaque.
+uniform bool keep_alpha = false;
 
 vec2 warp(vec2 uv) {
 	vec2 c = uv * 2.0 - 1.0;
@@ -40,7 +43,7 @@ void fragment() {
 	} else {
 		vec2 uv = warp(UV);
 		if (uv.x < 0.0 || uv.x > 1.0 || uv.y < 0.0 || uv.y > 1.0) {
-			COLOR = vec4(0.0, 0.0, 0.0, 1.0);
+			COLOR = keep_alpha ? vec4(0.0) : vec4(0.0, 0.0, 0.0, 1.0);
 		} else {
 			vec2 px = vec2(chroma_offset / source_size.x, 0.0);
 			vec3 col;
@@ -54,7 +57,8 @@ void fragment() {
 			vec2 d = uv - 0.5;
 			col *= 1.0 - vignette_strength * dot(d, d) * 2.0;
 			col *= brightness;
-			COLOR = vec4(col * corner_mask(uv), 1.0);
+			float alpha = keep_alpha ? texture(TEXTURE, uv).a * corner_mask(uv) : 1.0;
+			COLOR = vec4(col * corner_mask(uv), alpha);
 		}
 	}
 }

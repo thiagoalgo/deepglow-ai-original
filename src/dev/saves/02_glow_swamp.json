@@ -1,0 +1,29 @@
+{
+	"inventory": {
+		"amounts": {
+			"fruit": 114,
+			"water": 54,
+			"wood": 21
+		},
+		"discovered": [
+			"water",
+			"wood",
+			"fruit"
+		]
+	},
+	"phase_number": 6,
+	"progression": {
+		"levels": {
+			"basket": 2,
+			"canteen": 2,
+			"keen_eye": 1,
+			"longer_days": 1,
+			"lumber_sense": 2,
+			"sharp_axe": 2
+		},
+		"measured_cps": 3.0,
+		"phases_played": 6
+	},
+	"run_seed": 424242,
+	"version": 1
+}

@@ -73,6 +73,12 @@ func open(database: GameDatabase, progression: ProgressionState, inventory: Inve
 	show()
 
 
+## Re-reads the inventory and progression (after an outside change, e.g. the
+## dev console's "set").
+func refresh() -> void:
+	_refresh()
+
+
 ## Shows the "Saving… / Game saved" badge next to the Start button.
 func show_save(ok: bool) -> void:
 	_save_indicator.show_save(ok)

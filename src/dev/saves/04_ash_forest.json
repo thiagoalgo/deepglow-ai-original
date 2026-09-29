@@ -1,0 +1,41 @@
+{
+	"inventory": {
+		"amounts": {
+			"fish": 63,
+			"fruit": 56,
+			"stone": 18,
+			"water": 194,
+			"wood": 108
+		},
+		"discovered": [
+			"water",
+			"wood",
+			"fruit",
+			"fish",
+			"stone"
+		]
+	},
+	"phase_number": 37,
+	"progression": {
+		"levels": {
+			"bait": 2,
+			"basket": 3,
+			"canteen": 3,
+			"hearty_meals": 2,
+			"keen_eye": 3,
+			"longer_days": 3,
+			"lumber_sense": 3,
+			"master_mason": 1,
+			"sharp_axe": 3,
+			"sharp_pickaxe": 2,
+			"steady_hands": 2,
+			"stone_sense": 2,
+			"unlock_fishing_rod": 1,
+			"unlock_pickaxe": 1
+		},
+		"measured_cps": 3.0,
+		"phases_played": 37
+	},
+	"run_seed": 424242,
+	"version": 1
+}

@@ -43,6 +43,25 @@ func _ready() -> void:
 		_apply_volume(bus)
 
 
+## Deletes settings.cfg and goes back to the defaults, as on a first launch
+## (dev console: clear_cfg).
+func reset() -> void:
+	if FileAccess.file_exists(SAVE_PATH):
+		DirAccess.remove_absolute(ProjectSettings.globalize_path(SAVE_PATH))
+	_config = ConfigFile.new()
+	_has_saved_locale = false
+	crt_enabled = true
+	fullscreen = false
+	volumes = DEFAULT_VOLUMES.duplicate()
+	_load()
+	_apply_locale()
+	_apply_fullscreen()
+	for bus: StringName in volumes:
+		_apply_volume(bus)
+	crt_changed.emit(crt_enabled)
+	fullscreen_changed.emit(fullscreen)
+
+
 ## True once the player has picked a language at least once.
 func has_saved_locale() -> bool:
 	return _has_saved_locale

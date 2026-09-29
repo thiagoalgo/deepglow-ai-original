@@ -1,0 +1,34 @@
+{
+	"inventory": {
+		"amounts": {
+			"fish": 14,
+			"fruit": 169,
+			"water": 96,
+			"wood": 257
+		},
+		"discovered": [
+			"water",
+			"wood",
+			"fruit",
+			"fish"
+		]
+	},
+	"phase_number": 17,
+	"progression": {
+		"levels": {
+			"bait": 1,
+			"basket": 3,
+			"canteen": 3,
+			"keen_eye": 2,
+			"longer_days": 2,
+			"lumber_sense": 2,
+			"sharp_axe": 3,
+			"steady_hands": 1,
+			"unlock_fishing_rod": 1
+		},
+		"measured_cps": 3.0,
+		"phases_played": 17
+	},
+	"run_seed": 424242,
+	"version": 1
+}

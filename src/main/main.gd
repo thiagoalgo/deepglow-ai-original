@@ -6,6 +6,10 @@ extends Node
 ##   Game "Menu" -> TitleMenu
 ## Screens are PackedScene exports that only emit signals; Main swaps them.
 
+## Developer console, only in the editor and in exports with the "dev" feature
+## tag (release presets exclude src/dev/, so it cannot ship by accident).
+const DEV_CONSOLE := "res://src/dev/dev_console.gd"
+
 @export var language_select_scene: PackedScene
 @export var title_menu_scene: PackedScene
 @export var settings_scene: PackedScene
@@ -22,6 +26,11 @@ var _current_screen: Node
 func _ready() -> void:
 	# Closing the window goes through _quit() too (audio must stop first).
 	get_tree().set_auto_accept_quit(false)
+	if (OS.has_feature("editor") or OS.has_feature("dev")) and ResourceLoader.exists(DEV_CONSOLE):
+		# In the root window (full resolution), outside the 640x360 game viewport.
+		var console := (load(DEV_CONSOLE) as GDScript).new() as Node
+		console.set(&"main", self)
+		get_tree().root.add_child.call_deferred(console)
 	Sound.play_ambience(ambience)
 	if Settings.has_saved_locale():
 		_show_title_menu()
@@ -69,6 +78,17 @@ func _start_game(save: SaveGame) -> void:
 		game.resume_from(save)
 	game.exit_requested.connect(_show_title_menu, CONNECT_ONE_SHOT)
 	_switch_to(game)
+
+
+## Makes `save` the current run and opens it (dev console: load_save).
+func load_run(save: SaveGame) -> void:
+	SaveSystem.write(save)
+	_start_game(save)
+
+
+## Quits like closing the window (dev console: exit, clear_cfg).
+func quit() -> void:
+	_quit()
 
 
 func _notification(what: int) -> void:

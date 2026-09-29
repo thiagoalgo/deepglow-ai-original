@@ -1,0 +1,14 @@
+{
+	"inventory": {
+		"amounts": {},
+		"discovered": []
+	},
+	"phase_number": 0,
+	"progression": {
+		"levels": {},
+		"measured_cps": 3.0,
+		"phases_played": 0
+	},
+	"run_seed": 424242,
+	"version": 1
+}
