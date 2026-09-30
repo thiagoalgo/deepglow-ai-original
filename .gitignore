@@ -22,3 +22,6 @@ __pycache__/
 .DS_Store
 Thumbs.db
 tools/balance/reports/
+
+# Claude scratch outputs (renders, previews)
+Claude outputs/

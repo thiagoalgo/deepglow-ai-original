@@ -11,13 +11,13 @@ config_version=5
 [application]
 
 config/name="Deepglow"
-config/version="0.7.0"
 config/description="Pixel art board game with a bioluminescent setting."
+config/version="0.7.0"
 run/main_scene="res://src/main/app.tscn"
-config/features=PackedStringArray("4.7", "GL Compatibility")
-config/icon="res://icon.svg"
 config/use_custom_user_dir=true
 config/custom_user_dir_name="Deepglow"
+config/features=PackedStringArray("4.7", "GL Compatibility")
+config/icon="res://icon.svg"
 
 [autoload]
 
@@ -45,7 +45,6 @@ window/size/viewport_width=640
 window/size/viewport_height=360
 window/size/window_width_override=2560
 window/size/window_height_override=1440
-window/stretch/mode="disabled"
 
 [gui]
 
@@ -140,9 +139,9 @@ locale/translations=PackedStringArray("res://localization/translations.en.transl
 [rendering]
 
 textures/canvas_textures/default_texture_filter=0
-textures/vram_compression/import_etc2_astc=true
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
+textures/vram_compression/import_etc2_astc=true
 environment/defaults/default_clear_color=Color(0.019607844, 0.019607844, 0.03529412, 1)
 2d/snap/snap_2d_transforms_to_pixel=true
 2d/snap/snap_2d_vertices_to_pixel=true
